@@ -1149,7 +1149,203 @@
 
 ## 深入 JavaScript
 
+### 函数返回值
+
+- 什么是函数返回值
+  - 函数的执行结果
+  - 可以没有 return
+- 一个函数应该只有一种返回值类型
+
+### 函数传参
+
+- 可变函数（不定参数）：`arguments`
+
+  - **参数数组**
+
+- 例子：求和
+
+  - 求所有参数的和
+
+- 例子2：CSS 函数
+
+  - 判断 `arguments.length`
+  - 给参数取名，增强可读性
+
+- 取非行间样式（不能用来设置）：
+
+  - `obj.currentStyle[attr]` 只兼容 IE
+
+  - `getComputedStyle(obj, false)[attr]`
+
+  - ```js
+    // 解决兼容问题
+    if (oDiv.currentStyle)
+    {
+    	// ie
+    	alert(oDiv.currentStyle.width);
+    } else {
+    	// ff
+    	alert(getComputedStyle(oDiv, false).width);
+    }
+    ```
+
+  - 复合样式：`background / border ` 要用具体样式名 `backgroundColor ` 等
+
+  - 单一样式：` width / height / position`
+
+### 数组基础操作
+
+- 数组的使用
+
+  - 定义
+    - `var arr = [23, 234, 23, 45];`
+    - `var arr = new Array(12, 5, 7, 34);`
+    - 没有任何差别，`[]` 的性能略高，因为代码短
+
+- 数组的属性
+
+  - `length`
+    - 既可以获取，又可以设置
+    - 例子：快速清空数组 `length  = 0`
+
+- 数组的使用原则：数组中应该只存一种类型的变量
+
+- 数组的方法
+
+  - 添加
+    - `push(元素)`，从尾部添加
+    - `unshift(元素)`，从头部添加
+  - 删除
+    - `pop()`，从尾部删除
+    - `shift()`，从头部删除
+
+- 排序
+
+  - `数组.sort([比较函数])`，排序一个数组
+
+    - 排序一个字符串数组
+
+    - 排序一个数字数组
+
+    - ```js
+      // 按大小排序 比较函数
+      arr.sort(function (n1, n2) {
+      	return n1 - n2
+      })
+      ```
+
+- 转换类
+
+  - `数组.concat(数组2)`
+    - 连接两个数组
+  - `数组.join(分隔符)`
+    - 用分隔符，组合数组元素，生成字符串
+    - 字符串 `split`
+
+-  `splice` 删除、插入、替换
+
+  - `splice(起点,长度,元素)`
+
+  - 删除
+
+    - `splice(起点,长度)`
+
+  - 插入
+
+    - `splice(起点,0,元素...)`
+
+  - 替换
+
+    - `splice(起点,长度,元素)`
+
+    - 先删除，后插入
+
 ## 定时器的使用
+
+### 定时器的作用
+
+- 开启定时器
+
+  - `setInterval(函数, 间隔时间)` 间隔型
+  - `setTimeout(函数, 延时时间)`   延时型
+  - 两种定时器的区别
+
+- 停止定时器
+
+  - `clearInterval(定时器名字)`
+  - `clearTimeout(定时器名字)`
+
+- 代码：
+
+  ```js
+  window.onload = function () {
+  	var oBtn1 = document.getElementById('btn1');
+  	var oBtn2 = document.getElementById('btn2');
+      var timer = null;
+      
+      oBtn1.onclick = function () {
+  		timer = setInterval(function () {
+              alert('a');
+          }, 2000);
+      };
+      
+      oBtn2.onclick = function () {
+          clearInterval(timer);
+      };
+  };
+  ```
+
+### 数码时钟
+
+- 效果思路
+
+- 获取系统时间
+
+  - `Date 对象`
+  - `getHours / getMinutes / getSeconds`
+
+- 显示系统时间
+
+  - 字符串连接
+  - 空位补零
+
+- 设置图片路径
+
+  - `str[i]` 不兼容 ie7
+
+  - `charAt(i) 方法` 兼容各种浏览器
+
+### Date 对象其它方法
+
+- 年 ` getFullYear()`
+- 月` getMonth()`
+- 日`getDate()`
+- 星期`getDay()`
+
+### 延时提示框
+
+- 效果演示
+- 原来的方法
+  - 移入显示，移出隐藏
+- 移出延时隐藏
+  - 移入下面 Div 后，还是隐藏
+- 简化代码
+  - 合并两个相同的 mouseover 和 mouseout
+  - 连续 `a=b=c=function()`  两个事件共使用一个函数
+
+### 无缝滚动
+
+- 效果演示
+- 物体运动基础
+  - 让 Div 移动起来
+  - `offsetLeft` 的作用
+  - 用定时器让物体连续移动
+- 改变滚动的方向
+  - 修改 speed
+  - 修改判定条件
+- 鼠标移入暂停
+  - 移入关闭定时器
+  - 移出重新开启定时器
 
 ## DOM 基础
 
