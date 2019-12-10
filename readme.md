@@ -690,6 +690,8 @@
         }
         td {
           border: 5px solid rgb(218, 218, 218);
+          width: 59px;
+          height: 59px;
           text-align: center;
           background: rgb(83, 83, 83);
           color: white;
@@ -798,6 +800,352 @@
   
 
 ## JavaScript 基础
+
+### JavaScript 组成
+
+- ECMAScript：解释器、编译器（几乎所有兼容）
+- DOM：Document Object Model，HTML，document（大部分兼容）
+- BOM：Browser Object Model，浏览器，window（完全不兼容）
+  - 各组成部分的兼容性、兼容性问题的由来
+
+### 变量类型
+
+- 类型：typeof 运算符
+  - 用法、返回值：返回类型
+  - 常见类型：
+    - number 、string 、boolean 、undefined（未定义或定义未使用）、object、function
+- 一个变量应该只放一种类型的数据
+
+### 变量类型转换
+
+- 数据类型转换
+
+  - 例子：计算两个文本框的和
+
+  - 显式类型转换（强制类型转换）
+
+    - `parseInt() 、parseFloat() `：从左至右提取数字，遇到不是数字跳出
+    - `NaN ` 的意义和检测：Not a Number
+    - NaN 和 NaN 不相等：使用 ` isNaN()` 检测是否是全是数字
+
+  - 隐式类型的转换
+
+    - `== `：先转换类型 再比较
+
+      对比 `=== `：全等于，不转换类型直接比较
+
+    - ` - `：数字相减
+
+      对比 ` +`：字符串连接、数字相加
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>变量类型转换</title>
+      <style></style>
+      <script>
+        window.onload = function () {
+          // 封装 getElementById 函数
+          function get(id) {
+            return document.getElementById(id);
+          }
+  
+          let t1 = get('t1');
+          let t2 = get('t2');
+          let b1 = get('b1');
+          let s1 = get('s1');
+          let s2 = get('s2');
+          b1.onclick = function (){
+            if (isNaN(t1.value)) {
+              s1.innerHTML = '<br>' + t1.value + '不是数字';
+            } else if (isNaN(t2.value)) {
+              s1.innerHTML = '<br>' + t2.value + '不是数字';
+            } else {
+              console.log('t1:',typeof t1.value, 't2',typeof t2.value);
+              let val = parseInt(t1.value) + parseInt(t2.value);
+              let val2 = parseFloat(t1.value) + parseFloat(t2.value);
+              s1.innerHTML = '<br>int结果：' + val+ '<br>float结果：' + val2;
+              console.log(typeof val);
+  
+              // == 和 - 隐式转换
+              let a = t1.value ;
+              let b = t2.value;
+              if (a == b) {
+                s2.innerHTML = 'a == b' + '<br>a - b = ' + (a - b) + '<br>a + b = ' + (a + b);
+              } else if (a === b) {
+                s2.innerHTML = 'a === b！';
+              } else {
+                s2.innerHTML = 'a不等于b！' + '<br>a - b = ' + (a - b) + '<br>a + b = ' + (a + b);
+              }
+            }
+          }
+        }
+      </script>
+    </head>
+    <body>
+      <input type="text" name="" id="t1">
+      <input type="text" name="" id="t2">
+      <input type="button" name="" id="b1" value="计算">
+      <div>
+          <span id="s1"></span>
+      </div>
+      <div>
+          <span id="s2"></span>
+      </div>
+    </body>
+  </html>
+  ```
+
+  
+
+### 变量的作用域和闭包
+
+- 变量作用域（作用范围）
+  - 局部变量、全局变量
+- 什么是闭包？
+  - **子函数可以使用父函数中的局部变量**
+  - 之前一直在使用闭包
+  - 网上对于闭包的定义
+
+### 命名规范
+
+- 命名规范及必要性
+  - 可读性--能看懂
+  - 规范性--符合规则
+- 匈牙利命名法
+  - 类型前缀 + 首字母大写：` getElementByTagName `
+
+| 类型       | 前缀 | 类型（英文） | 实例         |
+| ---------- | ---- | ------------ | ------------ |
+| 数组       | a    | Array        | aItems       |
+| 布尔值     | b    | Boolean      | bIsComplete  |
+| 浮点数     | f    | Float        | fPrice       |
+| 函数       | fn   | Function     | fnHandler    |
+| 整数       | i    | Integer      | iItemCount   |
+| 对象       | o    | Object       | oDiv1        |
+| 正则表达式 | re   | RegExp       | reEmailCheck |
+| 字符串     | s    | String       | sUserName    |
+| 变体变量   | v    | Variant      | vAnything    |
+
+### 运算符
+
+- 算数：` +加、-减、*乘、/ 除、%取模 `
+
+  - 实例：隔行变色、秒转时间
+
+- 赋值：` =、+=、-=、*=、/=、%= `
+
+  - ` +=` ：  `i += 1  等于 i++ `
+
+- 关系：` <、>、<=、>=、== 、===、!=、!==` 
+
+  - `!==` ：不同类型不比较，且无结果，同类型才比较，对应 `===`
+  - `!=`：若类型不同，会偿试转换类型，对应 `== `
+
+- 逻辑：&&与、||或、!否
+
+  - 实例：全选与反选
+
+- 运算符优先级：括号
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>运算符</title>
+      <style>
+      .blue {
+        width: auto;
+        height: 20px;
+        background: blue;
+      }
+      .yellow {
+        width: auto;
+        height: 20px;
+        background: yellow;
+      }
+      </style>
+      <script>
+        window.onload = function () {
+          // 封装 getElementById 函数
+          function get(id) {
+            return document.getElementById(id);
+          }
+          // 封装 getElementsByTagName
+          function gets(tagName) {
+            return document.getElementsByTagName(tagName)
+          }
+          // 隔行变色
+          function liCol() {
+            let i = 0;
+            let oLi = gets('li') ;
+            for (i = 0; i < oLi.length; i++) {
+              if (i % 2 === 0) {
+                oLi[i].className = 'blue';
+              } else {
+                oLi[i].className = 'yellow';
+              }
+            }
+          }
+          liCol();
+  
+          // 毫秒转日期
+          const date = Date.now();
+          // 60000ms / 1000ms /60s /60m /24h /365d
+          const millisecond = date % 1000 + '毫秒';
+          const second = parseInt(date/1000) % 60 + '秒';
+          const minute = parseInt(date/1000/60) % 60 + '分';
+          const hour = parseInt(date/1000/60/60) % 24 + 8 + '小时';
+          const day = parseInt(date/1000/60/60/24/365) % 30 - 9 + '号';
+          const month = parseInt(date/1000/60/60/24/30) % 12 + 4 + '月'; 
+          const year = parseInt(date/1000/60/60/24/265) + 1951 +'年';
+          const d1 = get('d1');
+          d1.innerHTML = millisecond+ second+ minute+ hour+ day+ month+ year;
+        }
+  
+        // 赋值 ` =、+=、-=、*=、/=、%= `
+        let i = 11;
+        i += 2;
+        console.log(i);
+        i -= 3;
+        console.log(i);
+        i *= 2;
+        console.log(i);
+        i /= 2;
+        console.log(i);
+        i %= 3;
+        console.log(i);
+  
+        // 判断 <、>、<=、>=、== 、===、!=、!==
+        if (i > 0) {
+        console.log('i > 0');
+        } 
+        if (i <= i) {
+          console.log('i <= i');
+        }
+        if (i == '1') {
+          console.log('i == "1"')
+        }
+        if (i === 1) {
+          console.log('i === 1')
+        }
+        if (i != '1') {
+          console.log('i != 2')
+        }
+        if (i !== 1) {
+          console.log('i !== 1')
+        }
+  
+        // 逻辑 &&与、||或、!否
+        if (i<2 && i>0) {
+          console.log('i<2 && i>0')
+        }
+        if (i<2 || i<0) {
+          console.log('i<2 || i<0')
+        }
+      </script>
+    </head>
+    <body>
+      <div>
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+      <div id="d1"></div>
+    </body>
+  </html>
+  ```
+
+### 程序流程控制
+
+- 判断：`if、switch、?:`
+- 循环：`while、for`
+- 跳出：`break、continue`
+- 什么是真、什么是假
+  - 真：true、非零数字、非空字符串、非空对象
+  - 假：false、数字0、空字符串、空对象、undefiend
+- 代码：同下
+
+### JSON
+
+- 什么是 JSON
+
+- JSON 和数组
+
+- JSON 和 for in
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>程序流程控制</title>
+      <script>
+      window.onload = function () {
+        // switch
+        var i = 0;
+        switch (i){
+          case i*++i:
+            console.log('i');
+            break;
+          case 1:
+            console.log('1')
+            break;
+          default:
+            console.log('default');
+            break;
+        }
+  
+        // ?:  条件?语句一:语句二
+        var a = 1;
+        a % 2 == 0 ? console.log('双数'):console.log('单数');
+  
+        // break continue
+        for (i = 0; i < 5; i++){
+          if (i === 2){
+            // break; // 中断所有循环
+            continue; // 中断本次循环
+          }
+          console.log(i);
+        }
+  
+        // json 和 数组
+        const json = {a: 2, b: 5, c:9};
+        const arr = [23, 45, 5467];
+        console.log('b:',json.b,'c:',json['c'], json.length);
+        console.log(arr[2], arr.length);
+  
+        // JSON 和 for in
+        for (var i in arr) {
+          console.log('第' + i + '个：' + arr[i]);
+        }
+        for (var i in json) {
+          console.log('第' + i + '个：' + json[i]);
+        }
+      }
+      </script>
+    </head>
+    <body>
+    </body>
+  </html>
+  ```
 
 ## 深入 JavaScript
 
