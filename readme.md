@@ -176,20 +176,20 @@
   
       <script>
       function changeColor() {
-        if (document.getElementById('link1').href == 'file:///E:/web/node/JStest/JStest/JavaScript/css/grey.css') {
-          document.getElementById('link1').href='css/black.css';
-          document.getElementById('b1').value='开灯';
+        if (document.getElementById('b1').value == '关灯') {
+          document.getElementById('link1').href = 'css/black.css';
+          document.getElementById('b1').value = '开灯';
           console.log('black')
         } else {
-          document.getElementById('link1').href='css/grey.css';
-          document.getElementById('b1').value='关灯';
+          document.getElementById('link1').href = 'css/grey.css';
+          document.getElementById('b1').value = '关灯';
           console.log('bl2:', document.getElementById('link1').href)
         }
       }
   
       function changeText() {
-        document.getElementById('text1').value='456';
-        document.getElementById('text1').title='文字1';
+        document.getElementById('text1').value = '456';
+        document.getElementById('text1').title = '文字1';
       }
   
       function showHide() {
@@ -206,7 +206,7 @@
   
       function class1() {
         var div = document.getElementById('div4');
-        div.className='div4';
+        div.className='div5';
         div.id='div5';
       }
       </script>
@@ -219,7 +219,7 @@
       <div id="div3">3</div>
       <input type="button" value="显示隐藏div2" onclick="showHide()">
       <br>
-      <!-- HTML 里面怎么写，JS 里面就怎么写 -->
+      <!-- HTMl 里面怎么写，JS 里面就怎么写 -->
       <input id="text1" type="text" value="123">
       <input type="button" value="改文字" onclick="changeText()">
       <br>
@@ -227,7 +227,7 @@
       <a href="javascript:;">javascript:;</a>
   
       <!-- className 的使用 -->
-      <div id="div4" style="width: 100px; height: 50px; background: grey;">4</div>
+      <div id="div4">4</div>
       <input type="button" value="className" onclick="class1()">
     </body>
   </html>
@@ -1266,9 +1266,9 @@
 
 - 开启定时器
 
-  - `setInterval(函数, 间隔时间)` 间隔型
+  - `setInterval(函数, 间隔时间)` 间隔型，函数后面不能带括号和传参
   - `setTimeout(函数, 延时时间)`   延时型
-  - 两种定时器的区别
+  - 两种定时器的区别，定时器要 window.onload 完一秒后才执行
 
 - 停止定时器
 
@@ -1301,7 +1301,7 @@
 
 - 获取系统时间
 
-  - `Date 对象`
+  - `new Date` 对象
   - `getHours / getMinutes / getSeconds`
 
 - 显示系统时间
@@ -1312,15 +1312,83 @@
 - 设置图片路径
 
   - `str[i]` 不兼容 ie7
-
-  - `charAt(i) 方法` 兼容各种浏览器
+- `charAt(i)` 方法 ：取出字符串中的第 i 个值，兼容各种浏览器
+  - 设置路径：`"url('img/0.png')"`
 
 - 代码：
 
   ```HTML
+  <!DOCTYPE html>
+  <html>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>数码时钟</title>
+    <style>
+    body{
+      margin: 0;
+      padding: 0;
+      background-color: rgb(49, 49, 49);
+    }
+    li {
+      list-style: none;
+      float: left;
+      width: 100px;
+      height: 149px;
+    }
+    span {
+      float: left;
+      font-size: 100px;
+      color: rgb(255, 255, 255);
+    }
+    </style>
+    <script>
+    window.onload = function () {
+      // 封装 getElementsByTagName
+      function gets(tagName) {
+        return document.getElementsByTagName(tagName)
+      }
   
+      // 数码时钟
+      // 数字时钟图片设置函数
+      const oLi = gets('li');
+      function clock() {
+        const date = new Date();
+        const str = addZero(date.getHours()) + addZero(date.getMinutes()) + addZero(date.getSeconds());
+      
+        let i = 0;
+        for (i = 0; i < oLi.length; i++) {
+          oLi[i].style.backgroundImage = "url('img/"+ str.charAt(i) +".png')";
+        }
+      }
+      // 补零
+      function addZero(num) {
+        if (num < 10) {
+          num = '0' + num;
+        } else {
+          num = '' + num;
+        }
+        return num;
+      }
+      // 先执行一遍，就不会出现一秒的空白，定时器要 window.onload 完一秒后才执行
+      clock();
+      // 定时器 每秒刷新一次
+      setInterval(clock, 1000);
+    }
+    </script>
+    <body>
+      <ul>
+        <li></li>
+        <li></li>
+        <span>:</span>
+        <li></li>
+        <li></li>
+        <span>:</span>
+        <li></li>
+        <li></li>
+      </ul>
+    </body>
+  </html>
   ```
-
+  
   
 
 ### Date 对象其它方法
@@ -1347,13 +1415,8 @@
   - 合并两个相同的 `mouseover` 和 `mouseout`
   - 连续 `a=b=c=function()`  两个事件共使用一个函数
 
-- 代码：
+- 代码：同下
 
-  ```HTML
-  
-  ```
-
-  
 
 ### 无缝滚动
 
@@ -1362,13 +1425,17 @@
 - 物体运动基础
 
   - 让 `div` 移动起来
-  - `offsetLeft` 的作用
-  - 用定时器让物体连续移动
+  - `offsetLeft/offsetTop` 的作用：获取当前对象的左边距/上边距
+  - `offsetWidth/offsetHeight`
+  - 用定时器让物体连续移动：
+    - `innerHTML` 拼接两节图片, 宽度后面加 `px` 才会生效
+    - `overflow:hidden;` 隐藏元素外的内容
 
 - 改变滚动的方向
 
   - 修改 `speed`
   - 修改判定条件
+  - 多次点击越来越快：`if (!timer) ` 避免重复调用
 
 - 鼠标移入暂停
 
@@ -1378,9 +1445,126 @@
 - 代码：
 
   ```HTML
+  <!DOCTYPE html>
+  <html>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="../reset.css">
+    <title>移出延时隐藏</title>
+    <style>
+      body {
+        width: 560px;
+        margin: 0 auto;
+      }
+      #d2 {
+        margin: 10px;
+        width: 200px;
+        height: 200px;
+        background-color: rgb(0, 204, 255);
+        display: none;
+        float: left;
+      }
+      #d1 {
+        margin: 10px;
+        width: 100px;
+        height: 100px;
+        background-color: rgb(0, 255, 149);
+        float: left;
+      }
+      #d3 {
+        margin: 220px auto;
+        width: 560px;
+        height: 140px;
+        position: absolute;
+        background-color: rgb(135, 182, 182);
+        overflow: hidden;
+      }
+      #u1 {
+        position: relative;
+      }
+      #u1 li {
+        float: left;
+      }
+    </style>
+    <script>
+    window.onload = function () {
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+      // 封装 getElementsByTagName
+      function gets(tagName) {
+        return document.getElementsByTagName(tagName)
+      }
   
+      // 鼠标移动到 d1 上，d2 显示，移出隐藏；
+      // 鼠标移到 d2 上，清除定时器，移出 d2 开启定时器
+      let timer = '';
+      get('d1').onmouseover= get('d2').onmouseover = function () {
+        clearTimeout(timer);
+        get('d2').style.display = 'block';
+      }
+      get('d1').onmouseout= get('d2').onmouseout = function () {
+        timer = setTimeout(hide,1000);
+      }
+      function hide() {
+        get('d2').style.display = 'none';
+      }
+  
+      // 无缝滚动
+      get('u1').innerHTML += get('u1').innerHTML;
+      get('u1').style.width = gets('li').length * gets('li')[0].offsetWidth + 'px';
+      let timer2 = '';
+      let speed = 2;
+      // 左移
+      get('btn1').onclick = function () {
+        speed = -2;
+        if (!timer2) {
+          timer2 = setInterval(move, 30);
+        }
+      }
+      // 右移
+      get('btn2').onclick = function () {
+        speed = 2;
+        if (!timer2) {
+          timer2 = setInterval(move, 30);
+        }
+      }
+      // 移动
+      function move() {
+        get('u1').style.left = get('u1').offsetLeft + speed + 'px';
+        if (get('u1').offsetLeft < -get('u1').offsetWidth/2) {
+          get('u1').style.left = 0;
+        } else if (get('u1').offsetLeft > 0){
+          get('u1').style.left = -get('u1').offsetWidth/2 + 'px';
+        }
+          console.log(get('u1').offsetLeft);
+      }
+      // 鼠标悬停
+      get('d3').onmouseover = function () {
+        clearInterval(timer2);
+      }
+      get('d3').onmouseout = function () {
+        timer2 = setInterval(move, 30);
+      }
+    }
+    </script>
+    <body>
+      <div id="d1"></div>
+      <div id="d2"></div>
+      <div id="d3">
+        <ul id="u1">
+          <li><img src="images/1.png" alt=""></li>
+          <li><img src="images/2.png" alt=""></li>
+          <li><img src="images/3.png" alt=""></li>
+          <li><img src="images/4.png" alt=""></li>
+        </ul>
+      </div>
+      <input type="button" name="" id="btn1" value="左移">
+      <input type="button" name="" id="btn2" value="右移">
+    </body>
+  </html>
   ```
-
+  
   
 
 ## DOM 基础
