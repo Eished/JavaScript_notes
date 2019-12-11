@@ -917,7 +917,7 @@
   - 可读性--能看懂
   - 规范性--符合规则
 - 匈牙利命名法
-  - 类型前缀 + 首字母大写：` getElementByTagName `
+  - **类型前缀 + 首字母大写**：` getElementByTagName `
 
 | 类型       | 前缀 | 类型（英文） | 实例         |
 | ---------- | ---- | ------------ | ------------ |
@@ -1315,6 +1315,14 @@
 
   - `charAt(i) 方法` 兼容各种浏览器
 
+- 代码：
+
+  ```HTML
+  
+  ```
+
+  
+
 ### Date 对象其它方法
 
 - 年 ` getFullYear()`
@@ -1325,29 +1333,121 @@
 ### 延时提示框
 
 - 效果演示
+
 - 原来的方法
+
   - 移入显示，移出隐藏
+
 - 移出延时隐藏
-  - 移入下面 Div 后，还是隐藏
+
+  - 移入下面 `div` 后，还是隐藏
+
 - 简化代码
-  - 合并两个相同的 mouseover 和 mouseout
+
+  - 合并两个相同的 `mouseover` 和 `mouseout`
   - 连续 `a=b=c=function()`  两个事件共使用一个函数
+
+- 代码：
+
+  ```HTML
+  
+  ```
+
+  
 
 ### 无缝滚动
 
 - 效果演示
+
 - 物体运动基础
-  - 让 Div 移动起来
+
+  - 让 `div` 移动起来
   - `offsetLeft` 的作用
   - 用定时器让物体连续移动
+
 - 改变滚动的方向
-  - 修改 speed
+
+  - 修改 `speed`
   - 修改判定条件
+
 - 鼠标移入暂停
+
   - 移入关闭定时器
   - 移出重新开启定时器
 
+- 代码：
+
+  ```HTML
+  
+  ```
+
+  
+
 ## DOM 基础
+
+### DOM 基础
+
+- 什么是 DOM
+- 浏览器支持情况
+
+### DOM 节点
+
+- DOM 节点
+  - 获取子节点
+    - `childNodes`：不兼容高版本，用`nodeType` 兼容
+      - 获取文本节点( nodeType == 3) 和元素节点( nodeType == 1)
+    - **`children`：只获取元素节点，兼容**
+  - `parentNode`：查找父节点
+    - 例子：点击链接，隐藏整个 `li`
+  - `offsetParent`：查找定位父级
+    - 例子：获取元素在页面上的实际位置
+  - 首尾子节点
+    - `firstChild`  有兼容性问题，IE6-8用
+    - `firstElementChild` 高版本使用
+    - `lastChild `/ `lastElementChild` 
+  - 兄弟节点
+    - 有兼容性问题，IE6-8用前面的
+    - `nextSbling` / ` nextElementSibling`
+    - `previousSibling  `  /  `previousElementSibling`
+
+### 操作元素属性
+
+- 操作元素属性
+  - 元素属性操作
+    - 第一种：`oDiv.style.display = 'block';`
+    - 第二种：`oDiv.style['display'] = 'block';`
+    - 第三种：Dom 方式
+  - Dom 方式操作元素属性
+    - 获取：`getAttribute(名称)`
+    - 设置：`setAttribute(名称, 值)`
+    - 删除：`removeAttribute(名称)`
+
+### DOM 元素灵活查找
+
+- 用 className 选择元素
+
+  - 如何用 className 选择元素
+
+    - 选出所有元素
+    - 通过 className 条件筛选
+
+  - 封装成函数：
+
+    ```js
+    function getByClass(oParent, sClass) {
+    	var aResult = [];
+    	var aEle = oParent.getElementsByTagName('*');
+    	
+    	for(var i = 0; i < aEle.length; i++) {
+            if (aEle[i].className == sClass) {
+                aResult.push(aEle[i]);
+            }
+        }
+        return aResult;
+    }
+    ```
+
+    
 
 ## DOM 操作应用
 
