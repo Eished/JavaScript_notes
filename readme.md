@@ -1635,6 +1635,108 @@
 
 ## DOM 操作应用
 
+### 创建、插入和删除元素
+
+- 创建 DOM 元素
+
+  - `document.createElement(标签名)`	创建一个节点，不渲染
+  - `父级.appendChild(节点)`    添加子节点，并渲染
+    - 例子：为 `ul` 插入 `li`
+
+- 插入元素
+
+  - `父级.insertBefore(节点, 原有节点)`	在已有元素前插入
+    - 例子：倒叙插入 `li`
+
+- 删除 DOM 元素
+
+  - `父级.removeChild(节点)` 	删除一个节点
+    - 例子：删除 `li`
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>DOM创建插入删除元素</title>
+      <script>
+        window.onload = function () {
+          // 封装getElementById
+          function get(id) {
+            return document.getElementById(id);
+          };
+  
+          // 在 ul 下增加 li
+          let oUl = get('u1');
+          get('btn1').onclick = function () {
+            let oLi = document.createElement('li');
+            let sL = get('txt1').value + "<a href='javascript:;'>删除</a>";
+            oLi.innerHTML = sL;
+            oUl.appendChild(oLi);
+            aRemove();
+          };
+          // 从 ul 下插入 li
+          get('btn2').onclick = function () {
+            let oLi = document.createElement('li');
+            let aLi = document.getElementsByTagName('li');
+            let sL = get('txt1').value + "<a href='javascript:;'>删除</a>";
+            let i = get('txt2').value - 1;
+            oLi.innerHTML = sL;
+            if (aLi.length > i && aLi.length > 0) {
+              oUl.insertBefore(oLi, aLi[i]);
+            } else {
+              oUl.appendChild(oLi);
+            }
+            aRemove();
+          };
+          // 从 ul 下删除 li
+          get('btn3').onclick = function () {
+            let aLi = document.getElementsByTagName('li');
+            let i = get('txt2').value - 1;
+            if (i < aLi.length && i >= 0) {
+             oUl.removeChild(aLi[i]);
+            } else {
+              alert('找不到第'+ (parseInt(i) + 1) +'个li');
+            }
+          };
+  
+          // this 从 ul 删除 li
+          function aRemove() {
+            let aA = document.getElementsByTagName('a');
+            let i =0
+            for (i = 0; i < aA.length; i++) {
+              aA[i].onclick = function () {
+                oUl.removeChild(this.parentNode);
+              }
+            }
+          }
+        }
+      </script>
+    </head>
+    <body>
+      <input type="text" name="" id="txt1" value="123">
+      <input type="button" name="" id="btn1" value="增加">
+      <input type="text" name="" id="txt2" value="1">
+      <input type="button" name="" id="btn2" value="插入">
+      <input type="button" name="" id="btn3" value="删除">
+      <div is="d1">
+        <ul id="u1">
+        </ul>
+      </div>
+    </body>
+  </html>
+  ```
+
+  
+
+### 文档碎片
+
+- 文档碎片理论上可以提高 DOM 操作性能
+- 文档碎片原理
+- `document.createDocumentFragment()`：Vue 、MVVM 还有用到
+
 ## DOM操作应用高级
 
 ## JS 运动基础
