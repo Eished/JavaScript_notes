@@ -1129,7 +1129,7 @@
         // json 和 数组
         const json = {a: 2, b: 5, c:9};
         const arr = [23, 45, 5467];
-        console.log('b:',json.b,'c:',json['c'], json.length);
+        console.log('b:', json.b, 'c:', json['c'], '没有length', json.length);
         console.log(arr[2], arr.length);
   
         // JSON 和 for in
@@ -1221,17 +1221,29 @@
 
 - 排序
 
-  - `数组.sort([比较函数])`，排序一个数组
+  - `数组.sort([比较函数])`，排序一个数组，只有数组能使用
 
-    - 排序一个字符串数组
+    - 排序一个字符串数组，不加比较函数，**默认按照第一位 ASCII 码排序**
 
-    - 排序一个数字数组
+    - 排序一个数字数组，加数字比较大小函数
 
     - ```js
-      // 按大小排序 比较函数
-      arr.sort(function (n1, n2) {
-      	return n1 - n2
-      })
+      // 正序比较函数 数字比大小 字符比ASCII值大小
+      function positiveSort(n1, n2) {
+          if (isNaN) {
+              if (n1 > n2) {
+                  return 1;
+              }
+              if (n1 < n2) {
+                  return -1;
+              }
+              if (n1 === n2) {
+                  return 0;
+              }
+          } else {
+              return n1 - n2;
+          }
+      }
       ```
 
 - 转换类
@@ -1261,8 +1273,142 @@
   
 - 代码：
 
-  ```
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>数组操作</title>
+      <style>
+      div {
+        margin-top: 10px;
+      }
+      </style>
+      <script>
+      var arr = [23, 435, 567, 321, 9, 4];
+      var arr2 = new Array('m', 'r', 'a', 'z', 'c', 'p', 'e', '破就', '不发');
   
+      // 封装getById
+      function get(id) {
+        return document.getElementById(id);
+      }
+  
+      window.onload = function () {
+        // 显示数组
+        function showArr() {
+          get('d1').innerHTML = arr + ' + ' + arr2;
+        }
+        showArr();
+  
+        // 添加元素 从尾部添加
+        get('btn2').onclick = function () {
+          arr.push(222);
+          showArr();
+        }
+  
+        // 添加元素 从头部添加
+        get('btn22').onclick = function () {
+          arr.unshift(234);
+          showArr();
+        }
+  
+        // 删除元素 从尾部删除
+        get('btn3').onclick = function () {
+          arr.pop();
+          showArr();
+        }
+  
+        // 删除元素 从头部删除
+        get('btn33').onclick = function () {
+          arr.shift();
+          showArr();
+        }
+  
+        // 排序元素
+        get('btn4').onclick = function () {
+          arr.sort(positiveSort);
+          arr2.sort(positiveSort);
+          showArr();
+        }
+        // 比较函数 数字比大小 字符比ASCII值大小
+        function positiveSort(n1, n2) {
+          if (isNaN) {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            if (n1 === n2) {
+              return 0;
+            }
+          } else {
+            return n1 - n2;
+          }
+        }
+  
+        // 拼接数组
+        get('btn5').onclick = function () {
+          arr = arr.concat(arr2);
+          showArr();
+        }
+        
+        // 分隔符
+        get('btn6').onclick = function () {
+          arr = arr.join('_');
+          showArr();
+        }
+        
+        // splice 插入 splice(起点,长度,元素)
+        get('btn7').onclick = function () {
+          arr.splice(2, 0, 5, 1);
+          showArr();
+        }
+        // splice 删除
+        get('btn8').onclick = function () {
+          arr.splice(0, arr.length);
+          showArr();
+        }
+        // splice 替换 = 删除 + 插入
+        get('btn9').onclick = function () {
+          arr.splice(2, 1, 999, 888);
+          showArr();
+        }
+  
+      }
+      </script>
+    </head>
+    <body>
+      <div>
+        <input type="button" name="" id="btn2" value="尾部添加元素">
+        <input type="button" name="" id="btn22" value="头部添加元素">
+        <input type="button" name="" id="btn3" value="尾部删除元素">
+        <input type="button" name="" id="btn33" value="头部删除元素">
+        <input type="button" name="" id="btn4" value="正序排序元素">
+      </div>
+      <div>
+        <input type="button" name="" id="btn5" value="拼接数组">
+        <input type="button" name="" id="btn6" value="分割数组">
+      </div>
+      <div>
+        <input type="button" name="" id="btn7" value="插入元素">
+        <input type="button" name="" id="btn8" value="删除元素">
+        <input type="button" name="" id="btn9" value="替换元素">
+      </div>
+      <div id="d1"></div>
+    </body>
+  </html>
+  ```
+
+- 数组名作为变量（遍历数组中的数组）：
+
+  ```js
+  var arr1=new Array(); 
+  var arr2=new  Array(); 
+  var arrlist= new Array(); //存放以上数组
+  arrlist.push(arr1);
+  arrlist.push(arr2);
+  //循环遍历arrlist，就可以达到你要的效果
   ```
 
   
@@ -1647,7 +1793,7 @@
 - 创建 DOM 元素
 
   - `document.createElement(标签名)`	创建一个节点，不渲染
-  - `父级.appendChild(节点)`    删除原有子节点，再添加子节点，并渲染
+  - `父级.appendChild(节点)`    **删除原有子节点**，再添加子节点，并渲染
     - 例子：为 `ul` 插入 `li`
 
 - 插入元素
@@ -1741,16 +1887,52 @@
 ### 文档碎片
 
 - 文档碎片理论上可以提高 DOM 操作性能
+
 - 文档碎片原理
+
 - `document.createDocumentFragment()`：Vue 、MVVM 还有用到
 
+- 代码：
+
+  ```js
+  var element  = document.getElementById('ul'); // assuming ul exists
+  var fragment = document.createDocumentFragment();
+  var browsers = ['Firefox', 'Chrome', 'Opera', 
+      'Safari', 'Internet Explorer'];
+  
+  browsers.forEach(function(browser) {
+      var li = document.createElement('li');
+      li.textContent = browser;
+      fragment.appendChild(li);
+  });
+  
+  element.appendChild(fragment);
+  ```
+
+  
+
 ## DOM操作应用高级
+
+### 表格标签
+
+| 表格       | 描述                   |
+| :--------- | :--------------------- |
+| <table>    | 定义表格               |
+| <caption>  | 定义表格标题。         |
+| <th>       | 定义表格的表头。       |
+| <tr>       | 定义表格的行。         |
+| <td>       | 定义表格单元。         |
+| <thead>    | 定义表格的页眉。       |
+| <tbody>    | 定义表格的主体。       |
+| <tfoot>    | 定义表格的页脚。       |
+| <col>      | 定义用于表格列的属性。 |
+| <colgroup> | 定义表格列的组。       |
 
 ### 表格应用
 
 - 获取
 
-  - `tbodies / tHead / tFoot / rows / cells `
+  - `tBodies / tHead / tFoot / rows / cells `
 
     ```js
     var oTab = document.getElementById('tab1');
@@ -1768,20 +1950,317 @@
 - 搜索
 
   - 版本1：基础版本 -- 字符串比较
-  - 版本2：忽略大小写 -- 大小写转换
-  - 版本3：模糊搜索 -- `search` 的使用
-  - 版本4：多关键词 -- `split`
-  - 高亮显示、帅选
+  - 版本2：忽略大小写 -- 大小写转换 `toLowerCase()`，返回字符串
+  - 版本3：模糊搜索 -- `search()` 的使用，没找到返回 -1，找到则返回位置
+  - 版本4：多关键词 -- `split()` 分割字符串，返回数组
+  - 高亮显示、筛选
 
 - 排序
 
-  - 移动 `li`
-  - 元素排序：转换 -- 排序 -- 插入
+  - 移动 `li` ，使用`appendChild()`： 删除原有 `li`，尾部新增 `li`
+  - 元素排序：元素集合转换成数组 -- `sort()` 排序 -- `appendChild()`插入
 
 - 代码：
 
-  ```
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>表格操作</title>
+      <style>
+        body {
+          margin: 0 auto;
+          width: 400px;
+        }
+        table {
+          border: rgb(97, 97, 97) 1px solid;
+          width: 400px;
+        }
+        td {
+          border: rgb(255, 106, 136) 1px solid;
+        }
+      </style>
+      <script>
+        window.onload = function () { 
+          // 封装getElementById
+          function get(id) {
+            return document.getElementById(id);
+          };
   
+          // 表格数据
+          // tHead 作为最后一个数组传入
+          var data = new Array(
+            [1, '张三', 12, "<a href='javascript:;'>删除</a>"],
+            [2, '李四', 13, "<a href='javascript:;'>删除</a>"],
+            [3, '王五', 14, "<a href='javascript:;'>删除</a>"],
+            [4, '王七', 19, "<a href='javascript:;'>删除</a>"],
+            [5, '王九', 24, "<a href='javascript:;'>删除</a>"],
+            [6, '李六', 42, "<a href='javascript:;'>删除</a>"],
+            [7, '李三', 23, "<a href='javascript:;'>删除</a>"],
+            [8, '李六', 76, "<a href='javascript:;'>删除</a>"],
+            [9, 'CAT', 8, "<a href='javascript:;'>删除</a>"],
+            [10, 'cat', 2, "<a href='javascript:;'>删除</a>"],
+            [11, 'dog', 1, "<a href='javascript:;'>删除</a>"],
+            [12, '3', 5, "<a href='javascript:;'>删除</a>"],
+            [13, '31', 2, "<a href='javascript:;'>删除</a>"],
+            [14, '4', 7, "<a href='javascript:;'>删除</a>"],
+            [15, '42', 9, "<a href='javascript:;'>删除</a>"],
+            [16, '啊Q', 9, "<a href='javascript:;'>删除</a>"],
+            ['ID', '姓名', '年龄', "操作"]
+          );
+  
+          // 传入格式化数组文件 data ，自动生成表格
+          function createTable(data) {
+            // 使用文档碎片 生成表格
+            // var frag = document.createDocumentFragment();
+            var table = document.createElement('table');
+            var caption = document.createElement('caption');
+            var thead = document.createElement('thead');
+            var tbody = document.createElement('tbody');
+            var tr = document.createElement('tr');
+            // 渲染表格
+            get('b1').appendChild(table);
+            table.appendChild(caption);
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            thead.appendChild(tr);
+            var oTr = document.getElementsByTagName('tr');
+            // 渲染单元格
+            caption.innerHTML = "<strong style='font-size: 20px'>人员表</strong>";
+            var i = 0;
+            var j = 0;
+            var rNmb = data.length - 1; // 行
+            var rLth = data[0].length;  //列
+            // 生成表头
+            for (i = 0; i < rLth; i++){
+              var th = document.createElement('th');
+              oTr[0].appendChild(th);
+              // 写入th数据
+              var aArr = data[rNmb];
+              table.tHead.rows[0].cells[i].innerHTML = aArr[i];
+            }
+            // 生成 tbody 及插入内容
+            for (i = 0; i < rNmb; i++) {
+              var tr = document.createElement('tr');
+              tbody.appendChild(tr);
+              for (j = 0; j < rLth; j++) {
+                var td = document.createElement('td');
+                tr.appendChild(td);
+                // 写入td数据
+                aArr = data[i];
+                table.tBodies[0].rows[i].cells[j].innerHTML = aArr[j];
+              }
+            }
+            // 不加 tBodies[0] 会把 tHead 当作一行
+            // console.log(table.rows.length); 
+            chgColor();
+            aClick();
+          }
+          createTable(data);
+  
+          function chgColor() {
+            // 隔行变色
+            var oTr = document.getElementsByTagName('tr');
+            var oldColor = '';
+            for (i = 1; i < oTr.length; i++) {
+              if (i % 2 === 0) {
+                oTr[i].style.background = '#eee';
+              } else {
+                oTr[i].style.background = '#bbb';
+              }
+              // 鼠标移入高亮
+              oTr[i].onmouseover = function () {
+                oldColor = this.style.background;
+                this.style.background = 'yellow';
+              }
+              oTr[i].onmouseout = function () {
+                this.style.background = oldColor;
+              }
+            }
+          }
+  
+          // 增加/删除一行 
+          var btn1 = get('btn1');
+          var btn2 = get('btn2');
+          var btn3 = get('btn3');
+          var btn4 = get('btn4');
+          var btn5 = get('btn5');
+          var btn6 = get('btn6');
+          var txt1 = get('txt1');
+          var txt2 = get('txt2');
+          var txt3 = get('txt3');
+          var txt4 = get('txt4');
+          var id = data.length;
+          var oTab = document.getElementsByTagName('table');
+          // txt1 txt2 增加一行
+          btn1.onclick = function () {
+            if (txt1.value != '' && txt2.value != '') {
+              var newPerson = new Array(id, txt1.value, txt2.value, "<a href='javascript:;'>删除</a>")
+              data.splice(data.length - 1, 0, newPerson);
+              get('b1').removeChild(oTab[0]);
+              createTable(data);
+              id++;
+            } else {
+              alert('请输入姓名和年龄！');
+            }
+          }
+          // 根据 txt4 删除一行
+          btn3.onclick = del;
+          function del() {
+            for (var i in data) {
+              var aData = data[i];
+              // console.log(aData[0])
+              // 校验输入ID 是否和 data.ID 匹配
+              if (aData[0] === parseInt(txt4.value) || aData[0] === parseInt(txtTd)) {
+                data.splice(i, 1);
+                break;
+              }
+            }
+            get('b1').removeChild(oTab[0]);
+            createTable(data);
+          }
+  
+          // 注册 a 标签删除操作事件
+          var txtTd = '';
+          function aClick() {
+            var oA = document.getElementsByTagName('a');
+            for (var i in oA) {
+              oA[i].onclick = function () {
+                // oTab[0].tBodies[0].removeChild(this.parentNode.parentNode);
+                txtTd = this.parentNode.parentNode.cells[0].innerHTML;
+                del();
+              }
+            }
+          }
+  
+          // data 筛选查询
+          btn2.onclick = searchTr;
+          function searchTr() {
+            var oTr = document.getElementsByTagName('tr');
+            var bData = new Array();
+            // 储存表头
+            var thData = data[data.length-1];
+            if (txt3.value != '') {
+              for (var i in data) {
+                var aData = data[i];
+                // console.log(aData[0])
+                // 校验输入name 是否和 data.name 匹配
+                if (aData[1].toLowerCase() === txt3.value.toLowerCase()) {
+                  // 忽略大小写
+                  bData.push(data[i]);
+                } else if (aData[1].toLowerCase().search(txt3.value.toLowerCase()) != -1) {
+                  // 模糊搜索 search()
+                  bData.push(data[i]);
+                } else {
+                  // 多关键词搜索 split() 分割关键词
+                  var aTxt = txt3.value.split(' ');
+                  for(var j in aTxt) {
+                    if (aData[1].toLowerCase().search(aTxt[j].toLowerCase()) != -1) {
+                      bData.push(data[i]);
+                      continue;
+                    }
+                  }
+                }
+              }
+            // 传入表头 thData
+            bData.push(thData);
+            get('b1').removeChild(oTab[0]);
+            createTable(bData);
+            } else {
+              back();
+            }
+          }
+  
+          // 恢复 data
+          btn4.onclick = back;
+          function back() {
+            get('b1').removeChild(oTab[0]);
+            createTable(data);
+          }
+  
+          // tr 高亮查询
+          btn5.onclick = function () {
+            chgColor();
+            var name = '';
+            for (i = 0; i < oTab[0].tBodies[0].rows.length; i++) {
+              name = oTab[0].tBodies[0].rows[i].cells[1].innerHTML; 
+              if (txt3.value != '') {
+                if (name.toLowerCase() === txt3.value.toLowerCase()) {
+                  // 忽略大小写
+                  oTab[0].tBodies[0].rows[i].style.background = 'yellow';
+                } else if (name.toLowerCase().search(txt3.value.toLowerCase()) != -1) {
+                  // 模糊搜索 search()
+                  oTab[0].tBodies[0].rows[i].style.background = 'yellow';
+                } else {
+                  // 多关键词搜索 split() 分割关键词
+                  var aTxt = txt3.value.split(' ');
+                  for(var j in aTxt) {
+                    if (name.toLowerCase().search(aTxt[j].toLowerCase()) != -1) {
+                      oTab[0].tBodies[0].rows[i].style.background = 'yellow';
+                      continue;
+                    }
+                  }
+                }
+              } else {
+                back();
+              }
+            }
+          }
+  
+          // data 根据元素排序 sort() 方法
+          btn6.onclick = sortName;
+          var item = 0; // 排序的元素
+          var txt5 = get('txt5');
+          var thData = data[data.length-1]; // 保存 th
+          function sortName() {
+            item = parseInt(txt5.value);
+            data.pop(); // 去掉最后的 th
+            data.sort(compare); // 正向排序
+            data.push(thData); // th 加回去
+            back(); //生成表格
+          }
+          // 比较函数 此函数 数字类型和字符串类型不能混排
+          function compare(arr1, arr2) {
+            var val1 = arr1[item];
+            var val2 = arr2[item];
+            if (!isNaN(val1) && !isNaN(val2)) {
+              return val1 - val2;
+            } else {
+              if (val1 > val2) {
+                return 1;
+              } else if (val1 < val2) {
+                return -1;
+              } else if (val1 === val2) {
+                return 0;
+              }
+            }
+          }
+        }
+      </script>
+    </head>
+    <body id="b1">
+      <div>
+        <input type="text" name="name" id="txt1" placeholder="姓名">
+        <input type="text" name="age" id="txt2" placeholder="年龄">
+        <input type="button" name="" id="btn1" value="增加">
+      </div>
+      <div>
+        <input type="text" name="" id="txt3" value="张三 六 五">
+        <input type="button" name="" id="btn2" value="筛选查询">
+        <input type="button" name="" id="btn4" value="返回">
+        <input type="button" name="" id="btn5" value="高亮查询">
+      </div>
+      <div>
+        <input type="text" name="" id="txt4" placeholder="id">
+        <input type="button" name="" id="btn3" value="删除">
+      </div>
+      <div>
+        <input type="text" name="" id="txt5" value='1'>
+        <input type="button" name="" id="btn6" value="排序">
+      </div>
+    </body>
+  </html>
   ```
 
   
@@ -1792,7 +2271,7 @@
   - 什么是表单
     - 向服务器提交数据，比如：用户注册
   - `action ` ： 提交到哪里
-- 表单事件
+- **表单事件**
   - `onsubmit`：提交时发生
   - `onreset`：重置时发生
 - 表单内容验证
@@ -1943,7 +2422,7 @@
   - startMove(obj, attr, iTarget) ：任意值
   - startMove(obj, attr, iTarget, fn) ：链式运动
   - startMove(obj, json) ：多值运动
-  - startMove(obj, json, fn) ：玩美运动框架
+  - startMove(obj, json, fn) ：完美运动框架
 
 ### 运动框架应用
 
