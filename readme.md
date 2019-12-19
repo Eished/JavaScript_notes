@@ -16,14 +16,14 @@
 
 - 分析效果实现原理
 
-  - 样式：div 的 display / none
-  - 事件：onmouseover / onmouseout
+  - 样式：`div` 的 `display / none`
+  - 事件：`onmouseover / onmouseout`
   - 动手编写效果
 
 - 特效基础
 
-  - 事件驱动：onmouseover
-  - 元素属性操作：obj.style.[...]
+  - 事件驱动：`onmouseover`
+  - 元素属性操作：`obj.style.[...]`
   - 特效实现原理概括：响应式用户操作，对页面元素样式修改
 
 - 兼容性问题 
@@ -37,7 +37,7 @@
 
   - 制作更复杂的效果
   - 直接在事件内写代码会很乱
-    - 引入 function() 函数的基本形式
+    - 引入 `function()` 函数的基本形式
     - 把 JS 标签里放入到函数里，类似于 css 里的 class
     - 变量的使用：别名
   - 定义和调用
@@ -1223,7 +1223,7 @@
 
   - `数组.sort([比较函数])`，排序一个数组，只有数组能使用
 
-    - 排序一个字符串数组，不加比较函数，**默认按照第一位 ASCII 码排序**
+    - 排序一个字符串数组，不加比较函数，**默认按照 ASCII 码排序**
 
     - 排序一个数字数组，加数字比较大小函数
 
@@ -1421,7 +1421,7 @@
 
   - `setInterval(函数, 间隔时间)` 间隔型，函数后面不能带括号和传参
   - `setTimeout(函数, 延时时间)`   延时型
-  - 两种定时器的区别，定时器要 window.onload 完一秒后才执行
+  - 两种定时器的区别，定时器要 `window.onload` 完一秒后才执行
 
 - 停止定时器
 
@@ -1588,7 +1588,7 @@
 
   - 修改 `speed`
   - 修改判定条件
-  - 多次点击越来越快：`if (!timer) ` 避免重复调用
+  - 多次点击越来越快：`if (!timer) `或`clearInterval(timer);` 避免重复调用
 
 - 鼠标移入暂停
 
@@ -1732,7 +1732,7 @@
 - DOM 节点
   - 获取子节点
     - `childNodes`：不兼容高版本，用`nodeType` 兼容
-      - 获取文本节点( nodeType == 3) 和元素节点( nodeType == 1)
+      - 获取文本节点`( nodeType == 3)` 和元素节点`( nodeType == 1)`
     - **`children`：只获取元素节点，兼容**
   - `parentNode`：查找父节点
     - 例子：点击链接，隐藏整个 `li`
@@ -2267,11 +2267,11 @@
 
 ### 表单应用
 
-- 表单基础知识
+- 表单基础知识（本章学习事件的时候再详细说明）
   - 什么是表单
     - 向服务器提交数据，比如：用户注册
   - `action ` ： 提交到哪里
-- **表单事件**
+- 表单事件 
   - `onsubmit`：提交时发生
   - `onreset`：重置时发生
 - 表单内容验证
@@ -2301,16 +2301,119 @@
 - 运动框架
 
   - 在开始运动时，关闭已有定时器
-  - 把运动和停止隔开：if / else
+  - 把运动和停止隔开：`if / else`
 
 - 运动框架实例
 
   - 例子1：“分享到” 侧边栏
     - 通过目标点，计算速度值
-  - 例子2：用变量储存透明度
+  - 例子2：淡入淡出图片
+    - 用变量储存透明度
+    - `filter:alpha(opacity=30); opacity: 0.3;` IE 用前者
 
-- ```
+- ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>运动框架及应用</title>
+      <style>
+        #div1 {
+          width: 150px;
+          height: 400px;
+          background-color:cyan;
+          position: absolute;
+          margin-top: 10px;
+          left: -150px;
+        }
+        #div1 span {
+          width: 20px;
+          height: 60px;
+          left: 150px;
+          background-color:rgb(106, 176, 255);
+          position: absolute;
+          margin-top: 170px;
+        }
+        #div2 {
+          left: 200px;
+          position: absolute;
+          filter:alpha(opacity=30);
+          opacity: 0.3;
+        }
+      </style>
+      <script>
+        window.onload = function () {
+          // 封装getElementById
+          function get(id) {
+            return document.getElementById(id);
+          };
   
+          var oDiv = get('div1');
+          var timer = '';
+          var speed = 0;
+          var target = 0;
+          // 运动框架
+          function startMove(target) {
+            clearInterval(timer);
+            timer = setInterval(move, 30);
+            function move() {
+              if (oDiv.offsetLeft < target) {
+                speed = 10;
+                oDiv.style.left = oDiv.offsetLeft + speed + 'px';
+              } else if (oDiv.offsetLeft > target) {
+                speed = -10;
+                oDiv.style.left = oDiv.offsetLeft + speed + 'px';
+              } else if (oDiv.offsetLeft === target){
+                clearInterval(timer);
+              }
+            }
+          }
+          // 注册鼠标移入事件
+          oDiv.onmouseover = function () {
+            startMove(0);
+          };
+          oDiv.onmouseout = function () {
+            startMove(-150);
+          };
+  
+          // 图片淡入淡出
+          var oDiv2 = get('div2');
+          var alpha = 30;
+          oDiv2.onmouseover = function () {
+            shallow(100);
+          }
+          oDiv2.onmouseout = function () {
+            shallow(30);
+          }
+          function shallow(target) {
+            clearInterval(timer);
+            timer = setInterval(shallowMove, 30);
+            function shallowMove() {
+              if (alpha === target) {
+                clearInterval(timer);
+              } else if (alpha < target) {
+                speed = 10;
+                alpha += speed;
+                oDiv2.style.filter = 'alpha(opacity='+ alpha +')';
+                oDiv2.style.opacity = alpha/100;
+              } else if (alpha > target) {
+                speed = -10;
+                alpha += speed;
+                oDiv2.style.filter = 'alpha(opacity='+ alpha +')';
+                oDiv2.style.opacity = alpha/100;
+              }
+            }
+          }
+        }
+      </script>
+    </head>
+    <body>
+      <div id="div1">
+        <span>分享到</span>
+      </div>
+      <div id="div2"><img src="images/0.png" alt=""></div>
+    </body>
+  </html>
   ```
 
 ### 缓冲运动
