@@ -38,7 +38,7 @@
   - 制作更复杂的效果
   - 直接在事件内写代码会很乱
     - 引入 `function()` 函数的基本形式
-    - 把 JS 标签里放入到函数里，类似于 css 里的 class
+    - 把 JS 标签里放入到函数里，类似于 css 里的 `class`
     - 变量的使用：别名
   - 定义和调用
     - 函数定义：告诉系统有这个函数，不会执行
@@ -824,7 +824,7 @@
 
   - 显式类型转换（强制类型转换）
 
-    - `parseInt() 、parseFloat() `：从左至右提取数字，遇到不是数字跳出
+    - `parseInt()`  去除小数、`parseFloat() ` 保留小数：从左至右提取数字，遇到不是数字跳出
     - `NaN ` 的意义和检测：Not a Number
     - NaN 和 NaN 不相等：使用 ` isNaN()` 检测是否是全是数字
 
@@ -2323,7 +2323,6 @@
           height: 400px;
           background-color:cyan;
           position: absolute;
-          margin-top: 10px;
           left: -150px;
         }
         #div1 span {
@@ -2429,21 +2428,226 @@
 
 - 例子：缓冲菜单
 
-  - Bug：速度调整
-  - 跟随页面滚顶的缓冲侧边栏
+  - Bug：速度取整  `Math.ceil`、`Math.floor`
+  - 跟随页面滚动的缓冲侧边栏
     - 潜在问题：目标不是整数时
+    - 目标取整：`parseInt()`
 
 - 代码：
 
-  ```
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <link rel="stylesheet" href="../reset.css">
+      <title>缓冲运动及停止条件</title>
+      <style>
+        body {
+          width: 800px;
+          height: 2000px;
+        }
+        #div1 {
+          width: 150px;
+          height: 400px;
+          background-color:cyan;
+          position: absolute;
+          left: -150px;
+        }
+        #div1 span {
+          width: 20px;
+          height: 60px;
+          left: 150px;
+          background-color:rgb(106, 176, 255);
+          position: absolute;
+          margin-top: 170px;
+        }
+        #div2 {
+          top: 50px;
+          left: 150px;
+          position: absolute;
+          filter:alpha(opacity=30);
+          opacity: 0.3;
+          width: 140px;
+          height: 140px;
+          background-color: red;
+        }
+        #div3 {
+          width: 100px;
+          height: 200px;
+          background: rgb(99, 128, 255);
+          position: absolute;
+          right: 0px;
+          bottom: 0px;
+        }
+        #div4 {
+          width: 298px;
+          height: 198px;
+          border: rgb(0, 0, 0) solid 1px;
+          position: absolute;
+          left: 100px;
+        }
+      </style>
+      <script>
+        window.onload = function () {
+          // 封装getElementById
+          function get(id) {
+            return document.getElementById(id);
+          };
   
+          var oDiv = get('div1');
+          var timer = '';
+  
+          // 注册鼠标移入事件
+          oDiv.onmouseover = function () {
+            startMove(0, oDiv);
+          };
+          oDiv.onmouseout = function () {
+            startMove(-150, oDiv);
+          };
+  
+          // 图片淡入淡出
+          var oDiv2 = get('div2');
+          var alpha = 30;
+          oDiv2.onmouseover = function () {
+            shallow(100);
+          }
+          oDiv2.onmouseout = function () {
+            shallow(30);
+          }
+          // 变浅函数
+          function shallow(target) {
+            clearInterval(timer);
+            timer = setInterval(shallowMove, 30);
+            function shallowMove() {
+              speed = (target - alpha)/7;
+              if (alpha === target) {
+                clearInterval(timer);
+              } else if (alpha < target) {
+                alpha += speed;
+                oDiv2.style.filter = 'alpha(opacity='+ Math.ceil(alpha) +')';
+                oDiv2.style.opacity = Math.ceil(alpha)/100;
+              } else if (alpha > target) {
+                alpha += speed;
+                oDiv2.style.filter = 'alpha(opacity='+ Math.floor(alpha) +')';
+                oDiv2.style.opacity = Math.floor(alpha)/100;
+              }
+            }
+          }
+  
+          // 跟随页面滚动的缓冲侧边栏
+  
+          var oDiv3 = get('div3'); 
+          window.onscroll = function () {
+            var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            var target = parseInt((document.documentElement.clientHeight - oDiv3.offsetHeight)/2 + scrollTop);
+            scrollMove(target);
+            console.log(
+              '可视区：', document.documentElement.clientHeight,
+              '滚动距离：', scrollTop, 
+              'div3的高度：', oDiv3.offsetHeight, 
+              '目标值：', target) 
+          }
+          // 纵向运动函数
+          function scrollMove(target) {
+            clearInterval(timer);
+            timer = setInterval(scrollMoving, 30);
+  
+            function scrollMoving() {
+              var speed = (target - oDiv3.offsetTop)/7;
+              if (oDiv3.offsetTop === target) {
+                clearInterval(timer);
+              } else if (oDiv3.offsetTop > target) {
+                oDiv3.style.top = oDiv3.offsetTop + Math.floor(speed) + 'px';
+              } else if (oDiv3.offsetTop < target) {
+                oDiv3.style.top = oDiv3.offsetTop + Math.ceil(speed) + 'px';
+              }
+            }
+          }
+  
+          // 运动停止的条件
+          var btn1 = get('btn1');
+          var btn2 = get('btn2');
+          var btn3 = get('btn3');
+          var btn4 = get('btn4');
+          btn1.onclick = function () {
+            startMove(100, oDiv2);
+          }
+          btn2.onclick = function () {
+            startMove(400, oDiv2);
+          }
+          btn3.onclick = function () {
+            startMove2(100, oDiv2);
+          }
+          btn4.onclick = function () {
+            startMove2(400, oDiv2);
+          }
+          // 横向缓冲运动框架
+          function startMove(target, div) {
+            clearInterval(timer);
+            timer = setInterval(move, 30);
+            function move() {
+              speed = (target - div.offsetLeft)/9;
+              if (div.offsetLeft < target) {
+                div.style.left = div.offsetLeft + Math.ceil(speed) + 'px';
+              } else if (div.offsetLeft > target) {
+                div.style.left = div.offsetLeft + Math.floor(speed) + 'px';
+              } else if (div.offsetLeft === target){
+                clearInterval(timer);
+              }
+            }
+          }
+          // 横向匀速运动框架
+          function startMove2(target, div) {
+            clearInterval(timer);
+            timer = setInterval(move2, 30);
+            function move2() {
+              // speed正向
+              if (div.offsetLeft <= target) {
+                speed = 9;
+                moving();
+              }
+              // speed反向
+              else if (div.offsetLeft >= target) {
+                speed = -9;
+                moving();
+              } 
+              function moving() {
+                if (Math.abs(target - div.offsetLeft) <= Math.abs(speed)) {
+                  div.style.left = target + 'px'; // 直接到达
+                  clearInterval(timer); // 停止
+                } else {
+                  div.style.left = div.offsetLeft + speed + 'px';
+                }
+              }
+            }
+          }
+        }
+      </script>
+    </head>
+    <body>
+      <div id="div1">
+        <span>分享到</span>
+      </div>
+      <div id="div2"><img src="images/0.png" alt=""></div>
+      <div id="div3"></div>
+      <div id="div4">
+        <input type="button" name="" id="btn1" value="减速到100px">
+        <input type="button" name="" id="btn2" value="减速到400px">
+        <input type="button" name="" id="btn3" value="匀速到100px">
+        <input type="button" name="" id="btn4" value="匀速到400px">
+      </div>
+      </div>
+    </body>
+  </html>
   ```
 
 ### 运动的停止条件
 
 - 运动终止条件
-  - 匀速运动：两点足够近（直接改位置）
+  - 匀速运动：两点足够近（直接改位置），`Math.abs()` 取绝对值
   - 缓冲运动：两点重合（取整后）
+- 代码：同上
 
 ## JS 运动应用
 
