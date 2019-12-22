@@ -2962,25 +2962,390 @@
 ### 仿 Flash 图片展示
 
 - 效果思路
+
   - 两边的按钮：淡入淡出
   - 大图下拉：层级、高度变化
   - 下方的 `li` ：多物体淡入淡出
-  - 下方的 `UI` ：位置计算
+  - 下方的 `ul` ：位置计算
+
 - 左右按钮
+
   - 淡入淡出
     - 鼠标移动到按钮上，按钮会消失
       - 层级问题
-      - 按钮和遮罩上逗得加上事件
+      - 按钮和遮罩上都得加上事件
+
 - 下方 `li` 效果
+
   - 点击切换大图：选项卡
   - `li` 淡入淡出：移入移出
-  - `UI` 移动：位置计算
+  - `ul` 移动：位置计算
+
 - 大图片切换
-  - 图片层级：`zIndex` 一直 +1
+
+  - 图片层级：`z-Index` 一直 +1
   - 图片下拉效果（运动框架）
     - 可以改为淡入淡出
+
 - 加入自动播放
+
   - 和选项卡一样
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>仿Flash图片展示</title>
+    <link rel="stylesheet" href="../reset.css">
+    <script src="./lib/move.js"></script>
+    <style>
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: cornsilk;
+      }
+      li {
+        float: left;
+      }
+      /* 居中 div */
+      #div_center {
+        margin: 20px auto;
+        width: 640px;
+        height: 450px;
+      }
+      /* 定位 div */
+      #div_position {
+        width: 640px;
+        height: 450px;
+        overflow: hidden;
+        background-color: rgb(70, 70, 70);
+        position: absolute;
+      }
+  
+      /* 大图样式 */
+      #div_pic {
+        width: 640px;
+        height: 360px;
+        overflow: hidden;
+        position: relative;
+      }
+      .ul_pic {
+        position: absolute;
+      }
+      .li_pic {
+        position: absolute;
+      }
+      .li_pic img{
+        width: 640px;
+        height: 360px;
+      }
+  
+      /* 左右键样式 */
+      .ul_btn {
+        top: 0px;
+        width: 640px;
+        height: 360px;
+        position: absolute;
+        float: left;
+      }
+      .slider_btn_left, .slider_btn_right {
+        width: 150px;
+        height: 360px;
+      }
+      .slider_btn_right {
+        float: right;
+      }
+      .slider_btn_left img{
+        padding: 150px 105px 150px 10px ;
+        position: relative;
+        width: 35px;
+        height: 60px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        float: left;
+      }
+      .slider_btn_right img{
+        padding: 150px 10px 150px 105px ;
+        position: relative;
+        width: 35px;
+        height: 60px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        float: right;
+      }
+  
+      /* 小图样式 */
+      #div_thumbnail {
+        width: 620px;
+        background-color: rgb(70, 70, 70);
+        margin: 0 10px 0 5px;
+        overflow: hidden;
+        position: relative;
+      }
+      .ul_thumbnail {
+        width: 640px;
+        height: 90px;
+      }
+      .li_thumnali {
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+      }
+      .li_thumnali img{
+        padding: 10px 0px 10px 10px;
+        width: 125px;
+        height: 70px;
+      }
+  
+      /* 图片文字栏 */
+      .ul_txt {
+        width: 640px;
+        height: 20px;
+        position: absolute;
+        top: 340px;
+      }
+      .li4_background {
+        width: 640px;
+        height: 20px;
+        top: 0px;
+        background-color: rgb(0, 0, 0);
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+      }
+      .li4_introduction {
+        top: -17px;
+        margin-left: 10px;
+        width: 500px;
+        position: relative;
+        color: rgb(255, 255, 255);
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+      }
+      .li4_sum_num {
+        width: 120px;
+        top: -17px;
+        left: 10px;
+        position: relative;
+        color: rgb(255, 255, 255);
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+      }
+    </style>
+    <script>
+    window.onload = function () {
+      // 封装 getElementById
+      function get(id) {
+        return document.getElementById(id);
+      }
+      // 封装 getElementsByTagName
+      function gets(tagName) {
+        return document.getElementsByTagName(tagName)
+      }
+      // 封装 getByClassName 方法
+      function getByClassName(oParent, sClass) {
+        var aResult = new Array();
+        var aEle = document.getElementsByTagName('*');
+        for (var i in aEle) {
+          if (aEle[i].className === sClass) {
+            aResult.push(aEle[i]);
+          }
+        }
+        return aResult;
+      }
+  
+      // 左右箭头切换图片
+      // 获取箭头所在 ul
+      var oDiv_position = get('div_position');
+      var ul_btn = getByClassName(oDiv_position[1], 'ul_btn')[0];
+      // 获取 li
+      var li_btn_left = getByClassName(ul_btn, 'slider_btn_left')[0];
+      var li_btn_right = getByClassName(ul_btn, 'slider_btn_right')[0];
+      // 获取 img
+      var left_icon = getByClassName(li_btn_left, 'left_icon')[0];
+      var right_icon = getByClassName(li_btn_right, 'right_icon')[0];
+      // 鼠标移入/移出 显示/隐藏
+      li_btn_left.onmouseover = left_icon.onmouseover = function () {
+        startMove(left_icon, 'opacity', 30);
+      }
+      li_btn_left.onmouseout = left_icon.onmouseout = function () {
+        startMove(left_icon, 'opacity', 0);
+      }
+      li_btn_right.onmouseover = right_icon.onmouseover = function () {
+        startMove(right_icon, 'opacity', 30);
+      }
+      li_btn_right.onmouseout = right_icon.onmouseout = function () {
+        startMove(right_icon, 'opacity', 0);
+      }
+  
+      // 获取大图 class li
+      var ul_pic = getByClassName(oDiv_position[1], 'ul_pic')[0];
+      var oli_pic = getByClassName(ul_pic, 'li_pic');
+      var oImg = gets('img');
+  
+      // 获取缩略图 class li
+      var div_thumbnail = get('div_thumbnail');
+      var ul_thumbnail = getByClassName(div_thumbnail, 'ul_thumbnail')[0];
+      var oli_thumnali = getByClassName(ul_thumbnail, 'li_thumnali');
+      var pic_index = 0;
+      var index = 0;
+      var z = 1;
+      // 缩略图鼠标移入高亮，移出恢复,并注册index 绑定大图
+      for (var i in oli_thumnali) {
+        oli_thumnali[i].index = i;
+        oli_pic[i].index = i;
+        // 鼠标移入
+        oli_thumnali[i].onmouseover = function () {
+          startMove(this, 'opacity', 100);
+        }
+        // 鼠标移出 如果是当前显示则不执行
+        oli_thumnali[i].onmouseout= function () {
+          if (oli_pic[this.index].style.zIndex != z) {
+            startMove(this, 'opacity', 50);
+          }
+        }
+        // 点击小图片显示大图
+        oli_thumnali[i].onclick = function () {
+            pic_index = parseInt(this.index);
+            tab();
+        }
+        // 让第一个图片显示
+        if (oli_pic[i].style.zIndex == z) {
+          startMove(oli_thumnali[i], 'opacity', 100);
+        }
+      }
+      
+      function tab() {
+        // 判断是否是当前显示图片
+        if (oli_pic[pic_index].style.zIndex != z) {
+          // 全部图片半透明
+          for (var j in oli_thumnali) {
+            startMove(oli_thumnali[j], 'opacity', 50);
+          }
+          // 显示当前点击图片
+          startMove(oli_thumnali[pic_index], 'opacity', 100);
+          // 显示当前index对应大图
+          oli_pic[pic_index].style.zIndex = ++z;
+          // 显示文字的按钮
+          ul_btn.style.zIndex = ul_txt.style.zIndex = z;
+          // 隐藏大图 再用动画显示
+          oImg[pic_index].style.height = 0;
+          startMove(oImg[pic_index],'height', 360);
+          // 显示当前图片介绍
+          introduction.innerHTML = arr[pic_index];
+          sum_num.innerHTML = parseInt(pic_index) + 1 + '/' + oli_thumnali.length;
+        }
+      }
+      // 鼠标点击按钮 上一张/下一张
+      left_icon.onclick = function () {
+        if (0 <= pic_index - 1) {
+          // console.log('1~length-1:',pic_index)
+          pic_index--;
+          if (0 < pic_index && pic_index <= oli_thumnali.length - 1) {
+            // 1~length-1
+            startMove(ul_thumbnail, 'marginLeft', -(pic_index-1)*li_thumbnali_width);
+            tab(); 
+          } else {
+            // 0
+            tab();
+          }
+        } else {
+          // 循环播放
+          // console.log('0:',pic_index)
+          pic_index = oli_thumnali.length - 1;
+          startMove(ul_thumbnail, 'marginLeft', -(pic_index-2)*li_thumbnali_width);
+          tab();
+        }
+      }
+      right_icon.onclick = function () {
+        if (pic_index + 1 < oli_thumnali.length) {
+          pic_index++;
+          if (2 < pic_index && pic_index <= oli_thumnali.length - 1) {
+            startMove(ul_thumbnail, 'marginLeft', -(pic_index-2)*li_thumbnali_width);
+            tab(); 
+          } else {
+            tab();
+          }
+        } else {
+          pic_index = 0;
+          startMove(ul_thumbnail, 'marginLeft', pic_index*li_thumbnali_width);
+          tab();
+        }
+      }
+  
+      // 自动播放
+      oDiv_position.timer = setInterval(right_icon.onclick, 2000);
+      oDiv_position.onmouseover = function () {
+        clearInterval(oDiv_position.timer);
+      }
+      oDiv_position.onmouseout = function () {
+        clearInterval(oDiv_position.timer);
+        oDiv_position.timer = setInterval(right_icon.onclick, 2000);
+      }
+      // 设置 ul_thumbnail 的宽度
+      var li_thumbnali_width = oli_thumnali[0].offsetWidth;
+      ul_thumbnail.style.width = oli_thumnali.length * oli_thumnali[0].offsetWidth + 'px';
+  
+      // 设置文字说明
+      var arr = new Array('雪山','峡谷','悬崖','岩壁','海岸','雪覆盖的悬崖','雪山','峡谷','悬崖','岩壁','海岸','雪覆盖的悬崖');
+      // 获取文字说明 li
+      var ul_txt = getByClassName(oDiv_position[1], 'ul_txt')[0];
+      var introduction = getByClassName(ul_txt, 'introduction')[0];
+      var sum_num = getByClassName(ul_txt, 'sum_num')[0];
+      sum_num.innerHTML = pic_index + 1 + '/' + oli_thumnali.length;
+      introduction.innerHTML = arr[pic_index];
+  
+  
+    }
+    </script>
+    <body>
+      <div id="div_center">
+        <div id="div_position">
+          <div id="div_pic">
+            <ul class="ul_pic">
+              <li class="li_pic" style="z-index:1"><img src="./images/album/1.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/3.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/4.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/5.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/6.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/5.jpeg" alt=""></li>
+            </ul>
+          </div>
+          <ul class="ul_btn" style="z-index:1">
+            <li class="slider_btn_left"><img class="left_icon" src="./images/images/slider_btn_icon_left.png" alt=""></li>
+            <li class="slider_btn_right"><img class="right_icon" src="./images/images/slider_btn_icon_right.png" alt=""></li>
+          </ul>
+          <ul class="ul_txt" style="z-index:1">
+            <li class="li4_background"></li>
+            <li class="li4_introduction">图片说明：<span class="introduction">introduction</span></li>
+            <li class="li4_sum_num">图片位置：<span class="sum_num"></span></li>
+          </ul>
+          <div id="div_thumbnail">
+            <ul class="ul_thumbnail">
+              <li class="li_thumnali"><img src="./images/album/1.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/3.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/4.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/5.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/6.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/5.jpeg" alt=""></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
+  ```
+
+- 笔记：不让子元素继承父元素的 `opacity ` 属性
+
+  - 使用 `rgba(R,G,B,opacity)`  间接的设定 `opacity` 的值，这个属性不会向下继承
+  - 或者把 `opacity` 属性放到同级元素实现
+
+  
 
 ## JS 运动中级
 
@@ -2994,10 +3359,10 @@
 ### 完美运动框架
 
 - 多个值同时变化
-  - setStyle 同时设置多个属性
+  - `setStyle` 同时设置多个属性
     - 参数传递：
-      - JSON的使用 
-      - for in 遍历属性
+      - `JSON` 的使用 
+      - `for in` 遍历属性
 - 运用到运动框架
 - 检测运动停止
   - 标志变量
@@ -3006,12 +3371,12 @@
 ### 运动框架总结
 
 - 运动框架演变过程
-  - startMove(iTarget) ：运动框架
-  - startMove(obj, iTarget) ：多物体
-  - startMove(obj, attr, iTarget) ：任意值
-  - startMove(obj, attr, iTarget, fn) ：链式运动
-  - startMove(obj, json) ：多值运动
-  - startMove(obj, json, fn) ：完美运动框架
+  - `startMove(iTarget)` ：运动框架
+  - `startMove(obj, iTarget)` ：多物体
+  - `startMove(obj, attr, iTarget)` ：任意值
+  - `startMove(obj, attr, iTarget, fn)` ：链式运动
+  - `startMove(obj, json)` ：多值运动
+  - `startMove(obj, json, fn)` ：完美运动框架
 
 ### 运动框架应用
 
