@@ -3313,8 +3313,6 @@
       var sum_num = getByClassName(ul_txt, 'sum_num')[0];
       sum_num.innerHTML = pic_index + 1 + '/' + oli_thumnali.length;
       introduction.innerHTML = arr[pic_index];
-  
-  
     }
     </script>
     <body>
@@ -3359,6 +3357,53 @@
   </html>
   ```
 
+- ```js
+  // ./lib/move.js
+  // 封装获取计算后元素样式函数，返回小数
+  function getStyle(obj, name) {
+    if (obj.currentStyle) {
+      return obj.currentStyle[name];
+    } else {
+      return getComputedStyle(obj, '') [name];
+    }
+  }
+          // 任意值运动框架
+  function startMove(obj, name, iTarget ) {
+    clearInterval(obj.timer);
+    obj.timer = setInterval(move, 30);
+    function move() {
+      var current = 0;
+      if (name === 'opacity') {
+        // 用 parseFloat 保留小数并去掉后面 px ，从左至右提取数字，遇到不是数字跳出
+        // Math.round() 四舍五入取整 
+        current = Math.round(parseFloat(getStyle(obj, name))*100);
+      } else {
+        // 用 parseInt 去掉后面 px ，从左至右提取数字，遇到不是数字跳出
+        current = parseInt(getStyle(obj, name));
+      }
+      var speed = (iTarget - current)/3;  
+      if (speed < 0) {
+        speed = Math.floor(speed);
+      } else {
+        speed = Math.ceil(speed);
+      }
+      if (iTarget === current) {
+        clearInterval(obj.timer);
+      } else {
+        if (name === 'opacity') {
+          obj.style[name] = (current + speed)/100;
+          obj.style.filter = "alpha("+[name]+ "=" + (current + speed) + ")"; 
+        } else {
+          obj.style[name] = current + speed + 'px'; 
+        }
+      }
+      // console.log('iTarget',iTarget,'current',current,'getStyle',getStyle(obj, name),speed)
+    }
+  }
+  ```
+
+  
+
 - 笔记：不让子元素继承父元素的 `opacity ` 属性
 
   - 使用 `rgba(R,G,B,opacity)`  间接的设定 `opacity` 的值，这个属性不会向下继承
@@ -3370,22 +3415,206 @@
 
 ### 链式运动框架
 
-- 回调函数
+- 回调函数：`startMove(obj, attr, iTarget, fn)`
   - 运动停止时，执行函数
   - 运动停止时，开始下一次运动
   - 例子：土豆网右下角菜单
 
 ### 完美运动框架
 
-- 多个值同时变化
+- 多个值同时变化：`startMove(obj, json)` 
+
   - `setStyle` 同时设置多个属性
     - 参数传递：
       - `JSON` 的使用 
       - `for in` 遍历属性
+
 - 运用到运动框架
+
 - 检测运动停止
+
   - 标志变量
+
 - 例子：伸缩同时淡入淡出的菜单
+
+- 代码：
+
+  ```js
+  // ./lib/move2.js
+  // 封装获取计算后元素样式函数，返回小数
+  function getStyle(obj, name) {
+    if (obj.currentStyle) {
+      return obj.currentStyle[name];
+    } else {
+      return getComputedStyle(obj, '') [name];
+    }
+  }
+          // 任意值运动框架
+  function startMove(obj, json, fnEnd ) {
+    clearInterval(obj.timer);
+    obj.timer = setInterval(move, 30);
+    function move() {
+      var current = 0;
+      var stop = true;
+      for (const attr in json) {
+        if (attr === 'opacity') {
+          // 用 parseFloat 保留小数并去掉后面 px ，从左至右提取数字，遇到不是数字跳出
+          // Math.round() 四舍五入取整 
+          current = Math.round(parseFloat(getStyle(obj, attr))*100);
+        } else {
+          // 用 parseInt 去掉后面 px ，从左至右提取数字，遇到不是数字跳出
+          current = parseInt(getStyle(obj, attr));
+        }
+        var speed = (json[attr] - current)/4;  
+        if (speed < 0) {
+          speed = Math.floor(speed);
+        } else {
+          speed = Math.ceil(speed);
+        }
+        if (json[attr] === current) {
+          stop = true;
+        } else {
+          stop = false;
+          if (attr === 'opacity') {
+            obj.style[attr] = (current + speed)/100;
+            obj.style.filter = "alpha("+[attr]+ "=" + (current + speed) + ")"; 
+          } else {
+            obj.style[attr] = current + speed + 'px'; 
+          }
+        }
+        console.log('json[attr]:',json[attr],'attr:', attr,'current:',current,'getStyle:',getStyle(obj, attr),'speed:',speed);
+      }
+      if (stop === true) {
+        clearInterval(obj.timer);
+        if (fnEnd) {
+          fnEnd()
+        }
+      }
+    }
+  }
+  ```
+
+- ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>链式运动框架</title>
+      <style>
+        body {
+          width: auto;
+          height: 2000px;
+        }
+        #div1 {
+          width: 50px;
+          height: 50px;
+          background: rgb(99, 128, 255);
+          position: absolute;
+        }
+        #div_p {
+          width: 50px;
+          height: 50px;
+          background-color: cornsilk;
+          position: absolute;
+          right: 0;
+          top: 50%;
+        }
+        #div2 {
+          width: 50px;
+          height: 50px;
+          background: rgb(99, 128, 255);
+          position: absolute;
+        }
+        #div3 {
+          position: absolute;
+          height: 50px;
+          width: 0px;
+          right: 50px;
+          background-color: rgb(119, 95, 255);
+          overflow: hidden;
+        }
+        #div4 {
+          position: absolute;
+          width: 100px;
+          height: 0px;
+          right: 50px;
+          top: 0px;
+          overflow: hidden;
+          background-color: rgb(98, 163, 248);
+        }
+        #close {
+          position: absolute;
+          float: right;
+          right: 5px;
+          color: white;
+        }
+      </style>
+      <script src="./lib/move2.js"></script>
+      <script>
+      window.onload = function () {
+        // 封装 getElementById
+        function get(id) {
+          return document.getElementById(id);
+        }
+  
+        var btn1 = get('btn1');
+        var div1 = get('div1');
+        btn1.onclick = function () {
+          startMove(div1,{'height': 400, "width": 101, "opacity": 30, "left": 100, "top": 200}, msg);
+        }
+        function msg() {
+          console.log('链式函数执行完成！')
+        }
+  
+        // 跟随页面滚动的缓冲侧边栏
+        var div_p = get('div_p');
+        window.onscroll = function () {
+          var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+          var odiv_pHeight = parseInt(getStyle(div_p, 'height'));
+          var target = parseInt((document.documentElement.clientHeight - odiv_pHeight)/2 + scrollTop);
+          startMove(div_p, {"top":target});
+          console.log(
+            '可视区：', document.documentElement.clientHeight,
+            '滚动距离：', scrollTop, 
+            'div3的高度：', getStyle(div_p, 'height'), 
+            '目标值：', target) 
+        }
+  
+        // 土豆伸缩菜单栏
+        var div2 = get('div2'); 
+        var div3 = get('div3');
+        var div4 = get('div4');
+        var close = get('close');
+        div2.onclick = function () {
+          // div3.style.display = 'block';
+          // div4.style.display = 'block';
+          startMove(div3, {"width":100},fnEnd)
+          function fnEnd() {
+            startMove(div4,{"height":100, "top":-100})
+          }
+        }
+        close.onclick = function () {
+          startMove(div4, {"top": 0, "height": 0}, fnEnd);
+          function fnEnd() {
+          startMove(div3, {"width":0})
+          }
+        }
+      }
+      </script>
+    </head>
+    <body>
+      <input type="button" id="btn1" value="链式运动">
+      <div id="div1"></div>
+      <div id="div_p">
+        <div id="div2">土豆</div>
+        <div id="div3">播放器</div>
+        <div id="div4"><a id="close" href="javascript:;">关闭</a></div>
+      </div>
+    </body>
+  </html>
+  ```
+
+  
 
 ### 运动框架总结
 
@@ -3400,9 +3629,494 @@
 ### 运动框架应用
 
 - 运动框架应用
+
   - 例子：幻灯片
+
 - 例子：新浪微博
+
   - 链式运动
+
+  - 笔记：CSS `white-space` 属性 保留换行
+
+    ```
+    值			描述
+    normal		默认。空白会被浏览器忽略。
+    pre			空白会被浏览器保留。其行为方式类似 HTML 中的 <pre> 标签。
+    nowrap		文本不会换行，文本会在在同一行上继续，直到遇到 <br> 标签为止。
+    pre-wrap	保留空白符序列，但是正常地进行换行。
+    pre-line	合并空白符序列，但是保留换行符。
+    inherit		规定应该从父元素继承 white-space 属性的值。
+    ```
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>幻灯片上下滑动和新浪微博效果</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./css/18.1.css">
+    <script src="./lib/move2.js"></script>
+    <script>
+    window.onload = function () {
+      // 封装 getElementById
+      function get(id) {
+        return document.getElementById(id);
+      }
+      // 封装 getElementsByTagName
+      function gets(tagName) {
+        return document.getElementsByTagName(tagName)
+      }
+      // 封装 getByClassName 方法
+      function getByClassName(oParent, sClass) {
+        var aResult = new Array();
+        var aEle = document.getElementsByTagName('*');
+        for (var i in aEle) {
+          if (aEle[i].className === sClass) {
+            aResult.push(aEle[i]);
+          }
+        }
+        return aResult;
+      }
+  
+      // 左右箭头切换图片
+      // 获取箭头所在 ul
+      var oDiv_position = get('div_position');
+      var ul_btn = getByClassName(oDiv_position[1], 'ul_btn')[0];
+      // 获取 li
+      var li_btn_left = getByClassName(ul_btn, 'slider_btn_left')[0];
+      var li_btn_right = getByClassName(ul_btn, 'slider_btn_right')[0];
+      // 获取 img
+      var left_icon = getByClassName(li_btn_left, 'left_icon')[0];
+      var right_icon = getByClassName(li_btn_right, 'right_icon')[0];
+      // 鼠标移入/移出 显示/隐藏
+      li_btn_left.onmouseover = left_icon.onmouseover = function () {
+        startMove(left_icon, {'opacity': 30});
+      }
+      li_btn_left.onmouseout = left_icon.onmouseout = function () {
+        startMove(left_icon, {'opacity': 0});
+      }
+      li_btn_right.onmouseover = right_icon.onmouseover = function () {
+        startMove(right_icon, {'opacity': 30});
+      }
+      li_btn_right.onmouseout = right_icon.onmouseout = function () {
+        startMove(right_icon, {'opacity': 0});
+      }
+  
+      // 获取大图 class li
+      var ul_pic = getByClassName(oDiv_position[1], 'ul_pic')[0];
+      var oli_pic = getByClassName(ul_pic, 'li_pic');
+      var oImg = gets('img');
+  
+      // 获取缩略图 class li
+      var div_thumbnail = get('div_thumbnail');
+      var ul_thumbnail = getByClassName(div_thumbnail, 'ul_thumbnail')[0];
+      var oli_thumnali = getByClassName(ul_thumbnail, 'li_thumnali');
+      var pic_index = 0;
+      var index = 0;
+      var z = 1;
+      // 缩略图鼠标移入高亮，移出恢复,并注册index 绑定大图
+      for (var i in oli_thumnali) {
+        oli_thumnali[i].index = i;
+        oli_pic[i].index = i;
+        // 鼠标移入
+        oli_thumnali[i].onmouseover = function () {
+          startMove(this, {'opacity': 100});
+        }
+        // 鼠标移出 如果是当前显示则不执行
+        oli_thumnali[i].onmouseout= function () {
+          if (oli_pic[this.index].style.zIndex != z) {
+            startMove(this, {'opacity': 50});
+          }
+        }
+        // 点击小图片显示大图
+        oli_thumnali[i].onclick = function () {
+          console.log(pic_index,parseInt(this.index))
+          // 如果点击 this.index > 2 && this.index - pic_index > 0 则向右移
+          if (parseInt(this.index) > 2 && this.index - pic_index >0) {
+            pic_index = parseInt(this.index);
+            // 下一张会 ++ 先--
+            pic_index--;
+            right_icon.onclick();
+          } // 如果  this.index > 0 && this.index - pic_index < 0 则向左移
+          else if (this.index > 0 && this.index - pic_index < 0) {
+            pic_index = parseInt(this.index);
+            // 下一张会 -- 先++
+            pic_index++;
+            left_icon.onclick();
+          } else {
+            pic_index = parseInt(this.index);
+            tab();
+          }
+        }
+        // 让第一个图片显示
+        if (oli_pic[i].style.zIndex == z) {
+          startMove(oli_thumnali[i], {'opacity': 100});
+        }
+      }
+      // 鼠标点击按钮 上一张/下一张
+      var slide = ''; // 滑动方向
+      left_icon.onclick = function () {
+        // 是否 <0
+        if (0 <= pic_index - 1) {
+          // console.log('1~length-1:',pic_index)
+          pic_index--;
+          if (0 < pic_index && pic_index <= oli_thumnali.length - 1) {
+            // 1~length-1
+            startMove(ul_thumbnail, {'marginLeft': -(pic_index-1)*li_thumbnali_width});
+            // 向右滑动特效
+            slide = 'right';
+            tab(); 
+          } else {
+            // 0 
+            slide = 'right';
+            tab();
+          }
+        } else {
+          // <0 重置pic_index循环播放
+          // console.log('0:',pic_index)
+          pic_index = oli_thumnali.length - 1;
+          startMove(ul_thumbnail, {'marginLeft': -(pic_index-2)*li_thumbnali_width});
+          tab();
+        }
+      }
+      right_icon.onclick = function () {
+        // 判断下一张是否大于总数
+        if (pic_index + 1 < oli_thumnali.length) {
+          pic_index++;
+          // console.log('1~oli_thumnali.length-1：',pic_index);
+          if (2 < pic_index && pic_index <= oli_thumnali.length - 1) {
+            startMove(ul_thumbnail, {'marginLeft': -(pic_index-2)*li_thumbnali_width});
+            // 向左滑动特效
+            slide = 'left';
+            tab(); 
+          } else {
+            slide = 'left';
+            tab();
+          }
+        } else {
+          // 大于 oli_thumnali.length-1 跳到第一张
+          pic_index = 0;
+          startMove(ul_thumbnail, {'marginLeft': pic_index*li_thumbnali_width});
+          tab();
+        }
+      }
+      
+      function tab() {
+        // 判断是否是当前显示图片
+        if (oli_pic[pic_index].style.zIndex != z) {
+          // 全部图片半透明
+          for (var j in oli_thumnali) {
+            startMove(oli_thumnali[j], {'opacity': 50});
+          }
+          // 显示当前点击图片
+          startMove(oli_thumnali[pic_index], {'opacity': 100});
+          // 显示当前index对应大图
+          oli_pic[pic_index].style.zIndex = ++z;
+          // 显示文字的按钮
+          ul_btn.style.zIndex = ul_txt.style.zIndex = z;
+          // 隐藏大图 再用动画显示
+          // oImg[pic_index].style.height = 0;
+          // oli_pic[pic_index].style.top = '-360px';
+          // oImg[pic_index].style.width = '0px';
+          // startMove(oImg[pic_index],{"width": 640, "height": 360});
+          if (slide === 'left') {
+            oli_pic[pic_index].style.left = '640px';
+            startMove(oli_pic[pic_index],{"left": 0});
+            // 判断还有没有下一张 两张拼接
+            if (pic_index-1 > 0 && pic_index+1 < oli_pic.length)
+            startMove(oli_pic[pic_index-1],{"left": -640});
+          } else if (slide === 'right') {
+            oli_pic[pic_index].style.left = '-640px';
+            startMove(oli_pic[pic_index],{"left": 0});
+            // 判断还有没有下一张 两张拼接
+            if (pic_index+1 < oli_pic.length) {
+              startMove(oli_pic[pic_index+1],{"left": 640});
+            }
+          } else {
+            oImg[pic_index].style.height = '0px';
+            startMove(oImg[pic_index],{"height": 360});
+          }
+  
+          // 显示当前图片介绍
+          introduction.innerHTML = arr[pic_index];
+          sum_num.innerHTML = parseInt(pic_index) + 1 + '/' + oli_thumnali.length;
+        }
+      }
+  
+      // 自动播放
+      oDiv_position.timer = setInterval(right_icon.onclick, 2000);
+      oDiv_position.onmouseover = function () {
+        clearInterval(oDiv_position.timer);
+      }
+      oDiv_position.onmouseout = function () {
+        clearInterval(oDiv_position.timer);
+        oDiv_position.timer = setInterval(right_icon.onclick, 2000);
+      }
+      // 设置 ul_thumbnail 的宽度
+      var li_thumbnali_width = oli_thumnali[0].offsetWidth;
+      ul_thumbnail.style.width = oli_thumnali.length * oli_thumnali[0].offsetWidth + 'px';
+  
+      // 设置文字说明
+      var arr = new Array('雪山','峡谷','悬崖','岩壁','海岸','雪覆盖的悬崖','雪山','峡谷','悬崖','岩壁','海岸','雪覆盖的悬崖');
+      // 获取文字说明 li
+      var ul_txt = getByClassName(oDiv_position[1], 'ul_txt')[0];
+      var introduction = getByClassName(ul_txt, 'introduction')[0];
+      var sum_num = getByClassName(ul_txt, 'sum_num')[0];
+      sum_num.innerHTML = pic_index + 1 + '/' + oli_thumnali.length;
+      introduction.innerHTML = arr[pic_index];
+  
+      // 新浪微博新微博效果 评论区
+      var div_com_show = get('div_com_show');
+      var text_comment = get('text_comment');
+      var btn_comment = get('btn_comment');
+      btn_comment.onclick = function () {
+        // 1.创建子节点 2.文字添加到子节点 3.渲染子节点 4.设置透明度0并获取高度 5.链式动画
+        var oLi = document.createElement('li');
+        oLi.innerHTML = text_comment.value;
+        oLi.className = 'li_comment';
+        text_comment.value = '';
+  
+        if (div_com_show.children.length > 0) {
+          div_com_show.insertBefore(oLi, div_com_show.children[0]);
+        } else {
+          div_com_show.appendChild(oLi);
+        }
+        var iHeight = oLi.offsetHeight;
+        div_com_show.children[0].style.height = '0';
+        startMove(oLi,{"height": iHeight}, function fn() {
+          startMove(oLi,{"opacity":100});
+        })
+        
+      }
+    }
+    </script>
+    <body>
+      <div id="div_center">
+        <div id="div_position">
+          <div id="div_pic">
+            <ul class="ul_pic">
+              <li class="li_pic" style="z-index:1"><img src="./images/album/1.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/3.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/4.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/5.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/6.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_pic"><img src="./images/album/5.jpeg" alt=""></li>
+            </ul>
+          </div>
+          <ul class="ul_btn" style="z-index:1">
+            <li class="slider_btn_left"><img class="left_icon" src="./images/images/slider_btn_icon_left.png" alt=""></li>
+            <li class="slider_btn_right"><img class="right_icon" src="./images/images/slider_btn_icon_right.png" alt=""></li>
+          </ul>
+          <ul class="ul_txt" style="z-index:1">
+            <li class="li4_background"></li>
+            <li class="li4_introduction">图片说明：<span class="introduction">introduction</span></li>
+            <li class="li4_sum_num">图片位置：<span class="sum_num"></span></li>
+          </ul>
+          <div id="div_thumbnail">
+            <ul class="ul_thumbnail">
+              <li class="li_thumnali"><img src="./images/album/1.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/3.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/4.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/5.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/6.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/2.jpeg" alt=""></li>
+              <li class="li_thumnali"><img src="./images/album/5.jpeg" alt=""></li>
+            </ul>
+          </div>
+          <div id="div_comments">
+            <div id="div_com_inp">
+              <textarea class="text" name="" id="text_comment" cols="60" rows="5"></textarea>
+              <input class="btn" type="button" name="" id="btn_comment" value="发表评论">
+            </div>
+            <div id="div_com_show">
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
+  ```
+
+  ```css
+  /* 18.1.css */
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: cornsilk;
+      }
+      li {
+        float: left;
+      }
+      /* 居中 div */
+      #div_center {
+        margin: 20px auto;
+        width: 640px;
+        height: 450px;
+      }
+      /* 定位 div */
+      #div_position {
+        width: 640px;
+        height: 1100px;
+        overflow: hidden;
+        background-color: rgb(70, 70, 70);
+        position: absolute;
+      }
+  
+      /* 大图样式 */
+      #div_pic {
+        width: 640px;
+        height: 360px;
+        overflow: hidden;
+        position: absolute;
+      }
+      .ul_pic {
+        position: absolute;
+      }
+      .li_pic {
+        position: absolute;
+      }
+      .li_pic img{
+        width: 640px;
+        height: 360px;
+      }
+  
+      /* 左右键样式 */
+      .ul_btn {
+        top: 0px;
+        width: 640px;
+        height: 360px;
+        position: absolute;
+        float: left;
+      }
+      .slider_btn_left, .slider_btn_right {
+        width: 150px;
+        height: 360px;
+      }
+      .slider_btn_right {
+        float: right;
+      }
+      .slider_btn_left img{
+        padding: 150px 105px 150px 10px ;
+        position: relative;
+        width: 35px;
+        height: 60px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        float: left;
+      }
+      .slider_btn_right img{
+        padding: 150px 10px 150px 105px ;
+        position: relative;
+        width: 35px;
+        height: 60px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        float: right;
+      }
+  
+      /* 小图样式 */
+      #div_thumbnail {
+        top: 360px;
+        width: 620px;
+        background-color: rgb(70, 70, 70);
+        margin: 0 10px 0 5px;
+        overflow: hidden;
+        position: absolute;
+      }
+      .ul_thumbnail {
+        width: 640px;
+        height: 90px;
+      }
+      .li_thumnali {
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+      }
+      .li_thumnali img{
+        padding: 10px 0px 10px 10px;
+        width: 125px;
+        height: 70px;
+      }
+  
+      /* 图片文字栏 */
+      .ul_txt {
+        width: 640px;
+        height: 20px;
+        position: absolute;
+        top: 340px;
+      }
+      .li4_background {
+        width: 640px;
+        height: 20px;
+        top: 0px;
+        background-color: rgb(0, 0, 0);
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+      }
+      .li4_introduction {
+        top: -17px;
+        margin-left: 10px;
+        width: 500px;
+        position: relative;
+        color: rgb(255, 255, 255);
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+      }
+      .li4_sum_num {
+        width: 120px;
+        top: -17px;
+        left: 10px;
+        position: relative;
+        color: rgb(255, 255, 255);
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+      }
+  
+       /* 评论区 */
+       #div_comments {
+         position: absolute;
+         display: block;
+         top: 450px;
+         padding-top: 20px;
+         width: 640px;
+         background-color: rgb(252, 229, 200);
+       }
+       #div_com_inp  {
+         margin-top: 5px;
+         border-top: burlywood dashed 1px;
+         border-bottom: burlywood dashed 1px;
+       }
+       .text {
+         margin: 20px 0 20px 53px;
+       }
+       .btn {
+         margin: 20px 0 20px 20px;
+         width: 70px;
+         height: 70px;
+       }
+       #div_com_show {
+        height: 430px;
+        margin: 20px 50px;
+        padding: 20px 20px;
+        background-color: rgb(255, 255, 255);
+        overflow: hidden;
+       }
+       .li_comment {
+         white-space: pre-wrap;
+         padding: 10px 5px;
+         float: none;
+         border-bottom: cadetblue dashed 1px;
+         opacity: 0;
+         filter: alpha(opacity=0);
+         overflow: hidden;
+       }
+  ```
+
+  
 
 ## JS事件基础
 
