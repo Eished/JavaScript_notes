@@ -3206,12 +3206,67 @@
         }
         // 点击小图片显示大图
         oli_thumnali[i].onclick = function () {
+          console.log(pic_index,parseInt(this.index))
+          // 如果点击 this.index > 2 && this.index - pic_index > 0 则向右移
+          if (parseInt(this.index) > 2 && this.index - pic_index >0) {
+            pic_index = parseInt(this.index);
+            // 下一张会 ++ 先--
+            pic_index--;
+            right_icon.onclick();
+          } // 如果  this.index > 2 && this.index - pic_index < 0 则向左移
+          else if (this.index > 0 && this.index - pic_index < 0) {
+            pic_index = parseInt(this.index);
+            // 下一张会 -- 先++
+            pic_index++;
+            left_icon.onclick();
+          } else {
             pic_index = parseInt(this.index);
             tab();
+          }
         }
         // 让第一个图片显示
         if (oli_pic[i].style.zIndex == z) {
           startMove(oli_thumnali[i], 'opacity', 100);
+        }
+      }
+      // 鼠标点击按钮 上一张/下一张
+      left_icon.onclick = function () {
+        // 是否 <0
+        if (0 <= pic_index - 1) {
+          // console.log('1~length-1:',pic_index)
+          pic_index--;
+          if (0 < pic_index && pic_index <= oli_thumnali.length - 1) {
+            // 1~length-1
+            startMove(ul_thumbnail, 'marginLeft', -(pic_index-1)*li_thumbnali_width);
+            tab(); 
+          } else {
+            // 0 
+            tab();
+          }
+        } else {
+          // <0 重置pic_index循环播放
+          // console.log('0:',pic_index)
+          pic_index = oli_thumnali.length - 1;
+          startMove(ul_thumbnail, 'marginLeft', -(pic_index-2)*li_thumbnali_width);
+          tab();
+        }
+      }
+      right_icon.onclick = function () {
+        // 判断下一张是否大于总数
+        if (pic_index + 1 < oli_thumnali.length) {
+          pic_index++;
+          // console.log('1~oli_thumnali.length-1：',pic_index);
+          if (2 < pic_index && pic_index <= oli_thumnali.length - 1) {
+            startMove(ul_thumbnail, 'marginLeft', -(pic_index-2)*li_thumbnali_width);
+            tab(); 
+          } else {
+            tab();
+          }
+        } else {
+          // 大于 oli_thumnali.length-1 跳到第一张
+          pic_index = 0;
+          startMove(ul_thumbnail, 'marginLeft', pic_index*li_thumbnali_width);
+          tab();
         }
       }
       
@@ -3234,42 +3289,6 @@
           // 显示当前图片介绍
           introduction.innerHTML = arr[pic_index];
           sum_num.innerHTML = parseInt(pic_index) + 1 + '/' + oli_thumnali.length;
-        }
-      }
-      // 鼠标点击按钮 上一张/下一张
-      left_icon.onclick = function () {
-        if (0 <= pic_index - 1) {
-          // console.log('1~length-1:',pic_index)
-          pic_index--;
-          if (0 < pic_index && pic_index <= oli_thumnali.length - 1) {
-            // 1~length-1
-            startMove(ul_thumbnail, 'marginLeft', -(pic_index-1)*li_thumbnali_width);
-            tab(); 
-          } else {
-            // 0
-            tab();
-          }
-        } else {
-          // 循环播放
-          // console.log('0:',pic_index)
-          pic_index = oli_thumnali.length - 1;
-          startMove(ul_thumbnail, 'marginLeft', -(pic_index-2)*li_thumbnali_width);
-          tab();
-        }
-      }
-      right_icon.onclick = function () {
-        if (pic_index + 1 < oli_thumnali.length) {
-          pic_index++;
-          if (2 < pic_index && pic_index <= oli_thumnali.length - 1) {
-            startMove(ul_thumbnail, 'marginLeft', -(pic_index-2)*li_thumbnali_width);
-            tab(); 
-          } else {
-            tab();
-          }
-        } else {
-          pic_index = 0;
-          startMove(ul_thumbnail, 'marginLeft', pic_index*li_thumbnali_width);
-          tab();
         }
       }
   
