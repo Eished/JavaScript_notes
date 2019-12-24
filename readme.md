@@ -1466,8 +1466,9 @@
 
   - `str[i]` 不兼容 ie7
 - `charAt(i)` 方法 ：取出字符串中的第 i 个值，兼容各种浏览器
-  - 设置路径：`"url('img/0.png')"`
-
+  
+- 设置路径：`"url('img/0.png')"`
+  
 - 代码：
 
   ```HTML
@@ -1783,6 +1784,7 @@
         }
         return aResult;
     }
+    ```
 ```
     
     
@@ -1881,7 +1883,7 @@
       </div>
     </body>
   </html>
-  ```
+```
 
   
 
@@ -2433,6 +2435,9 @@
   - 跟随页面滚动的缓冲侧边栏
     - 潜在问题：目标不是整数时
     - 目标取整：`parseInt()`
+  - ` scrollTop = document.documentElement.scrollTop || document.body.scrollTop;`
+    - `document.documentElement.scrollTop`：IE、Firefox
+    - `document.body.scrollTop`：chrome
 
 - 代码：
 
@@ -4120,7 +4125,83 @@
 
 ## JS事件基础
 
+### Event 对象和事件冒泡
+
+- 什么是 Event 对象
+  - 用来获取鼠标事件的详细信息：鼠标位置、键盘按键
+  - 例子：获取鼠标位置：`clientX`
+  - document 的本质：`document.childNodes[0].tagName` 是整个网页
+- 获取 Event 对象（兼容性写法）
+  - `var oEvent = ev||event;`  火狐用 `ev` IE用 `event`
+- 事件流
+  - 事件流冒泡：事件往父级传递
+    - 取消冒泡：oEvent.cancelBubble = true
+    - 例子：仿 `select` 控件
+    - `DOM` 事件流
+
+### 鼠标事件 
+
+- 鼠标位置
+  - 可视区位置：`clientX`、`clientY`
+  
+  - 例子：跟随鼠标的 `Div`
+    
+    - 消除滚动条的影响：可视区与页面顶部的距离
+    
+  - 代码：
+  
+    ```js
+    // 封装鼠标当前坐标函数
+    function getPos(ev) {
+        var scrollTop = document.documrntElement.scrollTop||document.body.scrollTop;
+        var scrollLeft = document.documentElement.scollLeft||document.body.scrollLeft;
+    
+        return {x: ev.clientX+scrollLeft, y: ev.clientY+scrollTop};
+    }
+    ```
+  
+    
+- 获取鼠标在页面的绝对位置
+  - 封装函数
+  - 例子：一串跟随鼠标的 `Div`
+
+### 键盘事件
+
+- `keyCode`
+  - 获取用户按下键盘的哪个键
+  - 例子：键盘控制 `Div` 移动
+- 其它属性
+  - `ctrlKey`、`shiftKey`、`altKey`
+  - 例子：提交留言
+    - 回车提交
+    - CTRL + 回车 提交
+
 ## JS 事件中级
+
+### 默认事件
+
+- 默认事件
+  - 什么是默认事件
+- 阻止默认事件
+  - 普通写法：return false;
+  - 例子1：屏蔽右键菜单
+    - 弹出自定义右键菜单
+  - 例子2：只能输入数字的输入框
+    - keydown、keyup 事件区别
+
+### 拖拽
+
+- 简单拖拽
+  - 拖拽原理
+    - 距离不变
+    - 三个事件
+- 靠谱拖拽
+  - 原有拖拽的问题
+    - 直接给 document 加事件
+  - FireFox 下，空 Div 拖拽Bug
+    - 阻止默认事件
+  - 防止拖出页面
+    - 修正位置
 
 ## JS 事件高级应用
 
