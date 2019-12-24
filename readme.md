@@ -3877,18 +3877,19 @@
       var text_comment = get('text_comment');
       var btn_comment = get('btn_comment');
       btn_comment.onclick = function () {
-        // 1.创建子节点 2.文字添加到子节点 3.渲染子节点 4.设置透明度0并获取高度 5.链式动画
+        // 1.创建子节点 2.文字添加到子节点 3.设置样式 
+        // 4.渲染子节点 5.设置透明度并获取高度 6.链式动画
         var oLi = document.createElement('li');
         oLi.innerHTML = text_comment.value;
-        oLi.className = 'li_comment';
+        oLi.className = 'li_comment'; 
         text_comment.value = '';
-  
         if (div_com_show.children.length > 0) {
           div_com_show.insertBefore(oLi, div_com_show.children[0]);
         } else {
           div_com_show.appendChild(oLi);
         }
-        var iHeight = oLi.offsetHeight;
+        // var iHeight = parseInt(oLi.offsetHeight) - 20; // 多算了padding
+        var iHeight = parseInt(getStyle(oLi, 'height'));
         div_com_show.children[0].style.height = '0';
         startMove(oLi,{"height": iHeight}, function fn() {
           startMove(oLi,{"opacity":100});
@@ -3945,182 +3946,182 @@
       </div>
     </body>
   </html>
-  ```
-
+```
+  
   ```css
   /* 18.1.css */
-      body {
-        width: 100%;
-        height: 100%;
-        background-color: cornsilk;
-      }
-      li {
-        float: left;
-      }
-      /* 居中 div */
-      #div_center {
-        margin: 20px auto;
-        width: 640px;
-        height: 450px;
-      }
-      /* 定位 div */
-      #div_position {
-        width: 640px;
-        height: 1100px;
-        overflow: hidden;
-        background-color: rgb(70, 70, 70);
-        position: absolute;
-      }
+  body {
+      width: 100%;
+      height: 100%;
+      background-color: cornsilk;
+  }
+  li {
+      float: left;
+  }
+  /* 居中 div */
+  #div_center {
+      margin: 20px auto;
+      width: 640px;
+      height: 450px;
+  }
+  /* 定位 div */
+  #div_position {
+      width: 640px;
+      height: 1100px;
+      overflow: hidden;
+      background-color: rgb(70, 70, 70);
+      position: absolute;
+  }
   
-      /* 大图样式 */
-      #div_pic {
-        width: 640px;
-        height: 360px;
-        overflow: hidden;
-        position: absolute;
-      }
-      .ul_pic {
-        position: absolute;
-      }
-      .li_pic {
-        position: absolute;
-      }
-      .li_pic img{
-        width: 640px;
-        height: 360px;
-      }
+  /* 大图样式 */
+  #div_pic {
+      width: 640px;
+      height: 360px;
+      overflow: hidden;
+      position: absolute;
+  }
+  .ul_pic {
+      position: absolute;
+  }
+  .li_pic {
+      position: absolute;
+  }
+  .li_pic img{
+      width: 640px;
+      height: 360px;
+  }
   
-      /* 左右键样式 */
-      .ul_btn {
-        top: 0px;
-        width: 640px;
-        height: 360px;
-        position: absolute;
-        float: left;
-      }
-      .slider_btn_left, .slider_btn_right {
-        width: 150px;
-        height: 360px;
-      }
-      .slider_btn_right {
-        float: right;
-      }
-      .slider_btn_left img{
-        padding: 150px 105px 150px 10px ;
-        position: relative;
-        width: 35px;
-        height: 60px;
-        opacity: 0;
-        filter: alpha(opacity=0);
-        float: left;
-      }
-      .slider_btn_right img{
-        padding: 150px 10px 150px 105px ;
-        position: relative;
-        width: 35px;
-        height: 60px;
-        opacity: 0;
-        filter: alpha(opacity=0);
-        float: right;
-      }
+  /* 左右键样式 */
+  .ul_btn {
+      top: 0px;
+      width: 640px;
+      height: 360px;
+      position: absolute;
+      float: left;
+  }
+  .slider_btn_left, .slider_btn_right {
+      width: 150px;
+      height: 360px;
+  }
+  .slider_btn_right {
+      float: right;
+  }
+  .slider_btn_left img{
+      padding: 150px 105px 150px 10px ;
+      position: relative;
+      width: 35px;
+      height: 60px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      float: left;
+  }
+  .slider_btn_right img{
+      padding: 150px 10px 150px 105px ;
+      position: relative;
+      width: 35px;
+      height: 60px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      float: right;
+  }
   
-      /* 小图样式 */
-      #div_thumbnail {
-        top: 360px;
-        width: 620px;
-        background-color: rgb(70, 70, 70);
-        margin: 0 10px 0 5px;
-        overflow: hidden;
-        position: absolute;
-      }
-      .ul_thumbnail {
-        width: 640px;
-        height: 90px;
-      }
-      .li_thumnali {
-        opacity: 0.5;
-        filter: alpha(opacity=50);
-      }
-      .li_thumnali img{
-        padding: 10px 0px 10px 10px;
-        width: 125px;
-        height: 70px;
-      }
+  /* 小图样式 */
+  #div_thumbnail {
+      top: 360px;
+      width: 620px;
+      background-color: rgb(70, 70, 70);
+      margin: 0 10px 0 5px;
+      overflow: hidden;
+      position: absolute;
+  }
+  .ul_thumbnail {
+      width: 640px;
+      height: 90px;
+  }
+  .li_thumnali {
+      opacity: 0.5;
+      filter: alpha(opacity=50);
+  }
+  .li_thumnali img{
+      padding: 10px 0px 10px 10px;
+      width: 125px;
+      height: 70px;
+  }
   
-      /* 图片文字栏 */
-      .ul_txt {
-        width: 640px;
-        height: 20px;
-        position: absolute;
-        top: 340px;
-      }
-      .li4_background {
-        width: 640px;
-        height: 20px;
-        top: 0px;
-        background-color: rgb(0, 0, 0);
-        opacity: 0.5;
-        filter: alpha(opacity=50);
-      }
-      .li4_introduction {
-        top: -17px;
-        margin-left: 10px;
-        width: 500px;
-        position: relative;
-        color: rgb(255, 255, 255);
-        filter: alpha(opacity=80);
-        opacity: 0.8;
-      }
-      .li4_sum_num {
-        width: 120px;
-        top: -17px;
-        left: 10px;
-        position: relative;
-        color: rgb(255, 255, 255);
-        filter: alpha(opacity=80);
-        opacity: 0.8;
-      }
+  /* 图片文字栏 */
+  .ul_txt {
+      width: 640px;
+      height: 20px;
+      position: absolute;
+      top: 340px;
+  }
+  .li4_background {
+      width: 640px;
+      height: 20px;
+      top: 0px;
+      background-color: rgb(0, 0, 0);
+      opacity: 0.5;
+      filter: alpha(opacity=50);
+  }
+  .li4_introduction {
+      top: -17px;
+      margin-left: 10px;
+      width: 500px;
+      position: relative;
+      color: rgb(255, 255, 255);
+      filter: alpha(opacity=80);
+      opacity: 0.8;
+  }
+  .li4_sum_num {
+      width: 120px;
+      top: -17px;
+      left: 10px;
+      position: relative;
+      color: rgb(255, 255, 255);
+      filter: alpha(opacity=80);
+      opacity: 0.8;
+  }
   
-       /* 评论区 */
-       #div_comments {
-         position: absolute;
-         display: block;
-         top: 450px;
-         padding-top: 20px;
-         width: 640px;
-         background-color: rgb(252, 229, 200);
-       }
-       #div_com_inp  {
-         margin-top: 5px;
-         border-top: burlywood dashed 1px;
-         border-bottom: burlywood dashed 1px;
-       }
-       .text {
-         margin: 20px 0 20px 53px;
-       }
-       .btn {
-         margin: 20px 0 20px 20px;
-         width: 70px;
-         height: 70px;
-       }
-       #div_com_show {
-        height: 430px;
-        margin: 20px 50px;
-        padding: 20px 20px;
-        background-color: rgb(255, 255, 255);
-        overflow: hidden;
-       }
-       .li_comment {
-         white-space: pre-wrap;
-         padding: 10px 5px;
-         float: none;
-         border-bottom: cadetblue dashed 1px;
-         opacity: 0;
-         filter: alpha(opacity=0);
-         overflow: hidden;
-       }
-  ```
-
+  /* 评论区 */
+  #div_comments {
+      position: absolute;
+      display: block;
+      top: 450px;
+      padding-top: 20px;
+      width: 640px;
+      background-color: rgb(252, 229, 200);
+  }
+  #div_com_inp  {
+      margin-top: 5px;
+      border-top: burlywood dashed 1px;
+      border-bottom: burlywood dashed 1px;
+  }
+  .text {
+      margin: 20px 0 20px 53px;
+  }
+  .btn {
+      margin: 20px 0 20px 20px;
+      width: 70px;
+      height: 70px;
+  }
+  #div_com_show {
+      height: 475px;
+      margin: 20px 50px;
+      padding: 0px 20px;
+      background-color: rgb(255, 255, 255);
+      overflow: hidden;
+  }
+  .li_comment {
+      white-space: pre-wrap;
+      padding: 10px 5px;
+      float: none;
+      border-bottom: cadetblue dashed 1px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      overflow: hidden;
+  }
+```
+  
   
 
 ## JS事件基础
@@ -4135,7 +4136,7 @@
   - `var oEvent = ev||event;`  火狐用 `ev` IE用 `event`
 - 事件流
   - 事件流冒泡：事件往父级传递
-    - 取消冒泡：oEvent.cancelBubble = true
+    - 取消冒泡：`oEvent.cancelBubble = true`
     - 例子：仿 `select` 控件
     - `DOM` 事件流
 
@@ -4183,25 +4184,25 @@
 - 默认事件
   - 什么是默认事件
 - 阻止默认事件
-  - 普通写法：return false;
+  - 普通写法：`return false;`
   - 例子1：屏蔽右键菜单
     - ` document.oncontextmenu = function () { return false; }`
     - 弹出自定义右键菜单
   - 例子2：只能输入数字的输入框
     - ` oTxt.onkeydown = function (ev) { return false; }`
-    - keydown、keyup 事件区别
+    - `keydown`、`keyup` 事件区别
 
 ### 拖拽
 
 - 简单拖拽
   - 拖拽原理
     - 鼠标按下位置到 div 距离不变
-    - 三个事件： onmousedown onmousemove onmouseup
+    - 三个事件：` onmousedown` `onmousemove` `onmouseup`
 - 靠谱拖拽
   - 原有拖拽的问题：移动太快鼠标会移出 div
     - 直接给 document 加事件
-  - FireFox 下，空 Div 拖拽Bug
-    - 阻止默认事件：onmousedown {return false}
+  - FireFox 下，空 Div 拖拽 Bug
+    - 阻止默认事件：`onmousedown {return false}`
   - 防止拖出页面
     - 修正位置：在可视区内
 
@@ -4210,13 +4211,13 @@
 ### 事件绑定
 
 - IE 方式：不兼容 IE9 以上
-  - attachEvent(事件名称, 函数)，绑定事件处理函数
-  - detachEvent(事件名称, 函数)，接触绑定
+  - `attachEvent(事件名称, 函数)`，绑定事件处理函数
+  - `detachEvent(事件名称, 函数)`，接触绑定
 - DOM 方式：不兼容 IE7 以下
-  - addEventListener(事件名称, 函数, 捕获)
-  - removeEventListener(事件名称, 函数, 捕获)
+  - `addEventListener(事件名称, 函数, 捕获)`
+  - `removeEventListener(事件名称, 函数, 捕获)`
 - 何时使用绑定
-- 绑定事件和 this
+- 绑定事件和 `this`
 - 绑定匿名函数，会无法删除
 
 ### 高级拖拽
@@ -4229,8 +4230,8 @@
 - 限制范围
 
   - 对位置进行判断
-    - 例子1：不能拖出窗口的 div
-    - 例子2：不能拖出指定窗口的 div
+    - 例子1：不能拖出窗口的 Div
+    - 例子2：不能拖出指定窗口的 Div
   - 磁性吸附
 
 - 图片拖拽
@@ -4286,24 +4287,158 @@
 - 什么是服务器
   - 网页浏览过程分析
   - 如何配置自己的服务器程序
-- 什么是 Ajax
+- 什么是 `Ajax = Asynchronous JavaScript and XML`（异步的 JavaScript 和 XML）
   - 无刷新数据读取
   - 用户注册、在线聊天室
     - 异步、同步
 
 ### 使用 Ajax
 
-- 基础：请求并显示静态 TXT 文件
-  - 字符集编码
-  - 缓存、阻止缓存
-- 动态数据：请求 JS（或 json ）文件
-  - eval 的使用
+- 基础：请求并显示静态 `txt `文件
+  - 字符集编码：必须统一编码
+  - 缓存、阻止缓存：
+    - 根据 `URL` 缓存：让 `URL` 一直在变化，在 URL 后加时间戳
+- 动态数据：请求 JS（或 json ）文件，获取过来是字符串，需要解析
+  - `eval` 的使用：解析成 JS 元素
   - DOM 创建元素
-- 局部刷新
+- 局部刷新：请求并显示部分网页文件
+
+### Ajax 原理
+
+- HTTP 请求方法
+  - `GET` ---- 用于获取数据（如：浏览帖子）
+  - `POST`---- 用于上传数据（如：用户注册）
+  - GET/POST 的区别
+    - `GET` 是在 `url` 里传数据：安全性差、容量小、有缓存
+    - `POST` 不通过 `url` ：安全性较高，容量大（2G）、无缓存
 
 ## Ajax 中级
 
+### 编写 Ajax 
+
+- 创建 Ajax 对象
+
+  - `ActiveXObject("Microsoft.XMLHTTP)`
+
+  - `XMLHttpRequest()`
+
+  - 笔记：变量是 `Window` 的属性
+
+    - 使用未定义的变量 —— 报错
+    - 使用未定义的属性 —— `undefined`
+
+    - 用 `window.XMLHttpRequest` 判断是否是 IE
+
+- 连接服务器
+
+  - `open(方法，文件名，异步传输)`
+    - 同步和异步
+
+- 发送请求
+
+  - `send()`
+
+- 接收返回值
+
+- 请求状态监控
+
+  - `onreadystatechange` 事件
+    - `eadyState` 属性：请求状态
+      - `0: 未初始化 `  还没有调用 `open()` 方法
+      - `1: 开始载入  `  已调用 `send()` 方法，正在发送请求
+      - `2: 载入完成 `  `send()` 发送完成，已收到全部响应内容
+      - `3: 解析  `  正在解析响应内容）
+      - `4: 完成`  响应内容解析完成，可以在客户端调用了）
+    - `status` 属性( http 状态码)：请求结果，`200: 成功`
+    - `responseText`
+
+### Ajax 数据
+
+- 数据类型
+  - 什么叫数据类型——英语/中文
+  - `XML` / `JSON`
+- 字符集( 文件编码 )
+  - 所有文件字符集相同
+
 ## JS 面对对象基础
+
+### 面对对象是什么
+
+- 什么是对象
+  - 什么是收音机，许多成分构成的整体，提供一些功能
+  - 对象是一个整体，对外界提供一些操作
+- 什么是面对对象
+  - 使用对象时，只关注对象提供的功能，不关注其内部细节
+  - 比如 JQuery
+- 面向对象是一种通用思想，并非只有编程中能用，任何事情都可以面对对象
+
+### JS 中的面对对象
+
+- 面对对象编程（OOP）的特点
+  - 抽象：抓住核心问题，把主要特征、相关特征抽出来
+  - 封装：不考虑内部实现，只考虑功能使用
+  - 继承：基于已有对象，继承出新的对象
+    - 多态继承：同时具有几个父对象的特性
+    - 多态：JAVA 等强类型语言常用，JS 不常用
+- 对象的组成
+  - 方法——函数：过程、动态的 
+    - 函数：不属于对象
+    - 方法：属于对象的函数
+  - 属性——变量：状态、静态的
+    - 变量：不属于对象
+    - 属性：属于对象的变量
+
+### 第一个面对对象的程序
+
+- 为对象添加方法和属性
+  - `this` 详解，事件处理中 `this` 的本质
+    - `window`
+    - `this` —— 函数属于谁
+  - 不能在系统对象中随意附加方法、属性，否则会覆盖已有方法、属性
+  - `Object` 对象：系统空白对象
+
+### 工厂方式
+
+- 工厂方式
+  - 用构造函数创建一个类
+  - 什么是类、对象（实例）：模具和零件
+  - 笔记：构造函数/工厂函数
+    - 构建对象的函数
+- 工厂方式的问题
+  - 没有 new
+  - 函数重复定义：函数内容一样却不相等，浪费大量系统资源
+- 问题解决：构造函数加上 `new` , 然后用原型`Prototype` 为对象添加**方法**
+  - new 做了两件事
+    - 替你创建了一个空白对象：`var this = new Object()`
+    - 替你返回了这个空白对象：`return this `
+  - `new` 和 `this`
+
+### 原型：Prototype
+
+- 原型是什么
+  - 原型是 `class`，修改它可以影响一类元素
+  - 在已有对象中加入自己的属性、方法
+- 为所有 `Array` 添加 `Sum` 方法：`Array.prototype.sum = function () {} `
+  - 给对象添加方法，类似于行间样式
+  - **给原型添加方法，类似于 `class`**
+- 原型的小缺陷
+  - 无法限制覆盖
+- 类和对象的区别
+  - 类：生产对象的模子  `Array`
+    -  `var arr = new Array()`
+  - 对象：产品  `arr`
+- 总结：**用构造函数加属性，用原型加方法，叫做混合方式构造对象**
+
+### 面对对象编程方式
+
+- 用混合方式构造对象
+  - 混合的构造函数 / 原型方式
+  - `Mixed Constructor Function` / `Prototype Method`
+- 原则
+  - 构造函数：加属性
+  - 原型：加方法
+- 对象命名规范
+  - 类名首字母大写
 
 ## JS 面对对象实例
 
