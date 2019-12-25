@@ -3946,199 +3946,252 @@
       </div>
     </body>
   </html>
-```
+  ```
   
-  ```css
+- ```css
   /* 18.1.css */
-  body {
-      width: 100%;
-      height: 100%;
-      background-color: cornsilk;
-  }
-  li {
-      float: left;
-  }
-  /* 居中 div */
-  #div_center {
-      margin: 20px auto;
-      width: 640px;
-      height: 450px;
-  }
-  /* 定位 div */
-  #div_position {
-      width: 640px;
-      height: 1100px;
-      overflow: hidden;
-      background-color: rgb(70, 70, 70);
-      position: absolute;
-  }
-  
-  /* 大图样式 */
-  #div_pic {
-      width: 640px;
-      height: 360px;
-      overflow: hidden;
-      position: absolute;
-  }
-  .ul_pic {
-      position: absolute;
-  }
-  .li_pic {
-      position: absolute;
-  }
-  .li_pic img{
-      width: 640px;
-      height: 360px;
-  }
-  
-  /* 左右键样式 */
-  .ul_btn {
-      top: 0px;
-      width: 640px;
-      height: 360px;
-      position: absolute;
-      float: left;
-  }
-  .slider_btn_left, .slider_btn_right {
-      width: 150px;
-      height: 360px;
-  }
-  .slider_btn_right {
-      float: right;
-  }
-  .slider_btn_left img{
-      padding: 150px 105px 150px 10px ;
-      position: relative;
-      width: 35px;
-      height: 60px;
-      opacity: 0;
-      filter: alpha(opacity=0);
-      float: left;
-  }
-  .slider_btn_right img{
-      padding: 150px 10px 150px 105px ;
-      position: relative;
-      width: 35px;
-      height: 60px;
-      opacity: 0;
-      filter: alpha(opacity=0);
-      float: right;
-  }
-  
-  /* 小图样式 */
-  #div_thumbnail {
-      top: 360px;
-      width: 620px;
-      background-color: rgb(70, 70, 70);
-      margin: 0 10px 0 5px;
-      overflow: hidden;
-      position: absolute;
-  }
-  .ul_thumbnail {
-      width: 640px;
-      height: 90px;
-  }
-  .li_thumnali {
-      opacity: 0.5;
-      filter: alpha(opacity=50);
-  }
-  .li_thumnali img{
-      padding: 10px 0px 10px 10px;
-      width: 125px;
-      height: 70px;
-  }
-  
-  /* 图片文字栏 */
-  .ul_txt {
-      width: 640px;
-      height: 20px;
-      position: absolute;
-      top: 340px;
-  }
-  .li4_background {
-      width: 640px;
-      height: 20px;
-      top: 0px;
-      background-color: rgb(0, 0, 0);
-      opacity: 0.5;
-      filter: alpha(opacity=50);
-  }
-  .li4_introduction {
-      top: -17px;
-      margin-left: 10px;
-      width: 500px;
-      position: relative;
-      color: rgb(255, 255, 255);
-      filter: alpha(opacity=80);
-      opacity: 0.8;
-  }
-  .li4_sum_num {
-      width: 120px;
-      top: -17px;
-      left: 10px;
-      position: relative;
-      color: rgb(255, 255, 255);
-      filter: alpha(opacity=80);
-      opacity: 0.8;
-  }
-  
-  /* 评论区 */
-  #div_comments {
-      position: absolute;
-      display: block;
-      top: 450px;
-      padding-top: 20px;
-      width: 640px;
-      background-color: rgb(252, 229, 200);
-  }
-  #div_com_inp  {
-      margin-top: 5px;
-      border-top: burlywood dashed 1px;
-      border-bottom: burlywood dashed 1px;
-  }
-  .text {
-      margin: 20px 0 20px 53px;
-  }
-  .btn {
-      margin: 20px 0 20px 20px;
-      width: 70px;
-      height: 70px;
-  }
-  #div_com_show {
-      height: 475px;
-      margin: 20px 50px;
-      padding: 0px 20px;
-      background-color: rgb(255, 255, 255);
-      overflow: hidden;
-  }
-  .li_comment {
-      white-space: pre-wrap;
-      padding: 10px 5px;
-      float: none;
-      border-bottom: cadetblue dashed 1px;
-      opacity: 0;
-      filter: alpha(opacity=0);
-      overflow: hidden;
-  }
-```
-  
-  
+    body {
+        width: 100%;
+        height: 100%;
+        background-color: cornsilk;
+    }
+    li {
+        float: left;
+    }
+    /* 居中 div */
+    #div_center {
+        margin: 20px auto;
+        width: 640px;
+        height: 450px;
+    }
+    /* 定位 div */
+    #div_position {
+        width: 640px;
+        height: 1100px;
+        overflow: hidden;
+        background-color: rgb(70, 70, 70);
+        position: absolute;
+    }
+    
+    /* 大图样式 */
+    #div_pic {
+        width: 640px;
+        height: 360px;
+        overflow: hidden;
+        position: absolute;
+    }
+    .ul_pic {
+        position: absolute;
+    }
+    .li_pic {
+        position: absolute;
+    }
+    .li_pic img{
+        width: 640px;
+        height: 360px;
+    }
+    
+    /* 左右键样式 */
+    .ul_btn {
+        top: 0px;
+        width: 640px;
+        height: 360px;
+        position: absolute;
+        float: left;
+    }
+    .slider_btn_left, .slider_btn_right {
+        width: 150px;
+        height: 360px;
+    }
+    .slider_btn_right {
+        float: right;
+    }
+    .slider_btn_left img{
+        padding: 150px 105px 150px 10px ;
+        position: relative;
+        width: 35px;
+        height: 60px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        float: left;
+    }
+    .slider_btn_right img{
+        padding: 150px 10px 150px 105px ;
+        position: relative;
+        width: 35px;
+        height: 60px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        float: right;
+    }
+    
+    /* 小图样式 */
+    #div_thumbnail {
+        top: 360px;
+        width: 620px;
+        background-color: rgb(70, 70, 70);
+        margin: 0 10px 0 5px;
+        overflow: hidden;
+        position: absolute;
+    }
+    .ul_thumbnail {
+        width: 640px;
+        height: 90px;
+    }
+    .li_thumnali {
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+    }
+    .li_thumnali img{
+        padding: 10px 0px 10px 10px;
+        width: 125px;
+        height: 70px;
+    }
+    
+    /* 图片文字栏 */
+    .ul_txt {
+        width: 640px;
+        height: 20px;
+        position: absolute;
+        top: 340px;
+    }
+    .li4_background {
+        width: 640px;
+        height: 20px;
+        top: 0px;
+        background-color: rgb(0, 0, 0);
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+    }
+    .li4_introduction {
+        top: -17px;
+        margin-left: 10px;
+        width: 500px;
+        position: relative;
+        color: rgb(255, 255, 255);
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+    }
+    .li4_sum_num {
+        width: 120px;
+        top: -17px;
+        left: 10px;
+        position: relative;
+        color: rgb(255, 255, 255);
+        filter: alpha(opacity=80);
+        opacity: 0.8;
+    }
+    
+    /* 评论区 */
+    #div_comments {
+        position: absolute;
+        display: block;
+        top: 450px;
+        padding-top: 20px;
+        width: 640px;
+        background-color: rgb(252, 229, 200);
+    }
+    #div_com_inp  {
+        margin-top: 5px;
+        border-top: burlywood dashed 1px;
+        border-bottom: burlywood dashed 1px;
+    }
+    .text {
+        margin: 20px 0 20px 53px;
+    }
+    .btn {
+        margin: 20px 0 20px 20px;
+        width: 70px;
+        height: 70px;
+    }
+    #div_com_show {
+        height: 475px;
+        margin: 20px 50px;
+        padding: 0px 20px;
+        background-color: rgb(255, 255, 255);
+        overflow: hidden;
+    }
+    .li_comment {
+        white-space: pre-wrap;
+        padding: 10px 5px;
+        float: none;
+        border-bottom: cadetblue dashed 1px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        overflow: hidden;
+    }
+  ```
 
+    
 ## JS事件基础
 
 ### Event 对象和事件冒泡
 
 - 什么是 Event 对象
-  - 用来获取鼠标事件的详细信息：鼠标位置、键盘按键
+  - 用来获取鼠标/键盘事件的信息：**鼠标位置、键盘按键**
   - 例子：获取鼠标位置：`clientX`
-  - document 的本质：`document.childNodes[0].tagName` 是整个网页
-- 获取 Event 对象（兼容性写法）
-  - `var oEvent = ev||event;`  火狐用 `ev` IE用 `event`
+  - `document` 的本质是整个网页：`document.childNodes[0].tagName = '<!DOCTYPE>'` 
+    - `body` 不加事件，因为没有内容就没高度
+  
+- 获取 `Event` 对象**（兼容性写法）**
+  
+  - `var oEvent = ev||event;`  火狐用 `ev` / IE 用 `event`
+  - 事件函数把事件对象最为参数传入：`btn.onclick = function(ev) { var oEvent = ev||event;}`
+  
 - 事件流
   - 事件流冒泡：事件往父级传递
     - 取消冒泡：`oEvent.cancelBubble = true`
     - 例子：仿 `select` 控件
     - `DOM` 事件流
+  
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>键盘事件和仿select下拉框</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div1 {
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          background-color: rgb(255, 0, 0);
+          display: none;
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+          return document.getElementById(id);
+        }
+      
+      window.onload = function () {
+        var oDiv = get('div1');
+        var btn = get('btn');
+        btn.onclick = function (ev) {
+          var oEvent = ev||event;
+          oDiv.style.display = 'block';
+          console.log(this);
+          oEvent.cancelBubble = true;
+        }
+        document.onclick = function () {
+          oDiv.style.display = 'none';
+          console.log(this);
+        }
+      }
+      </script>
+    </head>
+    <body>
+      <input type="button" value="显示" id="btn">
+      <div id="div1"></di'v>
+    </body>
+  </html>
+  ```
+
+  
 
 ### 鼠标事件 
 
@@ -4147,50 +4200,368 @@
   
   - 例子：跟随鼠标的 `Div`
     
-    - 消除滚动条的影响：可视区与页面顶部的距离
+    - 消除滚动条的影响：**可视区**与**页面顶部**的距离
     
   - 代码：
   
     ```js
     // 封装鼠标当前坐标函数
     function getPos(ev) {
-        var scrollTop = document.documrntElement.scrollTop||document.body.scrollTop;
+        var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
         var scrollLeft = document.documentElement.scollLeft||document.body.scrollLeft;
     
         return {x: ev.clientX+scrollLeft, y: ev.clientY+scrollTop};
     }
     ```
   
-    
 - 获取鼠标在页面的绝对位置
   - 封装函数
+  
   - 例子：一串跟随鼠标的 `Div`
+  
+  - 代码：
+  
+    ```HTML
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>跟随鼠标的一串div</title>
+        <link rel="stylesheet" href="../reset.css">
+        <style>
+          div {
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            background-color: rgb(255, 0, 0);
+          }
+        </style>
+        <script>
+        window.onload = function () {
+          // 封装鼠标当前坐标函数
+          function getPos(ev) {
+            var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+            var scrollLeft = document.documentElement.scollLeft||document.body.scrollLeft;
+    
+            return {x: ev.clientX+scrollLeft, y: ev.clientY+scrollTop};
+          }
+          var oDiv = document.getElementsByTagName('div');
+          document.onmousemove = function () {
+            var ev = ev || event;
+            // 后一个元素跟随前一个元素
+            for ( var i = oDiv.length-1; i > 0; i--) {
+              console.log(oDiv[i].style.left,oDiv[i-1].offsetLeft)
+              oDiv[i].style.left = oDiv[i-1].offsetLeft + 'px';
+              oDiv[i].style.top = oDiv[i-1].offsetTop + 'px';
+            }
+            // 当前多变赋值给第一个元素，
+            var pos = getPos(ev);
+            oDiv[0].style.left = pos.x + 'px';
+            oDiv[0].style.top = pos.y + 'px';
+          }
+        }
+        </script>
+      </head>
+      <body>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div><div></div>
+      </body>
+    </html>
+    ```
+  
+    
 
 ### 键盘事件
 
 - `keyCode`
-  - 获取用户按下键盘的哪个键
+  
+  - 获取用户按下键盘的哪个键：`onkeydown` / `onkeyup`
   - 例子：键盘控制 `Div` 移动
+  
 - 其它属性
   - `ctrlKey`、`shiftKey`、`altKey`
   - 例子：提交留言
     - 回车提交
     - CTRL + 回车 提交
+  
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>键盘控制元素移动和回车提交</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+       /* 评论区 */
+       #div_comments {
+         position: absolute;
+         display: block;
+         padding-top: 20px;
+         width: 640px;
+         background-color: rgb(252, 229, 200);
+       }
+       #div_com_inp  {
+         margin-top: 5px;
+         border-top: burlywood dashed 1px;
+         border-bottom: burlywood dashed 1px;
+       }
+       .text {
+         margin: 20px 0 20px 53px;
+       }
+       .btn {
+         margin: 20px 0 20px 20px;
+         width: 70px;
+         height: 70px;
+       }
+       #div_com_show {
+        height: 200px;
+        margin: 20px 50px;
+        padding: 0px 20px;
+        background-color: rgb(255, 255, 255);
+        overflow: hidden;
+       }
+       .li_comment {
+         white-space: pre-wrap;
+         padding: 10px 5px;
+         float: none;
+         border-bottom: cadetblue dashed 1px;
+         opacity: 0;
+         filter: alpha(opacity=0);
+         overflow: hidden;
+       }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+          return document.getElementById(id);
+        }
+      
+      window.onload = function () {
+        // var oDiv = get('div1');
+        // document.onkeydown = function () {
+        //   var ev = event||ev;
+        //   if (ev.keyCode === 37) {
+        //     oDiv.style.left = oDiv.offsetLeft - 10 + 'px'
+        //   } else if (ev.keyCode === 39) {
+        //     oDiv.style.left = oDiv.offsetLeft + 10 + 'px'
+        //   } else if (ev.keyCode === 38) {
+        //     oDiv.style.top = oDiv.offsetTop - 10 + 'px'
+        //   } else if (ev.keyCode === 40) {
+        //     oDiv.style.top = oDiv.offsetTop + 10 + 'px'
+        //   }
+        // }
+  
+        //获取Div元素
+        var oDiv = document.getElementById("div_comments");
+   
+        //创建各个方向条件判断初始变量
+        var left = false;
+        var right = false;
+        var top = false;
+        var bottom = false;
+   
+        //当按下对应方向键时，对应变量为true
+        document.onkeydown = function(ev){
+          var oEvent = ev || event;
+          var keyCode = oEvent.keyCode;
+          switch(keyCode){
+            case 37:
+              left=true;
+              break;
+            case 38:
+              top=true;
+              break;
+            case 39:
+              right=true;
+              break;
+            case 40:
+              bottom=true;
+              break;
+          }
+        };
+   
+        //设置一个定时，时间为50左右，不要太高也不要太低
+        setInterval(function(){
+   
+          //当其中一个条件为true时，则执行当前函数（移动对应方向）
+          if(left){
+            oDiv.style.left = oDiv.offsetLeft-10+"px";
+          }else if(top){
+            oDiv.style.top = oDiv.offsetTop-10+"px";
+          }else if(right){
+            oDiv.style.left = oDiv.offsetLeft+10+"px";
+          }else if(bottom){
+            oDiv.style.top = oDiv.offsetTop+10+"px";
+          }
+        },50);
+   
+        //执行完后，所有对应变量恢复为false，保持静止不动
+        document.onkeyup = function(ev){
+          var oEvent = ev || event;
+          var keyCode = oEvent.keyCode;
+   
+          switch(keyCode){
+            case 37:
+              left=false;
+              break;
+            case 38:
+              top=false;
+              break;
+            case 39:
+              right=false;
+              break;
+            case 40:
+              bottom=false;
+              break;
+          }
+        }
+  
+        // btn 提交
+        var btn = get('btn_comment');
+        var txt = get('text_comment');
+        var board = get('div_com_show');
+        btn.onclick = function () {
+          if (true) {
+            var oP = document.createElement('p');
+            oP.innerHTML = txt.value;
+            txt.value = '';
+            if (board.children.length > 0) {
+              board.insertBefore(oP,board.children[0])
+            } else {
+              board.appendChild(oP);
+            }
+          }
+        }
+        // ctrl + enter 提交
+        txt.onkeydown = function (ev) {
+          var ev = ev||event;
+          if (ev.keyCode === 13 && ev.ctrlKey) {
+            var oP = document.createElement('p');
+            oP.innerHTML = txt.value;
+            txt.value = '';
+            if (board.children.length > 0) {
+              board.insertBefore(oP,board.children[0])
+            } else {
+              board.appendChild(oP);
+            }
+          }
+        }
+      }
+      </script>
+    </head>
+    <body>
+      <div id="div_comments">
+        <div id="div_com_inp">
+          <textarea class="text" name="" id="text_comment" cols="60" rows="5"></textarea>
+          <input class="btn" type="button" name="" id="btn_comment" value="发表评论">
+        </div>
+        <div id="div_com_show">
+          <p>CTRL + 回车 提交</p>
+          <p>键盘控制留言框位置</p>
+        </div>
+      </div>
+    </body>
+  </html>
+  ```
+
+  
 
 ## JS 事件中级
 
 ### 默认事件
 
 - 默认事件
+  
   - 什么是默认事件
+  
 - 阻止默认事件
   - 普通写法：`return false;`
   - 例子1：屏蔽右键菜单
-    - ` document.oncontextmenu = function () { return false; }`
+    - ` document.oncontextmenu = function (ev) { return false; }`
     - 弹出自定义右键菜单
   - 例子2：只能输入数字的输入框
     - ` oTxt.onkeydown = function (ev) { return false; }`
     - `keydown`、`keyup` 事件区别
+  
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>默认事件</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div1 {
+          width: 100px;
+          height: 150px;
+          position: absolute;
+          background-color: rgb(207, 207, 207);
+          display: none;
+        }
+      </style>
+      <script>
+  
+      // 阻止默认事件 阻止右键菜单
+      document.oncontextmenu = function (ev) {
+        var ev = ev||event;
+        var oDiv = get('div1');
+        oDiv.style.display = 'block';
+        oDiv.style.top = ev.clientY + 'px';
+        oDiv.style.left = ev.clientX + 'px';
+        return false;
+      }
+      // 点击其它位置div消失
+      document.onclick = function (ev) {
+        var oDiv = get('div1');
+        oDiv.style.display = 'none';
+      }
+      
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+  
+      window.onload = function () {
+        // 只能输入数字的文本框
+        // ASCII 0:48 ~ 9:58 
+        var txt = get('txt');
+        txt.onkeydown = function (ev) {
+          var ev = ev||event;
+          if (ev.keyCode <= 58 && ev.keyCode >=48 || ev.keyCode === 8) {
+  
+          } else {
+            return false;
+          }
+        }
+      }
+      
+      </script>
+    </head>
+    <body>
+      <input type="text" name="" id="txt">
+      <div id="div1">
+        <li>123</li><li>456</li><li>789</li><li>123</li> <li>456</li>  
+        <li>789</li><li>123</li><li>456</li><li>789</li>  
+      </di'v>
+    </body>
+  </html>
+  ```
+
+  
 
 ### 拖拽
 
@@ -4198,6 +4569,7 @@
   - 拖拽原理
     - 鼠标按下位置到 div 距离不变
     - 三个事件：` onmousedown` `onmousemove` `onmouseup`
+  
 - 靠谱拖拽
   - 原有拖拽的问题：移动太快鼠标会移出 div
     - 直接给 document 加事件
@@ -4205,6 +4577,79 @@
     - 阻止默认事件：`onmousedown {return false}`
   - 防止拖出页面
     - 修正位置：在可视区内
+  
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>拖拽</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div1 {
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          background-color: rgb(255, 0, 0);
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+      window.onload = function () {
+        var oDiv = get('div1');
+        // oDiv.onmousedown 很容易移出范围
+        document.onmousedown = function Drag() {
+          var ev = event||ev;
+          var _this = this;
+          // 鼠标可视区位置 - div左边距 = 鼠标在div内的位置
+          var disX = ev.clientX - oDiv.offsetLeft;
+          var disY = ev.clientY - oDiv.offsetTop;
+          console.log(disX,'可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+          this.onmousemove = function mouseMove() {
+            // 不断获取Event 对象，坐标才会不断更新
+            var ev = event||ev;
+            // console.log('可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+            // div位置 = 鼠标可视区新的位置 - 鼠标与div的距离
+            var left = ev.clientX -disX;
+            var top = ev.clientY - disY;
+            if (left < 0) {
+              left = 0;
+            }
+            if (top < 0) {
+              top = 0
+            }
+            if (left > document.documentElement.clientWidth - oDiv.offsetWidth) {
+              left = document.documentElement.clientWidth - oDiv.offsetWidth + 'px';
+            }
+            if (top > document.documentElement.clientHeight - oDiv.offsetHeight) {
+              top = document.documentElement.clientHeight - oDiv.offsetHeight + 'px';
+            }
+            oDiv.style.left = left + 'px';
+            oDiv.style.top = top + 'px';
+          }
+          this.onmouseup = function mouseUp() {
+            _this.onmousemove = '';
+            this.onmouseup = '';
+          }
+          // 阻止火狐重影bug
+          return false;
+        }
+      }
+      
+      </script>
+    </head>
+    <body>
+      <div id="div1"></di'v>
+    </body>
+  </html>
+  ```
+
+  
 
 ## JS 事件高级应用
 
@@ -4442,7 +4887,211 @@
 
 ## JS 面对对象实例
 
+### 面对对象的选项卡
+
+- 把面向过程的程序，改写成面向对象的形式
+
+  - 原则：不能有函数套函数，但可以有全局变量
+  - 过程：
+    - `onload`：构造函数
+    - 全局变量：属性
+    - 函数：方法
+  - 改错：
+    - `this`、事件、闭包、传参
+
+- 对象与闭包
+
+  - 通过闭包传递 `this`
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>面对对象的选项卡</title>
+      <style>
+        .div2 {
+          width: 200px;
+          height: 200px;
+          margin-top: 20px;
+          position: relative;
+        }
+        .div1 {
+          width: 200px;
+          height: 20px;
+          position: absolute;
+          top: 0px;
+        }
+        ul {
+          margin: 0;
+          padding: 0;
+          display: block;
+          background: rgb(157, 234, 253);
+          float: left;
+          position: absolute;
+          display: none;
+          width: 200px;
+          height: 200px;
+        }
+        .ul {
+          display: block;
+        }
+        a {
+          display: block;
+          float: left;
+          width: 49px;
+          height: 20px;
+          background: rgb(7, 184, 253);
+          border-right: 1px solid rgb(255, 0, 234);
+          text-decoration: none;
+        }
+        .a {
+          background: rgb(32, 108, 221);
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+          return document.getElementById(id);
+        }
+      // 封装 getElementsByTagName
+      function gets(obj,tagName) {
+        return obj.getElementsByTagName(tagName)
+      }
+      // onload 作为构造函数
+      window.onload = function () {
+        new TabSwitch('tabS')
+      }
+      // 构造一个对象
+      function TabSwitch(id){
+          var oDiv = get(id);
+          var _this = this; // 避免找不到 this
+          // 全局变量作为属性
+          this.aA = gets(oDiv,'a');
+          this.aUl = gets(oDiv,'ul');
+          // 显示第一个元素
+          this.aUl[0].className = 'ul';
+          // 当鼠标覆盖某个标签时 显示对应元素
+          for (var i = 0; i < this.aUl.length; i++) {
+            this.aA[i].index = i;
+            this.aA[i].onmouseover = function () {
+              // 把当前this作为参数传入，_this作为当前this调用直接传入
+              _this.showTab(this); 
+            }
+          }
+        }
+        // 函数作为方法 事件this作为参数传入
+        TabSwitch.prototype.showTab = function (aA) {
+          // console.log(this); // 当前this是调用方法的_this
+          for (var i = 0; i < this.aA.length; i++) {
+            this.aUl[i].className = '';
+            this.aA[i].className = '';
+          }
+          this.aUl[aA.index].className = 'ul';
+          this.aA.className = 'a';
+        }
+      </script>
+    </head>
+    <body>
+      <div id="tabS">
+        <div class="div1">
+          <a href="javascript:;" id="a0">11</a>
+          <a href="javascript:;" id="a1">22</a>
+          <a href="javascript:;" id="a2">33</a>
+          <a href="javascript:;" id="a3">44</a>
+        </div>
+        <div class="div2">
+          <ul>
+            <li>1</li>
+          </ul>
+          <ul>
+            <li>2</li>
+          </ul>
+          <ul>
+            <li>3</li>
+          </ul>
+          <ul>
+            <li>4</li>
+          </ul>
+      </div>
+      </div>
+    </body>
+  </html>
+  ```
+
+  
+
 ## JS 面对对象高级
+
+###  Json 方式的面向对象
+
+- 把方法包在一个 `Json` 里：简单 单体 不适合多个对象
+  - 有人管它叫：命名空间
+  - 把同一类方法，放在一起
+
+### 拖拽和继承
+
+- 面向对象的拖拽
+  - 改写原有拖拽
+- 对象的继承
+  - 什么是继承
+    - 在原有类的基础上略作修改，得到一个新类
+    - 不影响原有类的功能
+  - `instanceof` 运算符
+    - 查看对象是否是某个类的实例
+
+### 使用继承
+
+- 限制范围的拖拽类
+
+  - 构造函数的伪装
+
+    - 属性的继承
+
+      - 原理
+
+    - `call` 的使用
+
+      ```js
+      function A() {
+      	this.abc = 12;
+      }
+      A.rototype.show = {
+      	alert(this.abc);
+      }
+      function B() {
+      	A.call(this); // 用 call 继承属性，把B传入A函数内
+      }
+      // B.prototype = A.prototype; // 浅复制方法是引用，指向同一个内存空间
+      for (var i in A.prototype) {
+          B.prototype[i] = A.ptoyotype[i]; // 深度复制就不会引用，直接复制内容
+      }
+      var obj = new B();
+  alert(obj.abc);
+      obj.show.call(); // call 一般省略
+    ```
+      
+
+  - 原型链
+  
+    - 方法的继承
+      - 原理：**复制方法是引用，指向同一个内存空间**
+    - 覆盖原型的方法复制
+      - `for in` 深度复制就不会引用，直接复制内容
+
+### 系统对象
+
+- 本地对象
+  - 什么是本地对象
+  - 常用对象
+    - `Object` / `Function` / `Array` / `String` / `Boolean` / `Number` / `Date` / `RegExp` / `Error`
+- 内置对象（静态对象）
+  - 什么是本地对象
+    - `Global` / `Math`
+- 宿主对象（由浏览器提供的对象）
+  - `DOM` / `BOM`
 
 ## BOM 应用
 
