@@ -3414,7 +3414,7 @@
   - 使用 `rgba(R,G,B,opacity)`  间接的设定 `opacity` 的值，这个属性不会向下继承
   - 或者把 `opacity` 属性放到同级元素实现
 
-  
+- 笔记：父级使用相对定位，子级才能在范围内绝对定位
 
 ## JS 运动中级
 
@@ -4405,7 +4405,7 @@
           }else if(bottom){
             oDiv.style.top = oDiv.offsetTop+10+"px";
           }
-        },50);
+        },30);
    
         //执行完后，所有对应变量恢复为false，保持静止不动
         document.onkeyup = function(ev){
@@ -4554,9 +4554,16 @@
     <body>
       <input type="text" name="" id="txt">
       <div id="div1">
-        <li>123</li><li>456</li><li>789</li><li>123</li> <li>456</li>  
-        <li>789</li><li>123</li><li>456</li><li>789</li>  
-      </di'v>
+        <li>123</li>  
+        <li>456</li>  
+        <li>789</li>  
+        <li>123</li>  
+        <li>456</li>  
+        <li>789</li>  
+        <li>123</li>  
+        <li>456</li>  
+        <li>789</li>  
+      </div>
     </body>
   </html>
   ```
@@ -4644,7 +4651,7 @@
       </script>
     </head>
     <body>
-      <div id="div1"></di'v>
+      <div id="div1"></div>
     </body>
   </html>
   ```
@@ -4655,15 +4662,72 @@
 
 ### 事件绑定
 
-- IE 方式：不兼容 IE9 以上
+- IE 方式：
   - `attachEvent(事件名称, 函数)`，绑定事件处理函数
   - `detachEvent(事件名称, 函数)`，接触绑定
-- DOM 方式：不兼容 IE7 以下
+  
+- DOM 方式：不兼容 IE7 
   - `addEventListener(事件名称, 函数, 捕获)`
   - `removeEventListener(事件名称, 函数, 捕获)`
+  
 - 何时使用绑定
+
 - 绑定事件和 `this`
+
 - 绑定匿名函数，会无法删除
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>事件绑定</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div1 {
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          background-color: rgb(255, 0, 0);
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+  
+      // 封装 attachEvent 兼容性函数
+      function myAddEvent(obj, ev, fn) {
+        if (obj.attachEvent) {
+          obj.attachEvent('on'+ ev, fn);
+        } else {
+          obj.addEventListener(ev, fn , false);
+        }
+      }
+  
+      window.onload = function () {
+        var oDiv = get('div1');
+        var btn = get('btn');
+        myAddEvent(btn, 'click', function () {
+          console.log('event');
+        })
+        myAddEvent(btn, 'click', function () {
+          console.log('event2');
+        })
+      }
+      </script>
+    </head>
+    <body>
+      <input type="button"  id="btn" value="按钮">
+      <div id="div1"></div>
+    </body>
+  </html>
+  ```
+
+  
 
 ### 高级拖拽
 
@@ -4685,7 +4749,7 @@
 
 - 文字选中
 
-  - 阻止默认事件
+  - 阻止默认事件 `return false` 可以解决 chrome FireFox IE9的文字选中问题
   - IE 下拖动有问题
     - 事件捕获：`.setCapture()` 只兼容IE
     - 取消捕获：`.releaseCapture()` 
@@ -4697,10 +4761,107 @@
 
 - 代码：
 
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>高级拖拽</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div1 {
+          width: 100px;
+          height: 100px;
+          position: absolute;
+          background-color: rgb(82, 177, 255);
+        }
+        .box {
+          border: black dashed 1px;
+          position: absolute;
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+      window.onload = function () {
+        var oDiv = get('div1');
+        var oDiv0 = get('div0');
+  
+        // oDiv.onmousedown 很容易移出范围
+        oDiv.onmousedown = function Drag() {
+          var ev = event||ev;
+          var _this = this;
+  
+          // 鼠标可视区位置 - div左边距 = 鼠标在div内的位置
+          var disX = ev.clientX - oDiv.offsetLeft;
+          var disY = ev.clientY - oDiv.offsetTop;
+          console.log(disX,'可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+          
+          // 增加边框
+          var oBox = document.createElement('div');
+          oBox.className = 'box';
+          // 边框的大小 - 线宽 = oDiv 的大小
+          oBox.style.width = this.offsetWidth - 2 + 'px';
+          oBox.style.height = this.offsetHeight - 2 + 'px';
+          oDiv0.appendChild(oBox);
+          // 边框的位置 = oDiv 的位置
+          oBox.style.left = oDiv.offsetLeft + 'px';
+          oBox.style.top = oDiv.offsetTop + 'px';
+          // IE7 兼容
+          if (this.setCapture) {
+            this.onmousemove = mouseMove;
+            this.onmouseup = mouseUp;
+            oDiv.setCapture();
+          } else {
+            document.onmousemove = mouseMove;
+            document.onmouseup = mouseUp;
+          }
+  
+          function mouseUp() {
+            this.onmousemove = '';
+            this.onmouseup = '';
+            // 鼠标松开，oDiv 到 oBox 的位置
+            oDiv.style.left = oBox.offsetLeft + 'px';
+            oDiv.style.top = oBox.offsetTop + 'px';
+            // 删除生成的box
+            oDiv0.removeChild(oBox);
+            // IE7 兼容
+            if (this.releaseCapture) {
+              this.releaseCapture();
+            }
+          }
+  
+          function mouseMove(ev) {
+            // 不断获取Event 对象，坐标才会不断更新
+            var ev = event||ev;
+            // console.log('可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+            // div位置 = 鼠标可视区新的位置 - 鼠标与div的距离
+            var left = ev.clientX -disX;
+            var top = ev.clientY - disY;
+            // 鼠标移动时 移动虚线框
+            oBox.style.left = left + 'px';
+            oBox.style.top = top + 'px';
+          }
+          
+          // 阻止火狐重影bug, 解决 chrome FireFox IE9的文字选中问题
+          return false;
+        }
+      }
+      
+      </script>
+    </head>
+    <body>
+      <div id="div0">
+        asdfasdfas/sad'234
+        <div id="div1">asdfasdfas/sad</div>
+        asdfasdfas/sad'234
+      </div>
+    </body>
+  </html>
   ```
   
-  ```
-
   
 
 ### 自定义滚动条
