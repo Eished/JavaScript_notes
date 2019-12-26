@@ -4881,9 +4881,227 @@
 - 代码：
 
   ```HTML
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>自定义滚动条</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div0 {
+          margin: 10px auto;
+          width: 600px;
+          height: 400px;
+          position: relative;
+          background-color: blanchedalmond;
+        }
+        /* 上下滚动条 */
+        #div1 {
+          top: 50px;
+          right: 50px;
+          width: 20px;
+          height: 300px;
+          position: absolute;
+          border: rgb(139, 139, 139) solid 1px;
+        }
+        #div2 {
+          width: 20px;
+          height: 40px;
+          position: absolute;
+          background-color: rgb(140, 171, 255);
+        }
+        /* 文字区 */
+        #div3 {
+          left: 60px;
+          top: 50px;
+          width: 400px;
+          height: 300px;
+          position: absolute;
+          background-color: rgb(255, 255, 255);
+          overflow: hidden;
   
+        }
+        #div4 {
+          width: 900px;
+          position: absolute;
+          white-space: pre-wrap;
+          background-color: cornsilk;
+        }
+        /* 左右滚动条 */
+        #div5 {
+          top: 5px;
+          right: 140px;
+          width: 400px;
+          height: 20px;
+          position: absolute;
+          border: rgb(139, 139, 139) solid 1px;
+        }
+        #div6 {
+          width: 40px;
+          height: 20px;
+          position: absolute;
+          background-color: rgb(140, 171, 255);
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+  
+      window.onload = function () {
+  
+        var oDiv1 = get('div1'); // 上下滚动框
+        var oDiv2 = get('div2'); // 上下滚动条
+        var oDiv3 = get('div3'); // 文字框
+        var oDiv4 = get('div4'); // 文字可视区
+        
+        var oDiv5 = get('div5'); // 左右滚动框
+        var oDiv6 = get('div6'); // 左右滚动条
+  
+        // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+        // 鼠标按下滚动条时触发事件
+        // 鼠标Y移动时，滚动条top 移动
+        // 鼠标松开时，事件结束
+  
+        oDiv2.onmousedown = function (ev) {
+          var ev = ev||event;
+          var disMouse = ev.clientY;
+          var oldPos = this.offsetTop;
+          // 滚动范围 = 滚动条高 + 滚动框高
+          var disScroll = oDiv1.offsetHeight - oDiv2.offsetHeight -2; 
+  
+          document.onmousemove = function (ev) {
+            ev = ev||event;
+            // 移动距离
+            var disMove = ev.clientY - disMouse;
+            // 滚动条TOP = 滚动条TOP + 移动距离
+            var divScroll = oldPos + disMove;
+            // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+            var divTxt = (oDiv3.offsetHeight - oDiv4.offsetHeight)*(divScroll/disScroll);
+  
+            // 向下移 disMove > 0; 向上移 disMove < 0 
+            if (disMove > 0 && divScroll <= disScroll) {
+              // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
+              oDiv2.style.top = divScroll + 'px';
+              oDiv4.style.top = divTxt + 'px';
+              // 文字区
+            } else if (disMove <= 0 && divScroll >= 0) {
+              // 都 = 0；divScroll 才能取到 0px
+              oDiv2.style.top = divScroll + 'px';
+              oDiv4.style.top = divTxt + 'px';
+            } else {
+              // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
+              if (disMove < 0 && divScroll < 30) {
+                oDiv2.style.top = 0;
+                oDiv4.style.top = 0;
+              } else if (disMove > 0 && disScroll - divScroll < 30) {
+                oDiv2.style.top = disScroll + 'px';
+                oDiv4.style.top = oDiv3.offsetHeight - oDiv4.offsetHeight + 'px';              
+              }
+            }
+            document.onmouseup = function () {
+              this.onmousemove = '';
+              this.onmouseup = '';
+            }
+            console.log(disMove,divScroll,disScroll,oldPos,divTxt)
+          }
+          return false; // 可以解决 chrome FireFox IE9的文字选中问题
+        }
+  
+        oDiv6.onmousedown = function (ev) {
+          var ev = ev||event;
+          var disMouse = ev.clientX;
+          var oldPos = this.offsetLeft;
+          // 滚动范围 = 滚动条高 + 滚动框高
+          var disScroll = oDiv5.offsetWidth - oDiv6.offsetWidth -2; 
+  
+          document.onmousemove = function (ev) {
+            ev = ev||event;
+            // 移动距离
+            var disMove = ev.clientX - disMouse;
+            // 滚动条TOP = 滚动条TOP + 移动距离
+            var divScroll = oldPos + disMove;
+  
+            // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+            var divTxt= (oDiv3.offsetWidth - oDiv4.offsetWidth)*(divScroll / disScroll);
+  
+            // 向下移 disMove > 0; 向上移 disMove < 0 
+            if (disMove > 0 && divScroll <= disScroll) {
+              // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
+              oDiv6.style.left = divScroll + 'px';
+              oDiv4.style.left = divTxt + 'px';
+              // 文字区
+            } else if (disMove <= 0 && divScroll >= 0) {
+              // 都 = 0；divScroll 才能取到 0px
+              oDiv6.style.left = divScroll + 'px';
+              oDiv4.style.left = divTxt + 'px';
+            } else {
+              // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
+              if (disMove < 0 && divScroll < 30) {
+                oDiv6.style.left = 0;
+                oDiv4.style.left = 0;
+              } else if (disMove > 0 && disScroll - divScroll < 30) {
+                oDiv6.style.left = disScroll + 'px';
+                oDiv4.style.left = oDiv3.offsetWidth - oDiv4.offsetWidth + 'px';              
+              }
+            }
+            document.onmouseup = function () {
+              this.onmousemove = '';
+              this.onmouseup = '';
+            }
+            console.log(disMove,divScroll,disScroll,oldPos,divTxt)
+          }
+          return false; // 可以解决 chrome FireFox IE9的文字选中问题
+        }
+      }
+      </script>
+    </head>
+    <body>
+      <div id="div0">
+        <div id="div1">
+          <div id="div2"></div>
+        </div>
+        <div id="div5">
+          <div id="div6"></div>
+        </div>
+        <div id="div3">
+          <div id="div4">
+            值			描述
+  normal		默认。空白会被浏览器忽略。
+  pre			空白会被浏览器保留。其行为方式类似 HTML 中的  标签。inherit		规定应该从父元素继承 white-space 属性的值。
+  nowrap		文本不会换行，文本会在在同一行上继续，直到遇到  标签为止。
+  pre-wrap	保留空白符序列，但是正常地进行换行。
+  pre-line	合并空白符序列，但是保留换行符。
+  inherit		规定应该从父元素继承 white-space 属性的值。
+  - 拖拽
+    - 只有横向拖拽
+    - 限制范围：范围的大小
+    - 计算比例：当前值/最大值
+  - 控制其他对象
+    - 例子1：控制物体的大小
+    - 例子2：控制物体的透明度
+    - 例子3：控制文字滚动
+  - 代码：- 拖拽
+  - 只有横向拖拽
+  - 限制范围：范围的大小
+  - 计算比例：当前值/最大值
+  - 控制其他对象
+  - 例子1：控制物体的大小
+  - 例子2：控制物体的透明度
+  - 例子3：控制文字滚动
+  - 代码：- 代码：- 拖拽
+  - 只有横向拖拽
+  - 限制范围：范围的大小
+  - 计算比例：当前值/最大值
+  - 控制其他对象
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
   ```
-
+  
   
 
 ## Ajax 基础
@@ -4893,7 +5111,7 @@
 - 什么是服务器
   - 网页浏览过程分析
   - 如何配置自己的服务器程序
-- 什么是 `Ajax = Asynchronous JavaScript and XML`（异步的 JavaScript 和 XML）
+- 什么是  **Ajax = Asynchronous JavaScript and XML**（异步的 JavaScript 和 XML）
   - 无刷新数据读取
   - 用户注册、在线聊天室
     - 异步、同步
