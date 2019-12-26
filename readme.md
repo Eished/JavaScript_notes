@@ -4948,14 +4948,21 @@
       function get(id) {
         return document.getElementById(id);
       }
+      // 封装获取计算后元素样式函数，返回小数
+      function getStyle(obj, name) {
+        if (obj.currentStyle) {
+          return obj.currentStyle[name];
+        } else {
+          return getComputedStyle(obj, '') [name];
+        }
+      }
   
       window.onload = function () {
   
         var oDiv1 = get('div1'); // 上下滚动框
         var oDiv2 = get('div2'); // 上下滚动条
         var oDiv3 = get('div3'); // 文字框
-        var oDiv4 = get('div4'); // 文字可视区
-        
+        // var oDiv4 = get('div4'); // 文字可视区
         var oDiv5 = get('div5'); // 左右滚动框
         var oDiv6 = get('div6'); // 左右滚动条
   
@@ -4964,86 +4971,70 @@
         // 鼠标Y移动时，滚动条top 移动
         // 鼠标松开时，事件结束
   
+        // 合并函数：ev.clientY offsetTop offsetHeight oDiv1 oDiv2 oDiv3 oDiv4
+        // 去掉 offset 改用 getStyle 
+        // console.log(oDiv1.children[0], oDiv2) 
+        // 直接传一个对象取子节点或父节点
+        // 面对对象：srcoll 作为 oDiv2 和 oDiv6 的属性时，可以用 this 代替 oDiv2，只要传入 ev, 'clientY', oDiv3
         oDiv2.onmousedown = function (ev) {
-          var ev = ev||event;
-          var disMouse = ev.clientY;
-          var oldPos = this.offsetTop;
-          // 滚动范围 = 滚动条高 + 滚动框高
-          var disScroll = oDiv1.offsetHeight - oDiv2.offsetHeight -2; 
-  
-          document.onmousemove = function (ev) {
-            ev = ev||event;
-            // 移动距离
-            var disMove = ev.clientY - disMouse;
-            // 滚动条TOP = 滚动条TOP + 移动距离
-            var divScroll = oldPos + disMove;
-            // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
-            var divTxt = (oDiv3.offsetHeight - oDiv4.offsetHeight)*(divScroll/disScroll);
-  
-            // 向下移 disMove > 0; 向上移 disMove < 0 
-            if (disMove > 0 && divScroll <= disScroll) {
-              // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
-              oDiv2.style.top = divScroll + 'px';
-              oDiv4.style.top = divTxt + 'px';
-              // 文字区
-            } else if (disMove <= 0 && divScroll >= 0) {
-              // 都 = 0；divScroll 才能取到 0px
-              oDiv2.style.top = divScroll + 'px';
-              oDiv4.style.top = divTxt + 'px';
-            } else {
-              // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
-              if (disMove < 0 && divScroll < 30) {
-                oDiv2.style.top = 0;
-                oDiv4.style.top = 0;
-              } else if (disMove > 0 && disScroll - divScroll < 30) {
-                oDiv2.style.top = disScroll + 'px';
-                oDiv4.style.top = oDiv3.offsetHeight - oDiv4.offsetHeight + 'px';              
-              }
-            }
-            document.onmouseup = function () {
-              this.onmousemove = '';
-              this.onmouseup = '';
-            }
-            console.log(disMove,divScroll,disScroll,oldPos,divTxt)
-          }
+          scroll(ev, 'clientY', oDiv1, oDiv3);
           return false; // 可以解决 chrome FireFox IE9的文字选中问题
-        }
-  
+        } 
         oDiv6.onmousedown = function (ev) {
+          scroll(ev, 'clientX', oDiv5, oDiv3);
+          return false; // 可以解决 chrome FireFox IE9的文字选中问题
+        }
+  
+        function scroll(ev, dir, obj1 , obj2) {
+          var attr = '';
+          var attr2 = '';
+          if (dir === 'clientY') {
+            attr = 'height';
+            attr2 = 'top';
+          } else if (dir === 'clientX') {
+            attr = 'width';
+            attr2 = 'left';
+          } else {
+            return console.log('参数错误');
+          }
+  
+          var oDiv2 = obj1.children[0];
+          var oDiv4 = obj2.children[0];
           var ev = ev||event;
-          var disMouse = ev.clientX;
-          var oldPos = this.offsetLeft;
+          var disMouse = ev[dir];
+          // 滚动条旧的位置
+          var oldPos = parseInt(getStyle(oDiv2, attr2));
           // 滚动范围 = 滚动条高 + 滚动框高
-          var disScroll = oDiv5.offsetWidth - oDiv6.offsetWidth -2; 
+          var disScroll = parseInt(getStyle(obj1, attr)) - parseInt(getStyle(oDiv2, attr)); 
   
           document.onmousemove = function (ev) {
             ev = ev||event;
             // 移动距离
-            var disMove = ev.clientX - disMouse;
+            var disMove = ev[dir] - disMouse;
             // 滚动条TOP = 滚动条TOP + 移动距离
             var divScroll = oldPos + disMove;
-  
             // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
-            var divTxt= (oDiv3.offsetWidth - oDiv4.offsetWidth)*(divScroll / disScroll);
+            var disTxt = parseInt(getStyle(obj2, attr)) - parseInt(getStyle(oDiv4, attr));
+            var divTxt = (disTxt)*(divScroll/disScroll);
   
             // 向下移 disMove > 0; 向上移 disMove < 0 
             if (disMove > 0 && divScroll <= disScroll) {
               // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
-              oDiv6.style.left = divScroll + 'px';
-              oDiv4.style.left = divTxt + 'px';
+              oDiv2.style[attr2] = divScroll + 'px';
+              oDiv4.style[attr2] = divTxt + 'px';
               // 文字区
             } else if (disMove <= 0 && divScroll >= 0) {
               // 都 = 0；divScroll 才能取到 0px
-              oDiv6.style.left = divScroll + 'px';
-              oDiv4.style.left = divTxt + 'px';
+              oDiv2.style[attr2] = divScroll + 'px';
+              oDiv4.style[attr2] = divTxt + 'px';
             } else {
               // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
               if (disMove < 0 && divScroll < 30) {
-                oDiv6.style.left = 0;
-                oDiv4.style.left = 0;
+                oDiv2.style[attr2] = 0;
+                oDiv4.style[attr2] = 0;
               } else if (disMove > 0 && disScroll - divScroll < 30) {
-                oDiv6.style.left = disScroll + 'px';
-                oDiv4.style.left = oDiv3.offsetWidth - oDiv4.offsetWidth + 'px';              
+                oDiv2.style[attr2] = disScroll + 'px';
+                oDiv4.style[attr2] = disTxt + 'px';              
               }
             }
             document.onmouseup = function () {
@@ -5052,8 +5043,53 @@
             }
             console.log(disMove,divScroll,disScroll,oldPos,divTxt)
           }
-          return false; // 可以解决 chrome FireFox IE9的文字选中问题
         }
+  
+        // oDiv6.onmousedown = function (ev) {
+        //   var ev = ev||event;
+        //   var disMouse = ev.clientX;
+        //   var oldPos = this.offsetLeft;
+        //   // 滚动范围 = 滚动条高 + 滚动框高
+        //   var disScroll = oDiv5.offsetWidth - oDiv6.offsetWidth -2; 
+  
+        //   document.onmousemove = function (ev) {
+        //     ev = ev||event;
+        //     // 移动距离
+        //     var disMove = ev.clientX - disMouse;
+        //     // 滚动条TOP = 滚动条TOP + 移动距离
+        //     var divScroll = oldPos + disMove;
+  
+        //     // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+        //     var divTxt= (oDiv3.offsetWidth - oDiv4.offsetWidth)*(divScroll / disScroll);
+  
+        //     // 向下移 disMove > 0; 向上移 disMove < 0 
+        //     if (disMove > 0 && divScroll <= disScroll) {
+        //       // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
+        //       oDiv6.style.left = divScroll + 'px';
+        //       oDiv4.style.left = divTxt + 'px';
+        //       // 文字区
+        //     } else if (disMove <= 0 && divScroll >= 0) {
+        //       // 都 = 0；divScroll 才能取到 0px
+        //       oDiv6.style.left = divScroll + 'px';
+        //       oDiv4.style.left = divTxt + 'px';
+        //     } else {
+        //       // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
+        //       if (disMove < 0 && divScroll < 30) {
+        //         oDiv6.style.left = 0;
+        //         oDiv4.style.left = 0;
+        //       } else if (disMove > 0 && disScroll - divScroll < 30) {
+        //         oDiv6.style.left = disScroll + 'px';
+        //         oDiv4.style.left = oDiv3.offsetWidth - oDiv4.offsetWidth + 'px';              
+        //       }
+        //     }
+        //     document.onmouseup = function () {
+        //       this.onmousemove = '';
+        //       this.onmouseup = '';
+        //     }
+        //     console.log(disMove,divScroll,disScroll,oldPos,divTxt)
+        //   }
+        //   return false; // 可以解决 chrome FireFox IE9的文字选中问题
+        // }
       }
       </script>
     </head>
