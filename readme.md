@@ -2289,7 +2289,7 @@
 
 ### 运动基础
 
-- 让 div 动起来
+- 让 `div` 动起来
 - 速度：物体运动快慢
 - 运动中的 Bug
   - 不会停止
@@ -4213,6 +4213,66 @@
         return {x: ev.clientX+scrollLeft, y: ev.clientY+scrollTop};
     }
     ```
+    
+  - 滚轮事件：`onmousewheel`  滚轮数据：`event.wheelDelta`
+  
+    - 代码：鼠标滚轮控制 `div` 移动
+  
+      ```HTML
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+          <title>事件绑定与鼠标滚轮</title>
+          <link rel="stylesheet" href="../reset.css">
+          <style>
+            #div1 {
+              width: 200px;
+              height: 200px;
+              position: absolute;
+              background-color: rgb(255, 0, 0);
+            }
+          </style>
+          <script type="text/javascript">  
+            var iDis = 0;
+            var scrollFunc = function (e) {  
+              var oDiv1 = document.getElementById('div1');
+              e = e || window.event;  
+              if (e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件               
+                if (e.wheelDelta > 0) { //当滑轮向上滚动时  
+                  iDis += -e.wheelDelta;
+                  oDiv1.style.top = iDis/12 + 'px';
+                  console.log("滑轮向上滚动",e.wheelDelta, iDis, oDiv1.offsetTop);
+                }  
+                if (e.wheelDelta < 0) { //当滑轮向下滚动时   
+                  iDis += -e.wheelDelta; 
+                  oDiv1.style.top = iDis/12 + 'px';
+                  console.log("滑轮向上滚动",e.wheelDelta, iDis, oDiv1.offsetTop);
+                }  
+              } else if (e.detail) {  //Firefox滑轮事件  
+                if (e.detail> 0) { //当滑轮向上滚动时  
+                    console.log("滑轮向上滚动",e.wheelDelta);  
+                }  
+                if (e.detail< 0) { //当滑轮向下滚动时  
+                    console.log("滑轮向下滚动",e.wheelDelta);  
+                }  
+              }  
+            }  
+            //给页面绑定滑轮滚动事件  
+            if (document.addEventListener) {//firefox  
+                document.addEventListener('DOMMouseScroll', scrollFunc, false);  
+            }  
+            //滚动滑轮触发scrollFunc方法  //ie 谷歌  
+            window.onmousewheel = document.onmousewheel = scrollFunc;   
+          </script>
+        </head>
+        <body>
+          <div id="div1"></div>
+        </body>
+      </html>
+      ```
+  
+      
   
 - 获取鼠标在页面的绝对位置
   - 封装函数
@@ -4278,8 +4338,6 @@
       </body>
     </html>
     ```
-  
-    
 
 ### 键盘事件
 
@@ -4713,9 +4771,13 @@
         var btn = get('btn');
         myAddEvent(btn, 'click', function () {
           console.log('event');
+          oDiv.style.display = 'none';
         })
         myAddEvent(btn, 'click', function () {
           console.log('event2');
+          setTimeout(function () {
+            oDiv.style.display = 'block';
+          }, 1000);
         })
       }
       </script>
@@ -4747,10 +4809,10 @@
 
   - 阻止默认事件
 
-- 文字选中
+- **文字选中**
 
-  - 阻止默认事件 `return false` 可以解决 chrome FireFox IE9的文字选中问题
-  - IE 下拖动有问题
+  - 阻止默认事件 `return false` 可以解决 `chrome` 、`FireFox` 、`IE9`的文字选中问题
+  - IE 下拖动有问题：
     - 事件捕获：`.setCapture()` 只兼容IE
     - 取消捕获：`.releaseCapture()` 
 
@@ -4904,7 +4966,7 @@
           position: absolute;
           border: rgb(139, 139, 139) solid 1px;
         }
-        #div2 {
+        #div1_0 {
           width: 20px;
           height: 40px;
           position: absolute;
@@ -4921,14 +4983,14 @@
           overflow: hidden;
   
         }
-        #div4 {
+        #div3_0 {
           width: 900px;
           position: absolute;
           white-space: pre-wrap;
           background-color: cornsilk;
         }
         /* 左右滚动条 */
-        #div5 {
+        #div2 {
           top: 5px;
           right: 140px;
           width: 400px;
@@ -4936,7 +4998,7 @@
           position: absolute;
           border: rgb(139, 139, 139) solid 1px;
         }
-        #div6 {
+        #div2_0 {
           width: 40px;
           height: 20px;
           position: absolute;
@@ -4960,28 +5022,28 @@
       window.onload = function () {
   
         var oDiv1 = get('div1'); // 上下滚动框
-        var oDiv2 = get('div2'); // 上下滚动条
+        var oDiv1_0 = get('div1_0'); // 上下滚动条
         var oDiv3 = get('div3'); // 文字框
-        // var oDiv4 = get('div4'); // 文字可视区
-        var oDiv5 = get('div5'); // 左右滚动框
-        var oDiv6 = get('div6'); // 左右滚动条
+        // var oDiv3_0 = get('div3_0'); // 文字可视区
+        var oDiv2 = get('div2'); // 左右滚动框
+        var oDiv2_0 = get('div2_0'); // 左右滚动条
   
         // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
         // 鼠标按下滚动条时触发事件
         // 鼠标Y移动时，滚动条top 移动
         // 鼠标松开时，事件结束
   
-        // 合并函数：ev.clientY offsetTop offsetHeight oDiv1 oDiv2 oDiv3 oDiv4
+        // 合并函数：ev.clientY offsetTop offsetHeight oDiv1 oDiv1_0 oDiv3 oDiv3_0
         // 去掉 offset 改用 getStyle 
-        // console.log(oDiv1.children[0], oDiv2) 
+        // console.log(oDiv1.children[0], oDiv1_0) 
         // 直接传一个对象取子节点或父节点
-        // 面对对象：srcoll 作为 oDiv2 和 oDiv6 的属性时，可以用 this 代替 oDiv2，只要传入 ev, 'clientY', oDiv3
-        oDiv2.onmousedown = function (ev) {
+        // 面对对象：srcoll 作为 oDiv1_0 和 oDiv2_0 的方法时，可以用 this 代替 oDiv1_0，只要传入 ev, 'clientY', oDiv3
+        oDiv1_0.onmousedown = function (ev) {
           scroll(ev, 'clientY', oDiv1, oDiv3);
           return false; // 可以解决 chrome FireFox IE9的文字选中问题
         } 
-        oDiv6.onmousedown = function (ev) {
-          scroll(ev, 'clientX', oDiv5, oDiv3);
+        oDiv2_0.onmousedown = function (ev) {
+          scroll(ev, 'clientX', oDiv2, oDiv3);
           return false; // 可以解决 chrome FireFox IE9的文字选中问题
         }
   
@@ -4998,14 +5060,14 @@
             return console.log('参数错误');
           }
   
-          var oDiv2 = obj1.children[0];
-          var oDiv4 = obj2.children[0];
+          var oDiv1_0 = obj1.children[0];
+          var oDiv3_0 = obj2.children[0];
           var ev = ev||event;
           var disMouse = ev[dir];
           // 滚动条旧的位置
-          var oldPos = parseInt(getStyle(oDiv2, attr2));
+          var oldPos = parseInt(getStyle(oDiv1_0, attr2));
           // 滚动范围 = 滚动条高 + 滚动框高
-          var disScroll = parseInt(getStyle(obj1, attr)) - parseInt(getStyle(oDiv2, attr)); 
+          var disScroll = parseInt(getStyle(obj1, attr)) - parseInt(getStyle(oDiv1_0, attr)); 
   
           document.onmousemove = function (ev) {
             ev = ev||event;
@@ -5014,27 +5076,26 @@
             // 滚动条TOP = 滚动条TOP + 移动距离
             var divScroll = oldPos + disMove;
             // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
-            var disTxt = parseInt(getStyle(obj2, attr)) - parseInt(getStyle(oDiv4, attr));
+            var disTxt = parseInt(getStyle(obj2, attr)) - parseInt(getStyle(oDiv3_0, attr));
             var divTxt = (disTxt)*(divScroll/disScroll);
   
             // 向下移 disMove > 0; 向上移 disMove < 0 
             if (disMove > 0 && divScroll <= disScroll) {
-              // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
-              oDiv2.style[attr2] = divScroll + 'px';
-              oDiv4.style[attr2] = divTxt + 'px';
+              oDiv1_0.style[attr2] = divScroll + 'px';
+              oDiv3_0.style[attr2] = divTxt + 'px';
               // 文字区
             } else if (disMove <= 0 && divScroll >= 0) {
               // 都 = 0；divScroll 才能取到 0px
-              oDiv2.style[attr2] = divScroll + 'px';
-              oDiv4.style[attr2] = divTxt + 'px';
+              oDiv1_0.style[attr2] = divScroll + 'px';
+              oDiv3_0.style[attr2] = divTxt + 'px';
             } else {
-              // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
-              if (disMove < 0 && divScroll < 30) {
-                oDiv2.style[attr2] = 0;
-                oDiv4.style[attr2] = 0;
-              } else if (disMove > 0 && disScroll - divScroll < 30) {
-                oDiv2.style[attr2] = disScroll + 'px';
-                oDiv4.style[attr2] = disTxt + 'px';              
+              // 防止移动过快超出判断范围, 滚动条距离小于 0 直接到达
+              if (disMove < 0) {
+                oDiv1_0.style[attr2] = 0;
+                oDiv3_0.style[attr2] = 0;
+              } else if (disMove > 0) {
+                oDiv1_0.style[attr2] = disScroll + 'px';
+                oDiv3_0.style[attr2] = disTxt + 'px';              
               }
             }
             document.onmouseup = function () {
@@ -5045,13 +5106,13 @@
           }
         }
   
-        // oDiv6.onmousedown = function (ev) {
+        // oDiv2_0.onmousedown = function (ev) {
         //   var ev = ev||event;
         //   var disMouse = ev.clientX;
         //   var oldPos = this.offsetLeft;
         //   // 滚动范围 = 滚动条高 + 滚动框高
-        //   var disScroll = oDiv5.offsetWidth - oDiv6.offsetWidth -2; 
-  
+        //   var disScroll = oDiv2.offsetWidth - oDiv2_0.offsetWidth -2; 
+        // 
         //   document.onmousemove = function (ev) {
         //     ev = ev||event;
         //     // 移动距离
@@ -5060,26 +5121,25 @@
         //     var divScroll = oldPos + disMove;
   
         //     // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
-        //     var divTxt= (oDiv3.offsetWidth - oDiv4.offsetWidth)*(divScroll / disScroll);
+        //     var divTxt= (oDiv3.offsetWidth - oDiv3_0.offsetWidth)*(divScroll / disScroll);
   
         //     // 向下移 disMove > 0; 向上移 disMove < 0 
         //     if (disMove > 0 && divScroll <= disScroll) {
-        //       // 滚动条的位置 = 鼠标可视区Y - 之前可视区Y
-        //       oDiv6.style.left = divScroll + 'px';
-        //       oDiv4.style.left = divTxt + 'px';
+        //       oDiv2_0.style.left = divScroll + 'px';
+        //       oDiv3_0.style.left = divTxt + 'px';
         //       // 文字区
         //     } else if (disMove <= 0 && divScroll >= 0) {
         //       // 都 = 0；divScroll 才能取到 0px
-        //       oDiv6.style.left = divScroll + 'px';
-        //       oDiv4.style.left = divTxt + 'px';
+        //       oDiv2_0.style.left = divScroll + 'px';
+        //       oDiv3_0.style.left = divTxt + 'px';
         //     } else {
         //       // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
         //       if (disMove < 0 && divScroll < 30) {
-        //         oDiv6.style.left = 0;
-        //         oDiv4.style.left = 0;
+        //         oDiv2_0.style.left = 0;
+        //         oDiv3_0.style.left = 0;
         //       } else if (disMove > 0 && disScroll - divScroll < 30) {
-        //         oDiv6.style.left = disScroll + 'px';
-        //         oDiv4.style.left = oDiv3.offsetWidth - oDiv4.offsetWidth + 'px';              
+        //         oDiv2_0.style.left = disScroll + 'px';
+        //         oDiv3_0.style.left = oDiv3.offsetWidth - oDiv3_0.offsetWidth + 'px';              
         //       }
         //     }
         //     document.onmouseup = function () {
@@ -5096,13 +5156,13 @@
     <body>
       <div id="div0">
         <div id="div1">
-          <div id="div2"></div>
+          <div id="div1_0"></div>
         </div>
-        <div id="div5">
-          <div id="div6"></div>
+        <div id="div2">
+          <div id="div2_0"></div>
         </div>
         <div id="div3">
-          <div id="div4">
+          <div id="div3_0">
             值			描述
   normal		默认。空白会被浏览器忽略。
   pre			空白会被浏览器保留。其行为方式类似 HTML 中的  标签。inherit		规定应该从父元素继承 white-space 属性的值。
@@ -5500,17 +5560,89 @@
 
 - 本地对象
   - 什么是本地对象
-  - 常用对象
+  - 常用对象：可以实例化( `new` )
     - `Object` / `Function` / `Array` / `String` / `Boolean` / `Number` / `Date` / `RegExp` / `Error`
-- 内置对象（静态对象）
+- 内置对象（静态对象）：不能实例化
   - 什么是本地对象
-    - `Global` / `Math`
+    - `Global(无法使用)` / `Math`
 - 宿主对象（由浏览器提供的对象）
   - `DOM` / `BOM`
 
 ## BOM 应用
 
+### BOM 基础
+
+- 打开、关闭窗口
+  - `open(url, 打开方式)`：`open('ablout.blank', '_blank')`
+    - 例子：页面内运行代码功能
+  - `close(url, 打开方式)`：`window.close()` 关闭当前窗口
+    - 例子：关闭时提示问题
+      - 只能关闭自己 `open` 的窗口
+- 常用属性
+  - `window.navigator.userAgent`
+    - `navigator`：包含大量信息
+    - `userAgent`：浏览器信息
+  - `window.location`
+    - 当前网页地址
+
+### 尺寸及坐标
+
+- 窗口尺寸、工作区尺寸
+  - 可视区尺寸
+    - `document.documentElement.clientWidth`
+    - `document.documentElement.clientHeight`
+  - 滚动距离
+    - `document.body.scrollTop`：旧版本 chrome 和没有 DOCTYPE 声明的 IE 
+    - `document.documentElement.scrollTop`：IE FF
+    - 完美的获取 `scrollTop` 赋值短语 ： 
+      `var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;`
+
+### 常用方法和事件
+
+- 系统对话框
+  - 警告框：`alert("内容")`，没有返回值
+  - 选择框：`confirm("提问的内容")`，返回 `boolean`
+  - 输入框：`prompt()`，返回字符串或 `null`
+- `window` 对象常用事件
+  - `onload`：页面加载完发生
+  - `onscroll`：页面滚动时发生
+  - `onresize`：页面
+  - 例子：回到顶部按钮、侧边栏广告
+    - 闪烁问题
+      - `userAgent > IE6` 用 `position:fixed;`
+      - `userAgent < IE6` 用运动;
+
 ## COOKIE 基础与应用
+
+###  什么是 cookie
+
+- 页面用来保存信息
+  - 比如：自动登录、记住用户名
+- cookie 的特征
+  - 同一网站中所有页面共享一套 cookie
+  - 数量、大小有限
+  - 过期时间
+- JS 中使用 cookie
+  - document.cookie
+
+### 使用 cookie 
+
+- 设置 `cookie`
+  - 格式：`名字 = 值`
+  - 赋值时不会覆盖
+  - 过期时间：`expires = 时间`
+    - 设置前一个 cookie 数据的过期时间，expires 放在数据后面：
+      - `document.cookie = 'password=123;expires='+ oDate;`
+    - 日期对象的使用
+  - 封装函数
+- 读取 `cookie`
+  - 字符串分割
+- 删除 `cookie`
+  - 已经过期
+
+- 例子：使用 `cookie` 记录上次登陆的用户名
+  - 提交时：记录用户名
+  - `window.onload`：读取用户名
 
 ##  JS 中的正则表达式
 
