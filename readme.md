@@ -5628,21 +5628,162 @@
 ### 使用 cookie 
 
 - 设置 `cookie`
+
   - 格式：`名字 = 值`
+
   - 赋值时不会覆盖
+
   - 过期时间：`expires = 时间`
+
     - 设置前一个 cookie 数据的过期时间，expires 放在数据后面：
       - `document.cookie = 'password=123;expires='+ oDate;`
     - 日期对象的使用
+
   - 封装函数
+
+    ```js
+    // 封装 setCookie 函数
+          function setCookie(name, value, iTime) {
+            var oDate = new Date();
+            oDate.setTime(oDate.getTime() + iTime); // 毫秒
+            document.cookie = name + '=' + value + ';expires=' + oDate;
+          }
+          setCookie('username', '张三', 1000*60*60);
+    ```
+
+    
+
 - 读取 `cookie`
+
   - 字符串分割
+
+    ```js
+    // 封装 getCookie 函数
+     getCookie(name) {
+            var arr = document.cookie.split('; ');
+            for (var i in arr) {
+              var arr2 = arr[i].split('=');
+              if (arr2[0] === name){
+                return arr2[1];
+              }
+            }
+            return '';
+          }
+          console.log(getCookie('username'));
+    ```
+
+    
+
 - 删除 `cookie`
+
   - 已经过期
 
+    ```js
+    // 封装 removeCookie 函数
+    function removeCookie(name) {
+            setCookie(name, '', -1)
+          }
+          removeCookie('username');
+    ```
+
+    
+
 - 例子：使用 `cookie` 记录上次登陆的用户名
+
   - 提交时：记录用户名
+
   - `window.onload`：读取用户名
 
+  - 代码：
+
+    ```HTML
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>28.1.登陆后cookie读取用户名</title>
+        <style>
+        </style>
+        <script>
+          // 封装 setCookie 函数
+          function setCookie(name, value, iTime) {
+            var oDate = new Date();
+            oDate.setTime(oDate.getTime() + iTime*1000*60*60);
+            document.cookie = name + '=' + value + ';expires=' + oDate;
+          }
+          // 封装 getCookie 函数
+          function getCookie(name) {
+            var arr = document.cookie.split('; ');
+            for (var i in arr) {
+              var arr2 = arr[i].split('=');
+              if (arr2[0] === name){
+                return arr2[1];
+              }
+            }
+            return '';
+          }
+          // 封装 removeCookie 函数
+          function removeCookie(name) {
+            setCookie(name, '', -1)
+          }
+    
+          window.onload = function () {
+            var oUser = document.getElementById('username');
+            var oPasswd = document.getElementById('passwd');
+            var oBtn_sub = document.getElementById('btn_sub');
+            if (getCookie('username')) {
+              oUser.value = getCookie('username');
+            }
+            oBtn_sub.onclick = function () {
+              setCookie("username", oUser.value, 1);
+              setCookie("passwd", oPasswd.value, 1);
+            }
+          }
+        </script>
+      </head>
+      <body>
+        <form action="28.1.登陆后cookie读取用户名.html" method="GET">
+        <input type="text" name="username" id="username">
+        <input type="text" name="passwd" id="passwd">
+        <input type="submit" name="" id="btn_sub" value="登录">
+        </form>
+      </body>
+    </html>
+    ```
+
+    
+
 ##  JS 中的正则表达式
+
+### 正则表达式基础
+
+- 复习字符串操作
+  - search：查找
+  - substring：获取子字符串
+  - charAt：获取某个字符串
+  - split：分割某个字符串
+- 找出字符串中所有的数字
+  - 用传统字符串操作完成
+  - 用正则表达式完成
+
+### 字符串与正则配合
+
+- search：字符串搜索
+  - 返回出现的位置
+  - 忽略大小写：i：ignore
+  - 判断浏览器类型
+- match：获取匹配的项目
+  - 量词：+
+  - 量词变化：\d  \d\d 和  \d+
+  - 全局匹配：g：global
+  - 例子：找出所有数字
+- replace：替换所有匹配
+  - 返回替换后的字符串
+  - 例子：敏感词过滤
+
+### 字符串
+
+- 任意字符
+  - [abc]
+    - 例子：
 
