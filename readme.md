@@ -804,16 +804,16 @@
 ### JavaScript 组成
 
 - ECMAScript：解释器、编译器（几乎所有兼容）
-- DOM：Document Object Model，HTML，document（大部分兼容）
-- BOM：Browser Object Model，浏览器，window（完全不兼容）
+- DOM：Document Object Model，HTML，`document`（大部分兼容）
+- BOM：Browser Object Model，浏览器，`window`（完全不兼容）
   - 各组成部分的兼容性、兼容性问题的由来
 
 ### 变量类型
 
-- 类型：typeof 运算符
-  - 用法、返回值：返回类型
+- 类型：`typeof` 运算符
+  - 用法：`i.typeof`返回变量的类型
   - 常见类型：
-    - number 、string 、boolean 、undefined（未定义或定义未使用）、object、function
+    - `number` 、`string` 、`boolean` 、`undefined`（未定义或定义未使用）、`object`、`function`
 - 一个变量应该只放一种类型的数据
 
 ### 变量类型转换
@@ -825,8 +825,14 @@
   - 显式类型转换（强制类型转换）
 
     - `parseInt()`  去除小数、`parseFloat() ` 保留小数：从左至右提取数字，遇到不是数字跳出
-    - `NaN ` 的意义和检测：Not a Number
+
+    - `NaN ` 的意义和检测：`Not a Number`
+
     - NaN 和 NaN 不相等：使用 ` isNaN()` 检测是否是全是数字
+
+    - ```
+      Number() 转换数值，String() 转换字符串，Boolean() 转换布尔值
+      ```
 
   - 隐式类型的转换
 
@@ -837,6 +843,22 @@
     - ` - `：数字相减
 
       对比 ` +`：字符串连接、数字相加
+      
+    - ```js
+      5 + null    // 返回 5         因为 null 被转换为 0
+      "5" + null  // 返回 "5null"   因为 null 被转换为  "null"
+      "5" + 2     // 返回 52        因为 2 被转换为 "2"
+      "5" - 2     // 返回 3         因为 "5" 被转换为 5
+      "5" * "2"   // 返回 10        因为 "5" 和 "2" 被转换为 5 和 2
+      ```
+
+- 更多可用于将数值转换为字符串的方法：
+
+  | 方法            | 描述                                                   |
+  | :-------------- | :----------------------------------------------------- |
+  | toExponential() | 返回字符串，对数字进行舍入，并使用指数计数法来写。     |
+  | toFixed()       | 返回字符串，对数字进行舍入，并使用指定位数的小数来写。 |
+  | toPrecision()   | 返回字符串，把数字写为指定的长度。                     |
 
 - 代码：
 
@@ -1547,10 +1569,17 @@
 
 ### Date 对象其它方法
 
-- 年 ` getFullYear()`
-- 月` getMonth()`
-- 日`getDate()`
-- 星期`getDay()`
+| 方法              | 描述                                    |
+| :---------------- | :-------------------------------------- |
+| getDate()         | 获得以数值计（1-31）的日                |
+| getDay()          | 或者以数值计（0-6）的周                 |
+| getFullYear()     | 获得四位的年（yyyy）                    |
+| getHours()        | 获得时（0-23）                          |
+| getMilliseconds() | 获得毫秒（0-999）                       |
+| getMinutes()      | 获得分钟（0-59）                        |
+| getMonth()        | 获得月（0-11）                          |
+| getSeconds()      | 获得秒（0-59）                          |
+| getTime()         | 获得时间（1970 年 1 月 1 日以来的毫秒） |
 
 ### 延时提示框
 
@@ -5324,6 +5353,7 @@
   - 什么是类、对象（实例）：模具和零件
   - 笔记：构造函数/工厂函数
     - 构建对象的函数
+    - `constructor` 属性 返回所有 `JavaScript` 变量的构造器函数。
 - 工厂方式的问题
   - 没有 new
   - 函数重复定义：函数内容一样却不相等，浪费大量系统资源
@@ -5514,7 +5544,7 @@
   - 什么是继承
     - 在原有类的基础上略作修改，得到一个新类
     - 不影响原有类的功能
-  - `instanceof` 运算符
+  - `instanceof` 运算符：返回 true，如果对象是对象类型的实例。
     - 查看对象是否是某个类的实例
 
 ### 使用继承
@@ -5600,17 +5630,72 @@
 ### 常用方法和事件
 
 - 系统对话框
+
   - 警告框：`alert("内容")`，没有返回值
   - 选择框：`confirm("提问的内容")`，返回 `boolean`
   - 输入框：`prompt()`，返回字符串或 `null`
+
 - `window` 对象常用事件
+
   - `onload`：页面加载完发生
   - `onscroll`：页面滚动时发生
-  - `onresize`：页面
+  - `onresize`：事件会在窗口或框架被调整大小时发生
   - 例子：回到顶部按钮、侧边栏广告
     - 闪烁问题
       - `userAgent > IE6` 用 `position:fixed;`
       - `userAgent < IE6` 用运动;
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>Bom应用</title>
+      <style>
+        body {
+          height: 2000px;
+        }
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+  
+      window.onload = function () {
+        // var text =  document.write('新网页');
+        var btn = get('btn');
+        var btn2 = get('btn2');
+        btn.onclick = function () {
+          window.open('27.BOM应用.html','_blank');
+        }
+        btn2.onclick = function () {
+          window.close();
+        }
+  
+  
+        window.onscroll = function () {
+          var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+          console.log(scrollTop);
+        }
+        
+        console.log(window.navigator);
+        alert('0');
+        confirm('yes?');
+        prompt('');
+      }
+      </script>
+    </head>
+    <body>
+      <input type="button"  id="btn" value="打开网页">
+      <input type="button"  id="btn2" value="关闭网页">
+    </body>
+  </html>
+  ```
+
+  
 
 ## COOKIE 基础与应用
 
@@ -5757,33 +5842,209 @@
 
 ### 正则表达式基础
 
-- 复习字符串操作
-  - search：查找
-  - substring：获取子字符串
-  - charAt：获取某个字符串
-  - split：分割某个字符串
+- 复习字符串操作：`var str = 'asdf1234';`
+  - `search`：**查找位置** `str.search('3')`
+  - `substring`：获取子字符串，
+    - **截取某段**字符串, **不包含结束位**： `str.substring(2,5)`
+    - 获取起点以后的字符串：`str.substring(2)`
+  - `charAt`：**获取某个**字符串 `str.charAt(2)`
+  - `split`：**分割**某个字符串 ` str.split('-')`
 - 找出字符串中所有的数字
   - 用传统字符串操作完成
   - 用正则表达式完成
+- 什么是正则表达式
+  - 什么叫正则？
+    - 规则、模式
+  - 强大的**字符串匹配工具**
+  - 是一种人类很难读懂的文字
+  - `RegExp` 对象
+    - `JS` 风格：`new RegExp( "a" , "i" )`
+    - `perl` 风格：`/a/i`
 
 ### 字符串与正则配合
 
-- search：字符串搜索
+- `search`：字符串搜索，返回位置或 -1
   - 返回出现的位置
-  - 忽略大小写：i：ignore
+  - 忽略大小写：`i`：ignore
   - 判断浏览器类型
-- match：获取匹配的项目
-  - 量词：+
-  - 量词变化：\d  \d\d 和  \d+
-  - 全局匹配：g：global
+- `match`：获取匹配的项目，返回元素或
+  - 量词：`+` （若干个）
+  - 量词变化：`\d`(单个数字一组)   `\d\d`(两个数字一组)   和   `\d+`(若干连续数字)
+  - 全局匹配：`g`：global
   - 例子：找出所有数字
-- replace：替换所有匹配
+- `replace`：替换所有匹配
   - 返回替换后的字符串
   - 例子：敏感词过滤
 
 ### 字符串
 
-- 任意字符
-  - [abc]
-    - 例子：
+- 任意字符：`[]`方括号（元字符）
+  - `[abc]`
+    - 例子：`a[usb]t`：`obt`  `ost`  `out`
+- 范围
+  - `[a-z]`  `[0-9]`
+    - 例子：`id[0-9]`：`id0`  `id5`
+- 排除
+  - `[^a]`
+    - 例子：`o[^0-9]`：`oat ` `o?t`  `ot`
+- 组合
+  - `[a-z0-9A-Z]`
+- 实例：偷小说
+  - 过滤 HTML 标签，
+    - 正则贪婪特性，从最长的内容开始过滤
+    - 自定义 `innerText` 方法
+  - 代码：同下
+- 转义字符
+  - `.`(点) ：任意字符
+  - `\d` (数字)：`[0-9]  `
+  - `\w` (数字、英文、下划线)  ：`[a-z0-9_]`
+  - `\s` (空白字符)：`[ ]`
+  - `\D` (除了数字)：`[^0-9]`
+  - `\W` (除了数字英文下划线) ：`[^a-z0-9_]`
+  - `\S` (除了空白字符)：`[^ ]`
+- 行首、行尾
+  - `^` ：行首
+  - `$`：行尾
+
+### 量词
+
+- 什么是量词
+
+  - `{n}`：刚好出现 n 次
+  - `{n,m}` 至少出现 n 次，最多 m 次
+  - 例子：查找 QQ 号
+
+- 常用量词
+
+  - `{n,}` 至少 n 次，无上限
+
+  - `*`  任意次 `{0,}`  可以为0次，不建议使用
+
+  - `？` 零次或一次 `{0,1}`
+
+    ```
+    固定电话:010-23456789-1234 或 23456789
+    (0\d{2,3}-)?[1-9]\d{7}(-\d{1,5})?
+    ```
+
+  - `+`  一次或任意次`{1,}`
+
+  - `{n}`  正好 n 次
+
+### 常用正则例子
+
+- 表单校验实例
+
+  - 检验邮箱
+    - 行首行尾
+
+- ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>正则表达式应用</title>
+      <style>
+      </style>
+      <script>
+      // 封装 getElementById 函数
+      function get(id) {
+        return document.getElementById(id);
+      }
+      
+      var arr = [];
+      var temp = '';
+      var str = 'asdf-1234-as24-q2e4';
+      // console.log(str.search('3'));
+      // console.log(str.substring(2,5));
+      // console.log(str.substring(2));
+      // console.log(str.charAt(2));
+      // console.log(str.split('-'));
+      for (var i in str) {
+        if(str.charAt(i) >= 0 && str.charAt(i) <= 9) {
+          // arr.push(str.charAt(i));
+          temp += str.charAt(i);
+        } else if (temp) {
+          arr.push(temp);
+          temp = '';
+        }
+      }
+      arr.push(temp);
+      temp = '';
+      console.log('字符串方法：',arr);
+      console.log('match方法：',str.match(/\d+/g));
+  
+      
+      window.onload = function () {
+        var btn = get('btn');
+        var btn2 = get('btn2');
+        var btn3 = get('btn3');
+        var btn4 = get('btn4');
+        var text = get('text');
+        var text2 = get('text2');
+  
+        // 检验邮箱
+        // 获取内容，把不符合规则的找出来
+        // abc_123@abc123.abc
+        btn.onclick = function () {
+          var reg = /^\w+@{1,}[0-9a-z]+\.{1,}[a-z]+$/i;
+          var txt = text.value;
+          text2.value = '';
+          txt.search(reg);
+          console.log(txt.match(reg),reg.test(txt));
+          if (reg.test(txt)){
+            text2.value = txt.match(reg);
+          }
+        }
+        // 过滤HTML标签
+        btn2.onclick = function () {
+          var reg = /<[^<>]+>/g;
+          txt = text.value.replace(reg,'')
+          text2.value = txt;
+        }
+        // 检测固定电话
+        btn3.onclick = function () {
+          var reg = /^(0\d{2,3}-)?[1-9]\d{7}(-\d{1,5})?$/;
+          var txt = text.value;
+          text2.value = '';
+          txt.search(reg);
+          console.log(txt.match(reg),reg.test(txt));
+          if (reg.test(txt)){
+            text2.value = txt.match(reg);
+          }
+        }
+        // 检测密码强度
+        // 数字 低
+        // 数字 英文或符号 中
+        // 数字 英文 符号 高
+        btn4.onclick = function () {
+          var regLow = /\d+/;
+          var regMid = /\d+[a-z]+/i;
+          var regHei = /\d+[a-z_]+\S+/i;
+          var txt = text.value;
+          if (regHei.test(txt)) {
+            text2.value = '高';
+          } else if (regMid.test(txt)) {
+            text2.value = '中';
+          } else if (regLow.test(txt)) {
+            text2.value = '低';
+          }
+        }
+      }
+      </script>
+    </head>
+    <body>
+      <textarea name="" id="text" cols="30" rows="10"></textarea>
+      <div>
+        <input type="button" value="检测邮箱" id="btn">
+        <input type="button" value="过滤HTML标签" id="btn2">
+        <input type="button" value="检测电话" id="btn3">
+        <input type="button" value="检测密码" id="btn4">
+      </div>
+      <textarea name="" id="text2" cols="30" rows="10"></textarea>
+    </body>
+  </html>
+  ```
+
+  
 
