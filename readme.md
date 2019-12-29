@@ -1763,7 +1763,7 @@
   - 获取子节点
     - `childNodes`：不兼容高版本，用`nodeType` 兼容
       - 获取文本节点`( nodeType == 3)` 和元素节点`( nodeType == 1)`
-    - **`children`：只获取元素节点，兼容**
+    - `children`：**只获取元素节点，兼容**
   - `parentNode`：查找父节点
     - 例子：点击链接，隐藏整个 `li`
   - `offsetParent`：查找定位父级
@@ -4666,7 +4666,7 @@
   
 - 靠谱拖拽
   - 原有拖拽的问题：移动太快鼠标会移出 div
-    - 直接给 document 加事件
+    - 直接给 `document` 加事件
   - FireFox 下，空 Div 拖拽 Bug
     - 阻止默认事件：`onmousedown {return false}`
   - 防止拖出页面
@@ -5268,38 +5268,137 @@
 - 创建 Ajax 对象
 
   - `ActiveXObject("Microsoft.XMLHTTP)`
-
-  - `XMLHttpRequest()`
-
+- `XMLHttpRequest()`
   - 笔记：变量是 `Window` 的属性
 
     - 使用未定义的变量 —— 报错
-    - 使用未定义的属性 —— `undefined`
-
-    - 用 `window.XMLHttpRequest` 判断是否是 IE
+  - 使用未定义的属性 —— `undefined`
+  - 用 `window.XMLHttpRequest` 返回真则是 chrome FF IE7，
+    - 用 `window.ActiveXObject("Microsoft.XMLHTTP")` 返回真则是 IE6 
 
 - 连接服务器
 
   - `open(方法，文件名，异步传输)`
-    - 同步和异步
+    - *method*：请求的类型；`GET` 或 `POST` ，**必须大写**
+    - *url*：文件在服务器上的位置，GET 请求要避免缓存，请向 URL 添加一个唯一的 ID
+    - *async*：true（异步）或 false（同步）
 
 - 发送请求
 
   - `send()`
+    - *string*：仅用于 POST 请求
 
 - 接收返回值
 
 - 请求状态监控
 
   - `onreadystatechange` 事件
-    - `eadyState` 属性：请求状态
+    - `readyState` 属性：请求状态
+      
       - `0: 未初始化 `  还没有调用 `open()` 方法
       - `1: 开始载入  `  已调用 `send()` 方法，正在发送请求
       - `2: 载入完成 `  `send()` 发送完成，已收到全部响应内容
-      - `3: 解析  `  正在解析响应内容）
-      - `4: 完成`  响应内容解析完成，可以在客户端调用了）
+      - `3: 解析  `  正在解析响应内容
+      - `4: 完成`  响应内容解析完成，可以在客户端调用了
+      
     - `status` 属性( http 状态码)：请求结果，`200: 成功`
-    - `responseText`
+    
+    - `responseText`  获得字符串形式的响应数据
+    
+      ```js
+      document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+      ```
+
+> ## POST 请求
+>
+> 一个简单 POST 请求：
+>
+> 实例
+>
+> ```js
+> xmlhttp.open("POST","/try/ajax/demo_post.php",true); xmlhttp.send();
+> ```
+>
+> 如果需要像 HTML 表单那样 POST 数据，请使用 setRequestHeader() 来添加 HTTP 头。然后在 send() 方法中规定您希望发送的数据：
+>
+> 实例
+>
+> ```js
+> xmlhttp.open("POST","/try/ajax/demo_post2.php",true); xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded"); xmlhttp.send("fname=Henry&lname=Ford");
+> ```
+>
+> | 方法                             | 描述                                                         |
+> | :------------------------------- | :----------------------------------------------------------- |
+> | setRequestHeader(*header,value*) | 向请求添加 HTTP 头。 *header*: 规定头的名称  *value*: 规定头的值 |
+
+- 代码：
+
+  ```HTML
+  <html>
+  <head>
+  <script type="text/javascript">
+  function Ajax(url, err, suc) {
+    var oAjax = '';
+    if (window.XMLHttpRequest) {
+      // chrome FF IE9
+      oAjax = new XMLHttpRequest;
+    } else if (window.ActiveXObject) {
+      oAjax = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if (oAjax != '') {
+      oAjax.onreadystatechange = state_change;
+      oAjax.open('get', url, true);
+      oAjax.send();
+    } else {
+      err();
+    }
+  
+    function state_change() {
+      if (oAjax.readyState === 4) {
+        // 完成
+        if (oAjax.status === 200) {
+          // 成功
+          suc();
+          // 使用返回数据
+          document.getElementById('T1').innerHTML = oAjax.responseText;
+          return oAjax.responseText
+        } else if (oAjax.status === 404){
+          console.log('url错误或不存在');
+        } else {
+          err();
+        }
+      } else if (oAjax.readyState === 0){
+        console.log('未初始化');
+      } else if (oAjax.readyState === 1){
+        console.log('正在发送请求');
+      } else if (oAjax.readyState === 2){
+        console.log('处理请求中');
+      } else if (oAjax.readyState === 3){
+        console.log('正在解析');
+      } else{
+        err();
+      }
+    }
+  }
+  function err() {
+    console.log('错误！');
+  }
+  function suc() {
+    console.log('成功！');
+  }
+  </script>
+  </head>
+  
+  <body onload="Ajax('./css/black.css',err,suc)">
+  <div id="T1" style="border:1px solid black;height:40;width:300;padding:5"></div><br />
+  <button onclick="Ajax('/api/blog/list',err,suc)">Click</button>
+  </body>
+  
+  </html>
+  
+  ```
+
+  
 
 ### Ajax 数据
 
@@ -5574,11 +5673,13 @@
           B.prototype[i] = A.ptoyotype[i]; // 深度复制就不会引用，直接复制内容
       }
       var obj = new B();
-  alert(obj.abc);
+    alert(obj.abc);
       obj.show.call(); // call 一般省略
+      ```
     ```
-      
-
+    
+    ```
+  
   - 原型链
   
     - 方法的继承
