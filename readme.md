@@ -5337,63 +5337,66 @@
   <html>
   <head>
   <script type="text/javascript">
-  function Ajax(url, err, suc) {
-    var oAjax = '';
-    if (window.XMLHttpRequest) {
-      // chrome FF IE9
-      oAjax = new XMLHttpRequest;
-    } else if (window.ActiveXObject) {
-      oAjax = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    if (oAjax != '') {
-      oAjax.onreadystatechange = state_change;
-      oAjax.open('get', url, true);
-      oAjax.send();
-    } else {
-      err();
-    }
-  
-    function state_change() {
-      if (oAjax.readyState === 4) {
-        // 完成
-        if (oAjax.status === 200) {
-          // 成功
-          suc();
-          // 使用返回数据
-          document.getElementById('T1').innerHTML = oAjax.responseText;
-          return oAjax.responseText
-        } else if (oAjax.status === 404){
-          console.log('url错误或不存在');
-        } else {
-          err();
-        }
-      } else if (oAjax.readyState === 0){
-        console.log('未初始化');
-      } else if (oAjax.readyState === 1){
-        console.log('正在发送请求');
-      } else if (oAjax.readyState === 2){
-        console.log('处理请求中');
-      } else if (oAjax.readyState === 3){
-        console.log('正在解析');
-      } else{
+  function Ajax(url, suc, err) {
+      var oAjax = '';
+      if (window.XMLHttpRequest) {
+        // chrome FF IE9
+        oAjax = new XMLHttpRequest;
+      } else if (window.ActiveXObject) {
+        oAjax = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      if (oAjax != '') {
+        oAjax.onreadystatechange = state_change;
+        oAjax.open('get', url, true);
+        oAjax.send();
+      } else {
         err();
       }
+  
+      function state_change() {
+        if (oAjax.readyState === 4) {
+          // 完成
+          if (oAjax.status === 200) {
+            // 成功
+            if (suc) {
+              suc(oAjax.responseText);
+            } else {
+              return oAjax.responseText;
+            }          
+          } else if (oAjax.status === 404){
+            console.log('url错误或不存在');
+          } else if (err){
+            err();
+          }
+        } else if (oAjax.readyState === 0){
+          console.log('未初始化');
+        } else if (oAjax.readyState === 1){
+          console.log('正在发送请求');
+        } else if (oAjax.readyState === 2){
+          console.log('处理请求中');
+        } else if (oAjax.readyState === 3){
+          console.log('正在解析');
+        }
+      }
+    }
+  window.onload = function () {
+    var btn = document.getElementById('btn');
+    btn.onclick = function () {
+      Ajax('/api/blog/list', function (str) {
+          // 使用返回数据
+          console.log('成功')
+          document.getElementById('T1').innerHTML = str;
+      })
     }
   }
-  function err() {
-    console.log('错误！');
-  }
-  function suc() {
-    console.log('成功！');
-  }
+  
   </script>
   </head>
   
-  <body onload="Ajax('./css/black.css',err,suc)">
+  <body>
   <div id="T1" style="border:1px solid black;height:40;width:300;padding:5"></div><br />
-  <button onclick="Ajax('/api/blog/list',err,suc)">Click</button>
+  <button id="btn">Click</button>
   </body>
-  
   </html>
   
   ```
@@ -5456,10 +5459,10 @@
 - 工厂方式的问题
   - 没有 new
   - 函数重复定义：函数内容一样却不相等，浪费大量系统资源
-- 问题解决：构造函数加上 `new` , 然后用原型`Prototype` 为对象添加**方法**
-  - new 做了两件事
-    - 替你创建了一个空白对象：`var this = new Object()`
-    - 替你返回了这个空白对象：`return this `
+- 问题解决：**构造函数加上** `new` , **然后用原型**`Prototype` 为对象添加**方法**
+  - `new` 做了两件事
+    - **替你创建了一个空白对象**：`var this = new Object()`
+    - **替你返回了这个空白对象**：`return this `
   - `new` 和 `this`
 
 ### 原型：Prototype
@@ -5467,16 +5470,76 @@
 - 原型是什么
   - 原型是 `class`，修改它可以影响一类元素
   - 在已有对象中加入自己的属性、方法
+  
 - 为所有 `Array` 添加 `Sum` 方法：`Array.prototype.sum = function () {} `
   - 给对象添加方法，类似于行间样式
   - **给原型添加方法，类似于 `class`**
+  
 - 原型的小缺陷
+  
   - 无法限制覆盖
+  
 - 类和对象的区别
-  - 类：生产对象的模子  `Array`
+  - 类：生产对象的模板  `Array`
     -  `var arr = new Array()`
   - 对象：产品  `arr`
+  
 - 总结：**用构造函数加属性，用原型加方法，叫做混合方式构造对象**
+
+- 代码：
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>面对对象基础</title>
+      <style>
+      </style>
+      <script>
+        // 工厂方式
+        function CreatePerson(name, qq) {
+          var obj = new Object();
+  
+          obj.name = name;
+          obj.qq = qq;
+          
+          obj.showName = function () {
+            console.log('名字：', this.name);
+          }
+          obj.showQQ = function () {
+            console.log('QQ：', this.qq)
+          }
+  
+          return obj;
+        }
+        var person = CreatePerson('zhangsan','212345678');
+        person.showName();
+        person.showQQ();
+  
+        // 使用原型
+        function CreatePerson2(name, qq) {
+          this.name = name;
+          this.qq = qq;
+        }
+                
+        CreatePerson2.prototype.showName2 = function () {
+          console.log('名字：', this.name);
+        }
+        CreatePerson2.prototype.showQQ2 = function () {
+          console.log('QQ：', this.qq)
+        }
+        var people = new CreatePerson2('asdf','535');
+        people.showName2();
+        people.showQQ2();
+      </script>
+    </head>
+    <body>
+    </body>
+  </html>
+  ```
+
+  
 
 ### 面对对象编程方式
 
@@ -5632,19 +5695,39 @@
 ###  Json 方式的面向对象
 
 - 把方法包在一个 `Json` 里：简单 单体 不适合多个对象
-  - 有人管它叫：命名空间
+  - 有人管它叫：**命名空间**
   - 把同一类方法，放在一起
+  
+- 代码：
+
+  ```js
+  var json = {
+        name: 'zhangsan',
+        QQ: 34543643,
+        age: 23,
+        showName: function () {
+          console.log(this.name);
+        },
+        showQQ: function () {
+          console.log(this.QQ);
+        }
+      }
+      json.showName();
+      json.showQQ();
+  ```
+
+  
 
 ### 拖拽和继承
 
 - 面向对象的拖拽
-  - 改写原有拖拽
+  - 改写原有拖拽，代码同下
 - 对象的继承
   - 什么是继承
     - 在原有类的基础上略作修改，得到一个新类
     - 不影响原有类的功能
-  - `instanceof` 运算符：返回 true，如果对象是对象类型的实例。
-    - 查看对象是否是某个类的实例
+  - `instanceof` 运算符：返回 `true`，如果对象是对象类型的实例。
+    - **查看对象是否是某个类的实例**
 
 ### 使用继承
 
@@ -5676,16 +5759,129 @@
     alert(obj.abc);
       obj.show.call(); // call 一般省略
       ```
-    ```
-    
-    ```
   
-  - 原型链
+- 原型链
   
     - 方法的继承
       - 原理：**复制方法是引用，指向同一个内存空间**
     - 覆盖原型的方法复制
       - `for in` 深度复制就不会引用，直接复制内容
+  
+- 代码：拖拽改写为面对对象并继承一个新的对象
+
+  ```HTML
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+      <title>面对对象的拖拽</title>
+      <link rel="stylesheet" href="../reset.css">
+      <style>
+        #div1 {
+          top: 100px;
+          left: 100px;
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          background-color: rgb(255, 0, 0);
+        }
+        #div2 {
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          background-color: rgb(0, 255, 170)
+        }
+      </style>
+      <script src="./lib/Drag.js"></script>
+      <script src="./lib/LimitDrag.js"></script>
+      <script>
+  
+      window.onload = function () {
+        new Drag('div1');
+        new LimitDrag('div2');
+      }
+      
+      </script>
+    </head>
+    <body>
+      <div id="div1">普通拖拽</div>
+      <div id="div2">限制范围的拖拽</div>
+    </body>
+  </html>
+  ```
+
+  ```JS
+  function Drag(id) {
+    this.disX = '';
+    this.disY = '';
+    this.oDiv = document.getElementById(id);
+    var _this = this;
+    this.oDiv.onmousedown = function (ev) {
+      _this.fnDown(ev);
+      return false;
+    };
+  }
+  Drag.prototype.fnDown = function (ev) {
+    var ev = event||ev;
+    var _this = this;
+    // 鼠标可视区位置 - div左边距 = 鼠标在div内的位置
+    this.disX = ev.clientX - this.oDiv.offsetLeft;
+    this.disY = ev.clientY - this.oDiv.offsetTop;
+    console.log(this.disX,'可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+    document.onmousemove = function (ev) {
+      _this.mouseMove(ev);
+    }
+    document.onmouseup = function (ev) {
+      _this.mouseUp(ev);
+    }
+  }
+  Drag.prototype.mouseMove = function(ev) {
+      // 不断获取Event 对象，坐标才会不断更新
+      var ev = event||ev;
+      // console.log('可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+      // div位置 = 鼠标可视区新的位置 - 鼠标与div的距离
+      this.oDiv.style.left = ev.clientX - this.disX + 'px';
+      this.oDiv.style.top = ev.clientY - this.disY + 'px';
+    }
+  Drag.prototype.mouseUp = function () {
+    document.onmousemove = '';
+    document.onmouseup = ''; 
+  }
+  ```
+
+  ```JS
+  // 继承属性
+  function LimitDrag(id) {
+    Drag.call(this, id);
+  }
+  // 继承原型
+  for (var i in Drag.prototype) {
+    LimitDrag.prototype[i] = Drag.prototype[i];
+  }
+  
+  LimitDrag.prototype.mouseMove = function(ev) {
+    // 不断获取Event 对象，坐标才会不断更新
+    var ev = event||ev;
+    // console.log('可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+    // div位置 = 鼠标可视区新的位置 - 鼠标与div的距离
+    var l = ev.clientX - this.disX;
+    var t = ev.clientY - this.disY; 
+    if (l < 0) {
+      l = 0;
+    } else if (l > document.documentElement.clientWidth - this.oDiv.offsetWidth) {
+      l = document.documentElement.clientWidth - this.oDiv.offsetWidth;
+    }
+    if ( t < 0) {
+      t = 0;
+    } else if (t > document.documentElement.clientHeight - this.oDiv.offsetHeight) {
+      t = document.documentElement.clientHeight - this.oDiv.offsetHeight;
+    }
+    this.oDiv.style.top = t + 'px';
+    this.oDiv.style.left = l + 'px';
+  }
+  ```
+
+  
 
 ### 系统对象
 
@@ -5714,7 +5910,7 @@
     - `navigator`：包含大量信息
     - `userAgent`：浏览器信息
   - `window.location`
-    - 当前网页地址
+    - `href`：当前网页地址
 
 ### 尺寸及坐标
 
@@ -5779,23 +5975,30 @@
   
         window.onscroll = function () {
           var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
-          console.log(scrollTop);
+          console.log('scrollTop:',scrollTop);
         }
         
-        console.log(window.navigator);
-        alert('0');
-        confirm('yes?');
-        prompt('');
+        console.log(window.navigator.userAgent);
+        console.log(window.location.href);
+        // alert('0');
+        // confirm('yes?');
+        // prompt('');
+  
+        window.onresize = function () {
+          var cliHei = document.documentElement.clientHeight;
+          var cliWid = document.documentElement.clientWidth;
+          console.log('可视区高宽：',cliHei, cliWid)
+        }
       }
       </script>
-    </head>
+  </head>
     <body>
       <input type="button"  id="btn" value="打开网页">
       <input type="button"  id="btn2" value="关闭网页">
     </body>
   </html>
   ```
-
+  
   
 
 ## COOKIE 基础与应用
@@ -5804,12 +6007,12 @@
 
 - 页面用来保存信息
   - 比如：自动登录、记住用户名
-- cookie 的特征
-  - 同一网站中所有页面共享一套 cookie
+- `cookie` 的特征
+  - 同一网站中所有页面共享一套 `cookie`
   - 数量、大小有限
   - 过期时间
-- JS 中使用 cookie
-  - document.cookie
+- JS 中使用 `cookie`
+  - `document.cookie`
 
 ### 使用 cookie 
 
