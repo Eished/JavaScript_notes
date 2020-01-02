@@ -5911,6 +5911,15 @@
     - `userAgent`：浏览器信息
   - `window.location`
     - `href`：当前网页地址
+    - `hostname`：主机域名
+    - `pathname`：页面路径和文件名
+    - `port`：端口
+    - `protocol`：http协议
+    - `assign`：加载新文档，url
+  - `window.history`
+    - `back()`：后退
+    - `forward()`：前进
+    - `go()`：历史中某个页面，-1 用于登陆后回跳
 
 ### 尺寸及坐标
 
@@ -6007,12 +6016,12 @@
 
 - 页面用来保存信息
   - 比如：自动登录、记住用户名
-- `cookie` 的特征
-  - 同一网站中所有页面共享一套 `cookie`
+- `cookie 的特征
+  - 同一网站中所有页面共享一套 `cookie
   - 数量、大小有限
   - 过期时间
 - JS 中使用 `cookie`
-  - `document.cookie`
+  - `document.cookie
 
 ### 使用 cookie 
 
