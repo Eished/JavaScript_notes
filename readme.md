@@ -828,7 +828,9 @@
 
     - `NaN ` 的意义和检测：`Not a Number`
 
-    - NaN 和 NaN 不相等：使用 ` isNaN()` 检测是否是全是数字
+    - NaN： NaN 和任何值都不相等，包括它自己
+
+      - 使用 ` isNaN()` 检测是否是全是数字
 
     - ```
       Number() 转换数值，String() 转换字符串，Boolean() 转换布尔值
@@ -922,7 +924,6 @@
   </html>
   ```
 
-  
 
 ### 变量的作用域和闭包
 
@@ -1271,27 +1272,42 @@
 - 转换类
 
   - `数组.concat(数组2)`
-    - 连接两个数组
+    - 连接两个数组，可用于深度复制
   - `数组.join(分隔符)`
     - 用分隔符，组合数组元素，生成字符串
     - 字符串 `split`
+  - `数组.reverse()`
+    - 颠倒数组中元素的顺序
 
--  `splice` 删除、插入、替换
+- `数组.slice(start,end)`
 
-  - `splice(起点,长度,元素)`
+  - 从已有数组中返回选定元素，可用于深度复制
+  - start 为负数时，和数组长度相加再查找
+
+-  `splice`：先删除，后插入
+
+  - `数组.splice(起点,长度,元素)`
 
   - 删除
 
-    - `splice(起点,长度)`
+    - `数组.splice(起点,长度)`
 
   - 插入
 
-    - `splice(起点,0,元素...)`
+    - `数组.splice(起点,0,元素...)`
 
   - 替换
 
-    - `splice(起点,长度,元素)`
-- 先删除，后插入
+    - `数组.splice(起点,长度,元素)`
+  
+- ECMAScript 两个关于位置的方法
+  
+  - `arrayObject.indexOf(searchvalue,startIndex)`
+    - 从startIndex 开始向后查找，默认值为 0
+    - 返回 number 查找项在数组中的位置，没找到返回-1
+  - ``arrayObject.lastIndexOf(searchvalue,startIndex)`
+    - 从startIndex 开始向前查找，默认值为 0
+    - 返回 number 查找项在数组中的位置，没找到返回-1
   
 - 代码：
 
@@ -1486,11 +1502,26 @@
 
 - 设置图片路径
 
-  - `str[i]` 不兼容 ie7
+  - `str[i]`：查找字符，不兼容 ie7
+  
 - `charAt(i)` 方法 ：取出字符串中的第 i 个值，兼容各种浏览器
   
 - 设置路径：`"url('img/0.png')"`
   
+- JavaScript 中的 String 方法
+
+  - `obj,charAt(index)`
+    - 返回index位置的字符
+  - `obj.charCodeAt()`
+    - 返回index位置的字符编码
+  - `obj.indexOf("str")`
+    - 顺序搜索str，返回其位置，未找到返回-1
+  - `obj.lastIndexOf("str")`
+    - 倒叙搜索str，返回其位置，未找到返回-1
+  - `slice(start,end)`：同数组
+  - `substring(start,end)`：同上，区别在于参数为负数时自动转换为0，并且较小的数为起始位
+  - `substr(start,len)`：同上，len 表示截取的长度
+
 - 代码：
 
   ```HTML
@@ -1982,7 +2013,7 @@
 - 搜索
 
   - 版本1：基础版本 -- 字符串比较
-  - 版本2：忽略大小写 -- 大小写转换 `toLowerCase()`，返回字符串
+  - 版本2：忽略大小写 -- 大小写转换 `toLowerCase()/toUpperCase()`，返回字符串
   - 版本3：模糊搜索 -- `search()` 的使用，没找到返回 -1，找到则返回位置
   - 版本4：多关键词 -- `split()` 分割字符串，返回数组
   - 高亮显示、筛选
@@ -2467,6 +2498,12 @@
   - ` scrollTop = document.documentElement.scrollTop || document.body.scrollTop;`
     - `document.documentElement.scrollTop`：IE、Firefox
     - `document.body.scrollTop`：chrome
+
+- `Math.random()`
+
+  - 返回一个等于0小于1的一个随机浮点数
+  - 说明：求 n到 m之间的**随机整数的公式**
+    - `random = Math.floor(Math.random()*(m-n+1)+n)`
 
 - 代码：
 
@@ -6185,7 +6222,7 @@
   - 量词变化：`\d`(单个数字一组)   `\d\d`(两个数字一组)   和   `\d+`(若干连续数字)
   - 全局匹配：`g`：global
   - 例子：找出所有数字
-- `replace`：替换所有匹配
+- `replace(reg/str,replacement)`：替换所有匹配
   - 返回替换后的字符串
   - 例子：敏感词过滤
 
