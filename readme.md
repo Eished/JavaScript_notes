@@ -1502,7 +1502,7 @@
 
 - 设置图片路径
 
-  - `str[i]`：查找字符，不兼容 ie7
+  - `str[i]`：取出字符串中的第 i 个值，不兼容 ie7
   
 - `charAt(i)` 方法 ：取出字符串中的第 i 个值，兼容各种浏览器
   
@@ -1510,14 +1510,14 @@
   
 - JavaScript 中的 String 方法
 
-  - `obj,charAt(index)`
+  - `obj.charAt(index)`
     - 返回index位置的字符
   - `obj.charCodeAt()`
     - 返回index位置的字符编码
   - `obj.indexOf("str")`
     - 顺序搜索str，返回其位置，未找到返回-1
   - `obj.lastIndexOf("str")`
-    - 倒叙搜索str，返回其位置，未找到返回-1
+    - 倒序搜索str，返回其位置，未找到返回-1
   - `slice(start,end)`：同数组
   - `substring(start,end)`：同上，区别在于参数为负数时自动转换为0，并且较小的数为起始位
   - `substr(start,len)`：同上，len 表示截取的长度
