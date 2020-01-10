@@ -60,7 +60,7 @@
 ### 初始化项目
 
 ```
-npx es10-cli create projectName
+npx es10-cli create projectName // 创建模板文件命令
 ```
 
 启动项目
@@ -69,6 +69,7 @@ npx es10-cli create projectName
 cd projectName
 npm install
 npm start
+touch static/lesson2-1.js // 新建文件命令
 ```
 
 ##    1-6 编辑器配置
@@ -81,21 +82,110 @@ VS code 插件 beautify 和 ESLint
 
 ##    2-1 作用域（1）
 
-
+1. var 声明的全局变量相当于 window 的属性，但无法删除，属性可以删除
+2. 没有var 定义的变量是作为 window 的属性定义的，是全局属性
+3. 在函数内部没有 var 定义的变量是window 的属性，是全局属性
 
 ##    2-2 作用域（2）
 
+- 函数作用域 = 局部作用域
+- var 定义的变量会变量提升
+- let 定义的变量具有块状作用域
+
+### this 与 动态作用域 的关系
+
+- this 具有动态指向
+
+### 四种作用域
+
+1. 全局作用域
+2. 函数作用域
+3. 块状作用域 ，配合 let 和 const 使用
+4. 动态作用域
+
 ##    2-3 什么是作用域
+
+几乎所有编程语言就是在变量中储存值，并且能够读取和修改这些值。事实上在变量中储存和取出值得能力，给程序赋予了状态。
+
+如果没有这样的概念，一个程序虽然可以执行一些任务，但是它们将会受到极大的限制而且不会非常有趣。
+
+但是这些变量该储存在哪？又如何读取？为了完成这个目标需要制定一些规则，规则就是：作用域。
+
+- #### 四种常见作用域类型：
+
+  | 对象     | 类型                     |
+  | -------- | ------------------------ |
+  | global   | 全局作用域               |
+  | function | 函数作用域（局部作用域） |
+  | {}       | 块状作用域               |
+  | this     | 动态作用域               |
+
+- > 如果一个变量 或者其它表达式不在“当前得作用域”，那么JavaScript机制会继续沿着作用域链上查找直到找到全局作用域，通常是指沿着链式得作用域查找，而不能从父作用域引用子作用域中的变量和引用
 
 ##    2-4 let&amp;const
 
-##    2-5 Let &amp; Const
+- let 声明的特点
+  - 块状作用域
+  - 不能用用全局变量的属性访问
+  - 不能重复定义
+  - 不会变量提升
+- const 声明的特点
+  - **只能赋值一次**
+  - **初始化时一定要赋值**
+  - 块状作用域
+  - 不能用用全局变量的属性访问
+  - 不能重复定义
+  - 不会变量提升
+- 阅读
+  1. 什么是作用域
+  2. JavaScript深入之词法作用域和动态作用域
+  3. 深入理解JS中声明提升、作用域（链）和 this 关键字
+
+2-5 Let &amp; Const
 
 ##    2-6 ES5中数组有多少种遍历的方法？
 
+他们有什么优势和缺点？
+
+1. for 循环
+
+2. forEach ：`arr.forEach(funciton (item) {console.log(item)})`
+
+   > 不支持 `break` 和 `continue`
+
+3. every ：`arr.every(funciton (item) {console.log(item)})`
+
+   > 是否继续执行取决于函数返回值 true 、false
+
+4. for in ：for ( let index in Object) {console.log(Object[index])}
+
+   > 为对象设计的，数组的属性和下标作为字符串遍历
+   >
+   > 支持 continue 和 break
+
 ##    2-7 ES6中数组有多少种遍历的方法？
 
-##    2-8 Array.from（如何将伪数组转换成数组？） 试看
+1. for of ：`for of (let item of arr) { console.log(item)}`
+
+   > 不仅可以遍历数组和对象
+   >
+   > 可以遍历自定义数据结构
+
+##    2-8 Array.from（如何将伪数组转换成数组？）
+
+### ES5
+
+```js
+let args = [].slice.call(arguments) // collection
+let imgs = [].slice.call(doncument.querySelectorAll('img')) // NodeList
+```
+
+### ES6
+
+```js
+Array.prototype.from // ES6 新增方法
+let args = Array.from(arguments)
+```
 
 ##    2-9 Array.of-fill（如何生成新数组？）
 
