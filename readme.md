@@ -811,7 +811,7 @@
 ### 变量类型
 
 - 类型：`typeof` 运算符
-  - 用法：`i.typeof`返回变量的类型
+  - 用法：`typeof 元素`返回变量的类型
   - 常见类型：
     - `number` 、`string` 、`boolean` 、`undefined`（未定义或定义未使用）、`object`、`function`
 - 一个变量应该只放一种类型的数据

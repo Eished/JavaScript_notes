@@ -152,12 +152,24 @@ VS code 插件 beautify 和 ESLint
 2. forEach ：`arr.forEach(funciton (item) {console.log(item)})`
 
    > 不支持 `break` 和 `continue`
+   >
+   > return false 相当于 continue
 
 3. every ：`arr.every(funciton (item) {console.log(item)})`
 
    > 是否继续执行取决于函数返回值 true 、false
+   >
+   > 如果数组中检测到有一个元素不满足，则整个表达式返回 *false* ，且剩余的元素不会再进行检测。
+   >
+   > 如果所有元素都满足条件，则返回 true。
 
-4. for in ：for ( let index in Object) {console.log(Object[index])}
+4. some：依次执行数组的每个元素：
+
+   > 如果有一个元素满足条件，则表达式返回*true* , 剩余的元素不会再执行检测。
+   >
+   > 如果没有满足条件的元素，则返回false。
+
+5. for in ：`for ( let index in Object) {console.log(Object[index])}`
 
    > 为对象设计的，数组的属性和下标作为字符串遍历
    >
@@ -171,6 +183,14 @@ VS code 插件 beautify 和 ESLint
    >
    > 可以遍历自定义数据结构
 
+2.  map()
+
+   > map() 方法返回一个新数组，数组中的元素为原始数组元素调用函数处理后的值。
+   >
+   > map() 方法按照原始数组元素顺序依次处理元素。
+   >
+   > 这种方式也是用的比较广泛的，虽然用起来比较优雅，但实际效率还比不上foreach
+
 ##    2-8 Array.from（如何将伪数组转换成数组？）
 
 ### ES5
@@ -182,126 +202,472 @@ let imgs = [].slice.call(doncument.querySelectorAll('img')) // NodeList
 
 ### ES6
 
+- Array.from(arrayLike, mapFn, thisArg)
+
+  > ES6 新增方法，专门转换伪数组到数组，也可用于生成数组
+
 ```js
 Array.prototype.from // ES6 新增方法
+Array.from(arrayLike, mapFn, thisArg) // 语法 伪数组，函数返回值，this指向
 let args = Array.from(arguments)
 ```
 
+### 什么叫伪数组
+
+1. 按照索引方式存储数据
+2. 具有 length 属性
+
+```js
+let array = Array.from({ length: 5}, function () { return 1})
+```
+
+
+
 ##    2-9 Array.of-fill（如何生成新数组？）
+
+ES6 新方法
+
+- Array(5) ：初始化长度为5的数组
+- new Array(1,2,3)：初始化数组，同时生成数据
+
+-  Array.of(1,2,3)：初始化数组，同时生成数据
+- Array.fill(value,start,end)：填充数据
+
+```js
+// Array.prototype.of
+let array = Array.of(1,4,5,2,67)
+
+// Array.prototype.fill
+let array = Array(10).fill(1)
+
+Array.fill(value,start,end) // 语法 填充值，起始位，截止值。 默认填充所有元素
+console.log(array.fill(9, 5, 8))
+```
+
+
 
 ##    2-10 Find&amp;FindIndex（如何查找数组？）
 
-##    2-11 数组 - Array
+- array.filter(fn)：ES5，返回符合fn 条件的所有值，没有则为空
+
+- Array.find(fn)：ES6，查找数组中符合fn 条件的第一个值，并返回，没有则为 undefined
+- Array.findIndex()：ES6，返回位置，未找到则-1
+
+```js
+let array = Array.of(1, 4, 5, 2, 67)
+let find = array.filter(function (item) {
+  return item % 2 === 0
+})
+// 查找下标
+let find = array.findIndex(function (item) {
+  return item === 0
+})
+console.log(find);
+```
+
+
+
+2-11 数组 - Array
 
 ##    2-12 Class基础语法（怎么声明一个类？）
 
+### ES5中怎么声明一个类
+
+- ```JS
+  let Animal = function (type) {
+    this.type = type
+  }
+  
+  Animal.prototype.eat = function () {
+    console.log('you are eatting food hello');
+  }
+  let dog = new Animal('food')
+  let cat = new Animal('fish')
+  
+  console.log(dog)
+  console.log(cat)
+  
+  // 修改实例对象原型链上的方法
+  cat.constructor.prototype.eat = function () {
+    console.log('error')
+  }
+  dog.eat()
+  cat.eat()
+  ```
+
+  
+
+### ES6中声明一个类
+
+- ```JS
+  class Animal {
+    constructor(type) {
+      this.type = type
+    }
+    eat() {
+      console.log('i am food')
+    }
+  }
+  
+  let dog = new Animal('food')
+  let cat = new Animal('fish')
+  
+  console.log(dog)
+  console.log(cat)
+  
+  // 修改实例对象原型链上的方法
+  cat.constructor.prototype.eat = function () {
+    console.log('error')
+  }
+  dog.eat()
+  cat.eat()
+  
+  console.log(typeof Animal);
+  ```
+
+  
+
 ##    2-13 Setter&amp;Getter（如何读写属性？）
+
+### ES6：set 和 get
+
+- 可以把属性写成函数，调用时先运行函数
+
+```JS
+let _age = 4
+class Animal {
+  constructor(type) {
+    this.type = type
+  }
+  get age() {
+    return _age
+  }
+  set age(val) {
+    if (val < 7 && val > 4) {
+      _age = val
+    } else {
+      console.log("err")
+    }
+  }
+  eat() {
+    console.log('i am food')
+  }
+}
+let dog = new Animal
+dog.age = 52
+console.log(dog.age)
+```
+
+
 
 ##    2-14 Static Methods（如何操作方法？）
 
+### 对象实例的方法和类的静态方法
+
+```JS
+// ES5
+let Animal2 = function (type) {
+  this.type = type
+}
+Animal2.prototype.eat = function () {
+  Animal2.walk()
+  console.log('you are eatting food hello');
+}
+Animal2.walk = function () {
+  console.log('i am walking');
+}
+let dog = new Animal2('dog')
+dog.eat()
+```
+
+
+
+- static 与实例对象隔离，拿不到实例对象
+
+```JS
+// ES6 专有语法定义静态方法
+class Animal {
+  constructor(type) {
+    this.type = type
+  }
+  eat() {
+    Animal.walk()
+    console.log('i am food')
+  }
+  static walk() {
+    console.log('i am flying');
+  }
+}
+let dog = new Animal('dog')
+dog.eat()
+```
+
+### 什么时候用实例对象的方法，什么时候用类的静态方法？
+
+- 方法依赖于实例对象的属性或方法，要引用实例对象的信息时必须使用实例对象的方法
+- 方法不会涉及实例对象的属性或方法，可以用类的静态方法
+
 ##    2-15 Sub Classes（如何继承一个类？）
 
-##    2-16 Class
+### ES5继承的一种方法
+
+```JS
+let Animal = function (type) {
+  this.type = type
+}
+Animal.prototype.eat = function () {
+  Animal.walk()
+  console.log('you are eatting food hello');
+}
+Animal.walk = function () {
+  console.log('i am walking');
+}
+
+let Dog = function (type) {
+  // 初始化父类的构造函数
+  Animal.call(this, type)
+  this.run = function () {
+    console.log('runnig');
+  }
+}
+Dog.prototype = Animal.prototype
+
+let dog = new Dog('dog')
+dog.run()
+dog.eat()
+console.log(dog.type);
+```
+
+
+
+### ES6中如何继承 extends
+
+```JS
+class Animal {
+  constructor(type) {
+    this.type = type
+  }
+  eat() {
+    Animal.walk()
+    console.log('i am food')
+  }
+  static walk() {
+    console.log('i am flying');
+  }
+}
+class Dog extends Animal {
+  constructor(type) {
+    super(type)
+    this.age = 2
+  }
+}
+let dog = new Dog('dog')
+dog.eat()
+```
+
+
+
+2-16 Class
 
 ##    2-17 Default Parameters（函数参数的默认值）
 
-##    2-18 Rest Parameter（怎么处理不确定参数？） 试看
+
+
+##    2-18 Rest Parameter（怎么处理不确定参数？）
+
+##    
 
 ##    2-19 Spread Operator（rest参数的逆运算）
 
+
+
 ##    2-20 Arrow Functions（箭头函数）
+
+
 
 ##    2-21 Function Update
 
+
+
 ##    2-22 Object Property
+
+
 
 ##    2-23 Set数据结构
 
+
+
 ##    2-24 Map数据结构
+
+
 
 ##    2-25 Object.assign（对象拷贝）
 
+
+
 ##    2-26 Object Update
+
+
 
 ##    2-27 Regexp Sticky（y修饰符）
 
+
+
 ##    2-28 Regexp Unicode（u修饰符）
+
+
 
 ##    2-29 RegExp Update
 
+
+
 ##    2-30 String（字符串拼接问题）
+
+
 
 ##    2-31 Template
 
+
+
 ##    2-32 Array Destructure（解构赋值）
+
+
 
 ##    2-33 Array Destructure（解构赋值）
 
+
+
 ##    2-34 Object Destructrue（解构赋值）
+
+
 
 ##    2-35 Desctructuring
 
+
+
 ##    2-36 Callback（异步操作）
+
+
 
 ##    2-37 Promise（异步操作）
 
+
+
 ##    2-38 Then（异步操作）
+
+
 
 ##    2-39 Resolve &amp; Reject（异步操作）
 
+
+
 ##    2-40 Catch（异步操作）
+
+
 
 ##    2-41 All（异步操作）
 
+
+
 ##    2-42 Race（异步操作）
+
+
 
 ##    2-43 Promise
 
+
+
 ##    2-44 Reflect.apply（反射机制）
+
+
 
 ##    2-45 Reflect.construct（反射机制）
 
+
+
 ##    2-46 Reflect.getOwnPropertyDescriptor（反射机制）
+
+
 
 ##    2-47 Reflect
 
+
+
 ##    2-48 proxy basic syntax（该怎样使用代理功能）
+
+
 
 ##    2-49 Schema Validation（1）
 
+
+
 ##    2-50 Schema Validation（2）
+
+
 
 ##    2-51 Schema Validation（3）
 
+
+
 ##    2-52 Revocable Proxy
+
+
 
 ##    2-53 Proxy
 
+
+
 ##    2-54 Generator（如何让遍历“停”下来）
+
+
 
 ##    2-55 Syntax（1）
 
+
+
 ##    2-56 Syntax（2）
+
+
 
 ##    2-57 Scene Pratice
 
+
+
 ##    2-58 Generator
+
+
 
 ##    2-59 Iterator（如何让不支持遍历的数据结构“可遍历”）
 
+
+
 ##    2-60 Iterator
+
+
 
 ##    2-61 Generator
 
+
+
 ##    2-62 Iterator
+
+
 
 ##    2-63 Export Import（如何把代码进行模块化设计）
 
+
+
 ##    2-64 Export Import（2）
+
+
 
 ##    2-65 Export Import（3）
 
+
+
 ##    2-66 module
+
+
 
 #   第3章 ES7基础知识
 
