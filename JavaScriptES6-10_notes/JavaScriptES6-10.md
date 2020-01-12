@@ -80,30 +80,32 @@ VS code 插件 beautify 和 ESLint
 
   ES6语法相对于ES5有了非常大的改变，让原生 JavaScript 能力再上一个台阶，这个章节会分门别类进行讲述，单纯讲语法既乏味也不利于记忆更不知道如何运用，我们以应用场景开场分别给出ES5和ES6两种不同的解决方案，循序渐进剖析语法...
 
-##    2-1 作用域（1）
+## Let &amp; Const
+
+###    2-1 作用域（1）
 
 1. var 声明的全局变量相当于 window 的属性，但无法删除，属性可以删除
 2. 没有var 定义的变量是作为 window 的属性定义的，是全局属性
 3. 在函数内部没有 var 定义的变量是window 的属性，是全局属性
 
-##    2-2 作用域（2）
+###    2-2 作用域（2）
 
 - 函数作用域 = 局部作用域
 - var 定义的变量会变量提升
 - let 定义的变量具有块状作用域
 
-### this 与 动态作用域 的关系
+#### this 与 动态作用域 的关系
 
 - this 具有动态指向
 
-### 四种作用域
+#### 四种作用域
 
 1. 全局作用域
 2. 函数作用域
 3. 块状作用域 ，配合 let 和 const 使用
 4. 动态作用域
 
-##    2-3 什么是作用域
+###    2-3 什么是作用域
 
 几乎所有编程语言就是在变量中储存值，并且能够读取和修改这些值。事实上在变量中储存和取出值得能力，给程序赋予了状态。
 
@@ -122,7 +124,7 @@ VS code 插件 beautify 和 ESLint
 
 - > 如果一个变量 或者其它表达式不在“当前得作用域”，那么JavaScript机制会继续沿着作用域链上查找直到找到全局作用域，通常是指沿着链式得作用域查找，而不能从父作用域引用子作用域中的变量和引用
 
-##    2-4 let&amp;const
+###    2-4 let&amp;const
 
 - let 声明的特点
   - 块状作用域
@@ -141,9 +143,9 @@ VS code 插件 beautify 和 ESLint
   2. JavaScript深入之词法作用域和动态作用域
   3. 深入理解JS中声明提升、作用域（链）和 this 关键字
 
-2-5 Let &amp; Const
+## 数组 - Array
 
-##    2-6 ES5中数组有多少种遍历的方法？
+###    2-6 ES5中数组有多少种遍历的方法？
 
 他们有什么优势和缺点？
 
@@ -175,7 +177,7 @@ VS code 插件 beautify 和 ESLint
    >
    > 支持 continue 和 break
 
-##    2-7 ES6中数组有多少种遍历的方法？
+### 2-7 ES6中数组有多少种遍历的方法？
 
 1. for of ：`for of (let item of arr) { console.log(item)}`
 
@@ -191,16 +193,16 @@ VS code 插件 beautify 和 ESLint
    >
    > 这种方式也是用的比较广泛的，虽然用起来比较优雅，但实际效率还比不上foreach
 
-##    2-8 Array.from（如何将伪数组转换成数组？）
+###    2-8 Array.from（如何将伪数组转换成数组？）
 
-### ES5
+#### ES5
 
 ```js
 let args = [].slice.call(arguments) // collection
 let imgs = [].slice.call(doncument.querySelectorAll('img')) // NodeList
 ```
 
-### ES6
+#### ES6
 
 - Array.from(arrayLike, mapFn, thisArg)
 
@@ -212,7 +214,7 @@ Array.from(arrayLike, mapFn, thisArg) // 语法 伪数组，函数返回值，th
 let args = Array.from(arguments)
 ```
 
-### 什么叫伪数组
+#### 什么叫伪数组
 
 1. 按照索引方式存储数据
 2. 具有 length 属性
@@ -223,7 +225,7 @@ let array = Array.from({ length: 5}, function () { return 1})
 
 
 
-##    2-9 Array.of-fill（如何生成新数组？）
+###    2-9 Array.of-fill（如何生成新数组？）
 
 ES6 新方法
 
@@ -246,7 +248,7 @@ console.log(array.fill(9, 5, 8))
 
 
 
-##    2-10 Find&amp;FindIndex（如何查找数组？）
+###    2-10 Find&amp;FindIndex（如何查找数组？）
 
 - array.filter(fn)：ES5，返回符合fn 条件的所有值，没有则为空
 
@@ -267,11 +269,11 @@ console.log(find);
 
 
 
-2-11 数组 - Array
+## Class Update
 
-##    2-12 Class基础语法（怎么声明一个类？）
+###    2-12 Class基础语法（怎么声明一个类？）
 
-### ES5中怎么声明一个类
+#### ES5中怎么声明一个类
 
 - ```JS
   let Animal = function (type) {
@@ -297,7 +299,7 @@ console.log(find);
 
   
 
-### ES6中声明一个类
+#### ES6中声明一个类
 
 - ```JS
   class Animal {
@@ -327,9 +329,9 @@ console.log(find);
 
   
 
-##    2-13 Setter&amp;Getter（如何读写属性？）
+###    2-13 Setter&amp;Getter（如何读写属性？）
 
-### ES6：set 和 get
+#### ES6：set 和 get
 
 - 可以把属性写成函数，调用时先运行函数
 
@@ -360,9 +362,9 @@ console.log(dog.age)
 
 
 
-##    2-14 Static Methods（如何操作方法？）
+###    2-14 Static Methods（如何操作方法？）
 
-### 对象实例的方法和类的静态方法
+#### 对象实例的方法和类的静态方法
 
 ```JS
 // ES5
@@ -402,14 +404,14 @@ let dog = new Animal('dog')
 dog.eat()
 ```
 
-### 什么时候用实例对象的方法，什么时候用类的静态方法？
+#### 什么时候用实例对象的方法，什么时候用类的静态方法？
 
 - 方法依赖于实例对象的属性或方法，要引用实例对象的信息时必须使用实例对象的方法
 - 方法不会涉及实例对象的属性或方法，可以用类的静态方法
 
-##    2-15 Sub Classes（如何继承一个类？）
+###    2-15 Sub Classes（如何继承一个类？）
 
-### ES5继承的一种方法
+#### ES5继承的一种方法
 
 ```JS
 let Animal = function (type) {
@@ -440,7 +442,7 @@ console.log(dog.type);
 
 
 
-### ES6中如何继承 extends
+#### ES6中如何继承 extends
 
 ```JS
 class Animal {
@@ -467,205 +469,474 @@ dog.eat()
 
 
 
-2-16 Class
+## Function Update
 
-##    2-17 Default Parameters（函数参数的默认值）
+- 函数参数升级，参数支持表达式、默认参数、不确定参数
 
+###    2-17 Default Parameters（函数参数的默认值）
 
+### ES5
 
-##    2-18 Rest Parameter（怎么处理不确定参数？）
+```JS
+function fn(x, y, z) {
+  if (y === undefined) {
+    y = 3
+  }
+  if (z === undefined) {
+    z = 4
+  }
+  return x + y + z
+}
+console.log(fn(2, 10, 30))
+```
 
-##    
 
-##    2-19 Spread Operator（rest参数的逆运算）
 
+#### ES6
 
+```js
+// 没有参数的往前写，否则默认没参数的为字符串类型
+function fn(x, y, z = x + y) {
+  // ES6中废弃arguments
+  // console.log(Array.from(arguments))
+  // fn.length 可以获取到定义过的没有默认值的参数个数
+  console.log(fn.length)
 
-##    2-20 Arrow Functions（箭头函数）
+  return x + y + z
+}
+console.log(fn(10, 10, 10))
+console.log(fn(10, 10, undefined), 4, 12)
+```
+
+
+
+###    2-18 Rest Parameter（怎么处理不确定参数？）
+
+### ES5
 
+```JS
+ES5
+function sum() {
+  let num = 0
+  Array.prototype.forEach.call(arguments, function (item) {
+    num += item * 1
+  })
+  return num
+}
+console.log(sum(1, 2, 3, 4))
 
+```
+
 
-##    2-21 Function Update
 
+#### ES6
+
+```JS
+// ES6
+function sum(base, ...nums) {
+  // "...nums" Rest parameter 用来获取所有参数：函数执行时的参数，是数组，参数可以分别使用
+  let num = 0
+  nums.forEach(function (item) {
+    num += item * 1
+  })
+  return num + base * 2
+}
+console.log(sum(1, 2, 3, 4))
+```
+
+
+
+###    2-19 Spread Operator（rest参数的逆运算）
+
+#### ES5
+
+```JS
+// rest参数的逆运算
+// ES5
+function sum (x = 1, y = 2, z = 3) {
+  return x + y + z
+}
+let data = [1, 2, 3]
+console.log(sum.apply(this, data))
+```
+
+
+
+#### ES6
+
+```JS
+function sum (x = 1, y = 2, z = 3) {
+  return x + y + z
+}
+let data = [1, 2, 3]
+// ES6
+// spread
+console.log(sum(...data))
+```
+
+
+
+###    2-20 Arrow Functions（箭头函数）
+
+- ()=>{}
+
+```JS
+let hello = (name, city) => {
+  console.log(name, 'hello', city)
+}
+hello('zhangsan', 'imooc')
+// 只有一个参数省略括号
+let hi = name => {
+  console.log(name)
+}
+hi('zhangsan')
+// 后面是表达式，省略花括号
+let sum = (x, y, z) => x + y + z
+console.log(sum(1, 2, 3))
+// 以对象返回数据，小括号相当于表达式，花括号是对象的
+let sum2 = (x, y, z) => ({
+  x: x,
+  y: y,
+  z: z
+})
+console.log(sum2(1, 2, 3))
+// webpack eval 让 this 指向了空对象
+// ES6 中this 指向写函数时的对象
+let test = {
+  name: 'test',
+  say: () => {
+    console.log(this.name)
+  }
+}
+test.say()
+```
+
+
+
+## Object Update
+
+- Object 的 key 可以用变量或表达式，对象的方法支持异步
+- 语法：object[key] = value
+
+###    2-23 Set数据结构
+
+- 元素可以是任意值
+- .add(item)
+- .delete(item)
+- .clear()
+- .size
+- for of
+
+```JS
+// set存储的数据是唯一的，重复数据会被过滤
+let s = new Set([1, '2', 4])
+s.add('hellos').add('hellos').add('hellos2')
+s.delete('hellos')
+// s.clear()
+console.log(s.has('hellos2'), s.size)
+console.log(s.values())
+console.log(s.keys())
+console.log(s.entries())
+s.forEach(item => {
+  console.log(item)
+})
+for (let item of s) {
+  console.log(item)
+}
+```
+
+- weakSet()
+  - 语法相同于set，但只能存储对象
+
+###    2-24 Map数据结构
+
+- 键值对可以是**任意值**
+- .set(key,value)
+- .delete(key)
+- .clear
+- .size
+- .has(key)
+- .get(key)
+- .keys() ：键
+- .values() ：值
+- .entries() ：键值对
+- forEach((value,key)) ：value 在前
+- for (let [key, value] of map) ：按初始化顺序遍历
+
+```JS
+// map
+let map = new Map([[1, 2], [2, 3]])
+// 添加
+map.set(3, 4)
+// 修改
+map.set(1, 5)
+// 删除
+map.delete(3)
+// console.log(map.size)
+// console.log(map.has(3))
+// console.log(map.get(2))
+// console.log(map.keys(), map.values(), map.entries())
+// map.forEach((value, key) => {
+//   console.log(value, key)
+// })
+for (let [key, value] of map) {
+  console.log(key, value)
+}
+let o = function () {
+  console.log('o')
+}
+map.set(o, 9)
+console.log(map.get(o))
+```
+
+- weakMap()
+  - 语法相同于Map，但只能存储对象
+
+###    2-25 Object.assign（对象拷贝）
+
+- 当对象中只有一级属性，没有二级属性的时候，此方法为深拷贝，但是对象中有对象的时候，此方法，在二级属性以后就是浅拷贝。
+
+```JS
+// object copy
+const target = {
+  a: {
+    b: {
+      c: {
+        d: 4
+      }
+    },
+    e: 7
+  },
+  undefined: null
+}
+const source = {
+  a: {
+    b: {
+      c: {
+        null: null
+      }
+    }
+  },
+  f: 2
+}
+Object.assign(target, source)
+console.log(target, 'source')
+```
+
+
+
+###    2-26 Object Property(存储数据)
+
+```JS
+let x = 1
+let y = 2
+let z = 8
+let obj = {
+  x: x,
+  y: y,
+  hello: function () {
+    console.log('hello ES5')
+  }
+}
+obj[z] = 3
+obj.hello()
+console.log(obj)
 
+let obj2 = {
+  x,
+  y,
+  [z + y]: 6,
+  hello () {
+    // 只能用常规函数
+    // 异步函数名称前加 *
+    console.log('hello ES6')
+  }
+}
+obj2.hello()
+console.log(obj2)
+```
 
-##    2-22 Object Property
 
 
+## RegExp Update
 
-##    2-23 Set数据结构
+###    2-27 Regexp Sticky（y修饰符）
 
+- sticky 粘连：从上次匹配完剩余字符串的第一位开始匹配，可以连续匹配
 
+```JS
+const s = 'a_aa_aaa_aa_a'
+const r1 = /a+/g
+const r2 = /a+/y
+console.log(r1.exec(s))
+console.log(r2.exec(s))
+console.log(r1.exec(s))
+console.log(r2.exec(s))
+```
 
-##    2-24 Map数据结构
 
 
+###    2-28 Regexp Unicode（u修饰符）
 
-##    2-25 Object.assign（对象拷贝）
+- 处理 Unicode 字符的，**所有中文都加 u**
 
+```JS
+// unicode u修饰符 大于 \uffff
+let s = '𠮷'
+let s2 = '\uD842\uDF87'
 
+console.log(/^\uD842/.test(s2))
+console.log(/^\uD842/u.test(s2)) // 无法匹配
 
-##    2-26 Object Update
+console.log(/^.$/.test(s)) // 无法匹配
+console.log(/^.$/u.test(s)) // 正确匹配, 使用 "." 大于两个字节要加 u
 
+console.log(/^\u{20BB7}$/u.test(s))
+console.log(/^\u{61}$/u.test('a')) // 使用码点时，加 u 才能匹配 \u
 
+console.log(/𠮷{2}/u.test('𠮷𠮷')) // 加 u 才能匹配，所有中文都加 u
 
-##    2-27 Regexp Sticky（y修饰符）
+console.log(/[a-z]/i.test('\u212A'))
+console.log(/[a-z]/iu.test('\u212A'))
+```
 
 
 
-##    2-28 Regexp Unicode（u修饰符）
+## Template 字符串拼接
 
+###    2-30 String（字符串拼接问题）
 
 
-##    2-29 RegExp Update
 
+###    2-31 Template
 
 
-##    2-30 String（字符串拼接问题）
 
+## Desctructuring 解构赋值
 
+###    2-32 Array Destructure（解构赋值）
 
-##    2-31 Template
 
 
+###    2-33 Array Destructure（解构赋值）
 
-##    2-32 Array Destructure（解构赋值）
 
 
+###    2-34 Object Destructrue（解构赋值）
 
-##    2-33 Array Destructure（解构赋值）
 
 
+## Promise 异步操作
 
-##    2-34 Object Destructrue（解构赋值）
+### 2-36 Callback（异步操作）
 
 
 
-##    2-35 Desctructuring
+###    2-37 Promise（异步操作）
 
 
 
-##    2-36 Callback（异步操作）
+###    2-38 Then（异步操作）
 
 
 
-##    2-37 Promise（异步操作）
+###    2-39 Resolve &amp; Reject（异步操作）
 
 
 
-##    2-38 Then（异步操作）
+###    2-40 Catch（异步操作）
 
 
 
-##    2-39 Resolve &amp; Reject（异步操作）
+###    2-41 All（异步操作）
 
 
 
-##    2-40 Catch（异步操作）
+###    2-42 Race（异步操作）
 
 
 
-##    2-41 All（异步操作）
+## Reflect 反射机制
 
+###    2-44 Reflect.apply（反射机制）
 
 
-##    2-42 Race（异步操作）
 
+###    2-45 Reflect.construct（反射机制）
 
 
-##    2-43 Promise
 
+###    2-46 Reflect.getOwnPropertyDescriptor（反射机制）
 
 
-##    2-44 Reflect.apply（反射机制）
 
+## Proxy 代理
 
+###    2-48 proxy basic syntax（该怎样使用代理功能）
 
-##    2-45 Reflect.construct（反射机制）
 
 
+###    2-49 Schema Validation（1）
 
-##    2-46 Reflect.getOwnPropertyDescriptor（反射机制）
 
 
+###    2-50 Schema Validation（2）
 
-##    2-47 Reflect
 
 
+###    2-51 Schema Validation（3）
 
-##    2-48 proxy basic syntax（该怎样使用代理功能）
 
 
+###    2-52 Revocable Proxy
 
-##    2-49 Schema Validation（1）
 
 
+## Generator
 
-##    2-50 Schema Validation（2）
+###    2-54 Generator（如何让遍历“停”下来）
 
 
 
-##    2-51 Schema Validation（3）
+###    2-55 Syntax（1）
 
 
 
-##    2-52 Revocable Proxy
+###    2-56 Syntax（2）
 
 
 
-##    2-53 Proxy
+###    2-57 Scene Pratice
 
 
 
-##    2-54 Generator（如何让遍历“停”下来）
+## Iterator
 
+###    2-59 Iterator（如何让不支持遍历的数据结构“可遍历”）
 
 
-##    2-55 Syntax（1）
 
+###    2-60 Iterator
 
 
-##    2-56 Syntax（2）
 
+###    2-61 Generator
 
 
-##    2-57 Scene Pratice
 
+## module
 
+###    2-63 Export Import（如何把代码进行模块化设计）
 
-##    2-58 Generator
 
 
+###    2-64 Export Import（2）
 
-##    2-59 Iterator（如何让不支持遍历的数据结构“可遍历”）
 
 
+###    2-65 Export Import（3）
 
-##    2-60 Iterator
 
-
-
-##    2-61 Generator
-
-
-
-##    2-62 Iterator
-
-
-
-##    2-63 Export Import（如何把代码进行模块化设计）
-
-
-
-##    2-64 Export Import（2）
-
-
-
-##    2-65 Export Import（3）
-
-
-
-##    2-66 module
 
 
 
