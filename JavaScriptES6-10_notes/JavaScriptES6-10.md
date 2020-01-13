@@ -156,6 +156,8 @@ VS code 插件 beautify 和 ESLint
    > 不支持 `break` 和 `continue`
    >
    > return false 相当于 continue
+   >
+   > 隐式索引
 
 3. every ：`arr.every(funciton (item) {console.log(item)})`
 
@@ -620,7 +622,7 @@ test.say()
 
 ###    2-23 Set数据结构
 
-- 元素可以是任意值
+- 元素可以是任意值：new Set([1, '2', 4])
 - .add(item)
 - .delete(item)
 - .clear()
@@ -650,7 +652,7 @@ for (let item of s) {
 
 ###    2-24 Map数据结构
 
-- 键值对可以是**任意值**
+- 键值对可以是**任意值**：new Map([[1, 2], [2, 3]])
 - .set(key,value)
 - .delete(key)
 - .clear
@@ -802,27 +804,115 @@ console.log(/[a-z]/iu.test('\u212A'))
 
 
 
-## Template 字符串拼接
+## Template 字符串模板
 
 ###    2-30 String（字符串拼接问题）
 
+- ES中字符串换行、包含变量或表达式、包含逻辑运算怎么办？
+  - ES6更优雅的便捷的方式
+- ${变量/表达式}：字符串模板
+- 函数处理字符串模板
 
+```JS
+let s1 = `我是第一行
+我是第二行`
+console.log(s1)
+```
 
-###    2-31 Template
+```JS
+function Price (strings, type) {
+  let s1 = strings[0]
+  const retailPrice = 20
+  const wholeSalePrice = 16
+  let showTxt = ''
+  if (type === 'retail') {
+    showTxt = '单价是：' + retailPrice
+  } else {
+    showTxt = '批发价是：' + wholeSalePrice
+  }
+  return `${s1}${showTxt}`
+}
+let showTxt = Price`您此次的${'retail'}`
+console.log(showTxt)
+```
 
 
 
 ## Desctructuring 解构赋值
 
+- ES5 从一个复杂的数据结构中提取数据是如何做的？
+- ES6 的方式
+
 ###    2-32 Array Destructure（解构赋值）
 
+1. 可以跳过赋值元素
+2. 赋值元素可以是任意可遍历对象
+3. 左边的变量还可以是对象的属性，不局限于变量
+4. 解构赋值在循环体中配合 entries 使用，map 对象也可以用
+5. rest 参数防止回收
 
+```JS
+let arr = ['hello', 'world', 'three']
+let [firstName, , surName] = arr
+console.log(firstName, surName)
 
-###    2-33 Array Destructure（解构赋值）
+let [firstName,, thirdName] = new Set([1, 2, 3, 4])
+console.log(firstName, thirdName)
+
+// 修改内容
+let user = {
+  name: 's',
+  surname: 't'
+};
+[user.name, user.surname] = [1, 2]
+console.log(user)
+for (let [k, v] of Object.entries(user)) {
+  // 隐式赋值，显式索引
+  console.log(k, v)
+}
+
+// ...last 防止回收
+let arr = [1, 2, 3, 3, 4, 5, 6, 7]
+let [firstName, curName, ...last] = arr
+console.log(firstName, curName, last)
+
+// 无数据就是 未定义
+let arr = []
+// 解构赋值取决于里面有没有值
+let [firstName, curName, ...last] = arr
+console.log(firstName, curName, last)
+
+```
 
 
 
 ###    2-34 Object Destructrue（解构赋值）
+
+- 变量用花括号，数据结构层层对应
+
+```JS
+// Object 的解构赋值
+let options = {
+  title: 'menu',
+  width: 100,
+  height: 200
+}
+let { title: title2, width = 130, height } = options
+let { title, ...last } = options
+console.log(title, last)
+
+// 多层结构的解构赋值
+let options = {
+  size: {
+    width: 100,
+    height: 200
+  },
+  items: ['Cake', 'Donut'],
+  extra: true
+}
+let { size: { width, height }, items: [, item2], extra } = options
+console.log(width, height, item2, extra)
+```
 
 
 
@@ -830,37 +920,209 @@ console.log(/[a-z]/iu.test('\u212A'))
 
 ### 2-36 Callback（异步操作）
 
+- 回调地狱
+
+```JS
+function loadScript (src, callback) {
+  let script = document.createElement('script')
+  script.src = src
+  script.onload = () => {
+    callback(src)
+  }
+  document.head.append(script)
+}
+
+function test (name) {
+  console.log(name)
+}
+loadScript('./1.js', function (script) {
+  loadScript('./2.js', function (script) {
+    loadScript('./3.js', function (script) {
+      test('log')
+    })
+  })
+})
+
+```
+
 
 
 ###    2-37 Promise（异步操作）
 
+```JS
+function loadScript (src) {
+  return new Promise((resolve, reject) => {
+    let script = document.createElement('script')
+    script.src = src
+    script.onload = () => resolve(src) // 状态：fullfilled, 结果： result
+    script.onerror = (err) => reject(err) // 状态：rejected,结果： error
+    document.head.appendChild(script)
+  })
+}
 
+loadScript('./1.js')
+  .then(loadScript('./2.js'))
+  .then(loadScript('./3.js'))
+```
 
 ###    2-38 Then（异步操作）
+
+- `promise,then(onFullfilled,onRejected) // onFullfilled 必选`
+  1. .then 是promise 对象原型上的**实例方法**，必须是promise 对象才能调用
+  2. then 支持两个函数类型参数，
+     1. fullfilled 对应resolve 必选
+     2. rejected 对应reject，可选
+  3. 如果传入**空对象**，会返回一个空的 promise 对象 
+  4. 参数函数里 return 一个 promise 对象，才能不返回空对象
+
+```JS
+function loadScript (src) {
+  // penging, undefined
+  return new Promise((resolve, reject) => {
+    let script = document.createElement('script')
+    script.src = src
+    script.onload = () => resolve(src) // 状态：fullfilled, 结果： result
+    script.onerror = (err) => reject(err) // 状态：rejected,结果： error
+    document.head.appendChild(script)
+  })
+}
+
+loadScript('./1.js')
+  .then(() => {
+    return loadScript('./4.js')
+  }, (err) => {
+    console.log(err)
+  })
+  .then(() => {
+    return loadScript('./3.js')
+  }, (err) => {
+    console.log(err)
+  })
+
+// promise,then(onFullfilled,onRejected) // onFullfilled 必选
+```
 
 
 
 ###    2-39 Resolve &amp; Reject（异步操作）
 
+- Promise的**静态方法**，使用时必须 Promise.resolve 或 Promise.reject
+
+```js
+function test (bool) {
+  if (bool) {
+    return new Promise(resolve => {
+      resolve(20)
+    })
+  } else {
+    return Promise.reject(new Error('myError'))
+  }
+}
+test(0).then((value) => {
+  console.log(value)
+}, (err) => {
+  console.log(err)
+})
+
+```
+
 
 
 ###    2-40 Catch（异步操作）
+
+- 捕获链式异步操作中的异常
+- .catch 是promise 对象的**实例方法**，必须是promise 对象才能调用
+- promise 状态改变时捕获，只能用reject 报错，不能用 throw new Error触发错误
+
+```JS
+function loadScript (src) {
+  // penging, undefined
+  return new Promise((resolve, reject) => {
+    let script = document.createElement('script')
+    script.src = src
+    script.onload = () => resolve(src) // 状态：fullfilled, 结果： result
+    script.onerror = (err) => reject(err) // 状态：rejected,结果： error
+    document.head.appendChild(script)
+  })
+}
+
+loadScript('./1.js')
+  .then(() => {
+    return loadScript('./2.js')
+  })
+  .then(() => {
+    return loadScript('./30.js')
+  })
+  .catch(err => {
+    console.log(err)
+  })
+
+```
 
 
 
 ###    2-41 All（异步操作）
 
+- **静态方法**
+- 并行异步操作，合并多个异步数据成一个 promise
+
+```JS
+// All 操作
+function loadScript (src) {
+  // penging, undefined
+  return new Promise((resolve, reject) => {
+    let script = document.createElement('script')
+    script.src = src
+    script.onload = () => resolve(src) // 状态：fullfilled, 结果： result
+    script.onerror = (err) => reject(err) // 状态：rejected,结果： error
+    document.head.appendChild(script)
+  })
+}
+
+const p1 = loadScript('./2.js')
+const p2 = loadScript('./1.js')
+const p3 = loadScript('./3.js')
+Promise.all([p2, p1, p3]).then((value) => {
+  console.log(value, 'log')
+})
+```
+
 
 
 ###    2-42 Race（异步操作）
 
+- **静态方法**
+- 只保留先返回的值
+
+```JS
+// race
+const p1 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(1)
+    }, 3000)
+  })
+}
+const p2 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(2)
+    }, 2000)
+  })
+}
+Promise.race([p1(), p2()]).then((value) => {
+  console.log(value)
+})
+
+```
 
 
-## Reflect 反射机制
+
+##    Reflect 反射制
 
 ###    2-44 Reflect.apply（反射机制）
 
-
+- Java 的反射机制是在编译阶段不知道是哪个类被加载 ，而是在运行的时候加载、执行
 
 ###    2-45 Reflect.construct（反射机制）
 
