@@ -1124,11 +1124,92 @@ Promise.race([p1(), p2()]).then((value) => {
 
 - Java 的反射机制是在编译阶段不知道是哪个类被加载 ，而是在运行的时候加载、执行
 
+```js
+console.log(Math.floor.apply(null, [3.111]))
+
+console.log(Reflect.apply(Math.floor, null, [2.33]))
+
+let price = 90.12
+console.log(Reflect.apply(price > 100 ? Math.floor : Math.ceil, null, [price]))
+```
+
+
+
 ###    2-45 Reflect.construct（反射机制）
+
+- 动态实例化一个类
+
+```js
+let d = Reflect.construct(Date, [])
+console.log(d.getTime(), d instanceof Date)
+```
+
+- `Reflect.defineProperty` 新增对象属性
+  - 与 Object 区别在于返回值不同，Reflect 返回true/false，Object 返回对象
+  - 所有具备反射机制的功能性函数都会放到Reflect 上面去
+  - 将来Object 中可能会移除这些方法
+- `Reflect.get` 读取数据操作
+
+```JS
+const student = {}
+const r2 = Object.defineProperty(student, 'name', { value: 'Mike' })
+// console.log(student)
+const r = Reflect.defineProperty(student, 'name', { value: 'Mike2' })
+console.log(student, r, r2)
+
+const obj = { x: 1, y: 2 }
+// Reflect.deleteProperty(obj, 'x')
+console.log(obj)
+console.log(Reflect.get(obj, 'y'))
+console.log(Reflect.get([3, 4], 1))
+```
 
 
 
 ###    2-46 Reflect.getOwnPropertyDescriptor（反射机制）
+
+- 获取属性描述符
+- `Reflect.getPrototypeOf(obj)` ：**获取实例对象的原型对象**
+- `Reflect.has(obj, 'property')`：验证对象下面有没有这个属性，Object 没有这个方法
+- `Reflect.isExtensible(obj)`：是否可扩展，是否被冻结了
+  - `Object.freeze(obj)`：冻结对象，不可扩展
+- `Reflect.ownKeys()`：返回对象的键
+- `Reflect.preventExtensions(obj) `：效果和 freeze 相同
+- `Reflect.set(obj,'z','1')` ：设置数据
+- `Reflect.setPrototypeOf(obj,'type')` ：**设置实例对象的原型对象**
+
+```js
+const obj = { x: 1, y: 2 }
+// console.log(Reflect.getOwnPropertyDescriptor(obj, 'x'))
+// console.log(Object.getOwnPropertyDescriptor(obj, 'y'))
+
+// let d = new Date()
+// console.log(Reflect.getPrototypeOf(d))
+// console.log(Object.getPrototypeOf(obj))
+
+// console.log(Reflect.has(obj, 'y'))
+// Object.freeze(obj)
+// obj.z = 3
+
+// console.log(Reflect.isExtensible(obj), obj)
+// console.log(Reflect.ownKeys(obj))
+// console.log(Reflect.ownKeys([1, 2, 3]))
+// Symbol
+
+// Reflect.preventExtensions(obj) // 效果和 freeze 相同
+// console.log(Reflect.isExtensible(obj))
+
+Reflect.set(obj, 'z', 1)
+console.log(obj)
+const arr = ['a', 'w', 's']
+Reflect.set(arr, 3, 'oioo')
+console.log(arr)
+
+console.log(Reflect.getPrototypeOf(arr))
+Reflect.setPrototypeOf(arr, String.prototype)
+console.log(Reflect.getPrototypeOf(arr))
+
+```
 
 
 
@@ -1136,7 +1217,7 @@ Promise.race([p1(), p2()]).then((value) => {
 
 ###    2-48 proxy basic syntax（该怎样使用代理功能）
 
-
+- 
 
 ###    2-49 Schema Validation（1）
 
