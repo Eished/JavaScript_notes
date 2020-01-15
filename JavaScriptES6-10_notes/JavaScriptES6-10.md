@@ -181,7 +181,7 @@ VS code 插件 beautify 和 ESLint
 
 ### 2-7 ES6中数组有多少种遍历的方法？
 
-1. for of ：`for of (let item of arr) { console.log(item)}`
+1. for of ：`for (let item of arr) { console.log(item)}`
 
    > 不仅可以遍历数组和对象
    >
@@ -1219,15 +1219,49 @@ console.log(Reflect.getPrototypeOf(arr))
 
 - 
 
-###    2-49 Schema Validation（1）
+```JS
+// let o = {
+//   name: 'xiaoming',
+//   price: 190
+// }
+// let d = new Proxy(o, {
+//   get (target, key) {
+//     if (key === 'price') {
+//       return target[key] + 20
+//     } else {
+//       return target[key]
+//     }
+//   }
+// })
+// console.log(d.price, d.name)
+
+let o = {
+  name: 'xiaoming',
+  price: 190
+}
+let d = new Proxy(o, {
+  get (target, key) {
+    return target[key]
+  },
+  set (target, key, value) {
+    return false
+  }
+})
+d.price = 700
+console.log(d.price, d.name)
+```
 
 
 
-###    2-50 Schema Validation（2）
+###    2-49 Schema Validation（1模式验证）
 
 
 
-###    2-51 Schema Validation（3）
+###    2-50 Schema Validation（2模式验证）
+
+
+
+###    2-51 Schema Validation（3模式验证）
 
 
 
