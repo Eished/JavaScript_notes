@@ -1397,23 +1397,90 @@ setTimeout(function () {
 }, 1000)
 ```
 
-
+- 练习
+  1. 组件初始化的时候都赋值一个可读而且随机的 ID, 该怎么做?
+  2. 临时代理有哪些应用场景呢?
+  3. 如何把接口的数据用代理进行包装?
 
 ## Generator
 
 ###    2-54 Generator（如何让遍历“停”下来）
 
+- ES6如何让遍历停下来?
+
+```JS
+// ES5
+// function loop () {
+//   for (let i = 0; i < 5; i++) {
+//     console.log(i)
+//   }
+// }
+// loop()
+
+// ES6
+function * loop () {
+  for (let i = 0; i < 5; i++) {
+    yield console.log(i)
+  }
+}
+const l = loop()
+l.next()
+l.next()
+l.next()
+l.next()
+l.next()
+l.next()
+```
+
 
 
 ###    2-55 Syntax（1）
+
+- `function * loop(){ yield console.log()}`
+- 执行一步 : `const l=loop(); l.next()`
+- `next()` 恢复执行
+  - 返回当前执行的数据(value)和状态(done), value 当前是执行的结果, done 循环是否结束
+  - yeild 前不加 `*`, next 返回当前遍历的值和循环是否结束
+  - 加 `*` 后面是可迭代(遍历)对象, 也可以**嵌套 Generator 对象**, 会遍历后面内容
+
+```js
+// 语法 yeild 本身没有返回值
+// function * gen () {
+//   let val
+//   val = yield 1
+//   console.log(val)
+// }
+// const l = gen()
+// l.next()
+// l.next()
+
+// next() 的返回值
+function * gen () {
+  let val
+  val = yield * 'as23'
+  console.log(val)
+}
+const l = gen()
+console.log(l.next())
+console.log(l.next())
+console.log(l.next())
+```
 
 
 
 ###    2-56 Syntax（2）
 
+```
+
+```
+
 
 
 ###    2-57 Scene Pratice
+
+```
+
+```
 
 
 
