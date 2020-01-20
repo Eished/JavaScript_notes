@@ -1442,6 +1442,7 @@ l.next()
   - 返回当前执行的数据(value)和状态(done), value 当前是执行的结果, done 循环是否结束
   - yeild 前不加 `*`, next 返回当前遍历的值和循环是否结束
   - 加 `*` 后面是可迭代(遍历)对象, 也可以**嵌套 Generator 对象**, 会遍历后面内容
+- `yeild` 本身没有返回值
 
 ```js
 // 语法 yeild 本身没有返回值
@@ -1463,15 +1464,31 @@ function * gen () {
 const l = gen()
 console.log(l.next())
 console.log(l.next())
-console.log(l.next())
 ```
 
 
 
 ###    2-56 Syntax（2）
 
-```
+- `next()` 传参
+  - 参数**改变** `yield` 后面表达式的返回值
+  - 不传值 `yield` 后面表达式的返回值是 `undefined`
+- `return()` 终止
+  - 传值则改变 `yiled` 后面的表达式 `value = 参数`
+  - 不传值是 `undefined`
+- 使用错误终止
 
+```js
+// next() 的返回值
+function * gen () {
+  let val
+  val = (yield [3, 2, 1]) + 9
+  console.log(val)
+}
+const l = gen()
+console.log(l.next(10))
+console.log(l.return())
+console.log(l.next(20))
 ```
 
 
@@ -1489,12 +1506,6 @@ console.log(l.next())
 ###    2-59 Iterator（如何让不支持遍历的数据结构“可遍历”）
 
 - 
-
-```
-
-```
-
-
 
 ###    2-60 Iterator
 
