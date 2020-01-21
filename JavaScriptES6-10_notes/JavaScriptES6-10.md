@@ -1434,7 +1434,7 @@ l.next()
 
 
 
-###    2-55 Syntax（1）
+###    2-55 Syntax（1语法）
 
 - `function * loop(){ yield console.log()}`
 - 执行一步 : `const l=loop(); l.next()`
@@ -1468,7 +1468,7 @@ console.log(l.next())
 
 
 
-###    2-56 Syntax（2）
+###    2-56 Syntax（2语法）
 
 - `next()` 传参
   - 参数**改变** `yield` 后面表达式的返回值
@@ -1476,7 +1476,6 @@ console.log(l.next())
 - `return()` 终止
   - 传值则改变 `yiled` 后面的表达式 `value = 参数`
   - 不传值是 `undefined`
-- 使用错误终止
 
 ```js
 // next() 的返回值
@@ -1491,9 +1490,31 @@ console.log(l.return())
 console.log(l.next(20))
 ```
 
+- 使用错误终止 `.throw(new Error('ss'))`
+
+```js
+// 使用 new Error() 终止循环
+function * gen () {
+  while (true) {
+    try {
+      yield 1
+    } catch (e) {
+      console.log(e.message)
+    }
+  }
+}
+const g = gen()
+console.log(g.next())
+console.log(g.next())
+console.log(g.next())
+console.log(g.next())
+g.throw(new Error('ss'))
+console.log(g.next())
+```
 
 
-###    2-57 Scene Pratice
+
+###    2-57 Scene Pratice(现场练习)
 
 ```
 
