@@ -1402,7 +1402,7 @@ setTimeout(function () {
   2. 临时代理有哪些应用场景呢?
   3. 如何把接口的数据用代理进行包装?
 
-## Generator
+## Generator 生成器
 
 ###    2-54 Generator（如何让遍历“停”下来）
 
@@ -1616,7 +1616,7 @@ console.log(num.next().value)
 
 - 练习
 
-  1. 用 Generator 实现一个斐波那契数列?
+  1. 用 Generator 实现一个斐波那契数列
 
      > 什么是斐波那契数列，1,1,2,3,5,8,13...这样一个数列就是斐波那契数列，求第n项的值。
      >
@@ -1630,7 +1630,9 @@ console.log(num.next().value)
      >
      > 因为斐波那契数列可以从左到右顺序的求出每一项的值，因此只需要顺序计算到n项即可，时间复杂度为O(n)的，我们可以把它看成在单链表的最后插入一个右最后一个和倒数第二个指针指向的值来决定的。
 
-  2. 用 Generator 给自定义数据结构写一个遍历器?
+  2. 用 Generator 给自定义数据结构写一个遍历器
+
+     
 
 ```js
 // 用 Generator 实现一个斐波那契数列 1,1,2,3,5,8,13...
@@ -1655,27 +1657,108 @@ console.log(d.next().value)
 
 
 
-## Iterator
+## Iterator 迭代器
 
 ###    2-59 Iterator（如何让不支持遍历的数据结构“可遍历”）
 
-- 
+- iterator 代码规范
+  1. 可迭代协议 : `authors[Symbol.iterator] = function () {}`
+  2. 迭代器协议 : `函数内部规范`
 
 ###    2-60 Iterator
 
-```
+```js
+let authors = {
+  allAuthors: {
+    fiction: ['Agla', 'Skks', 'Lp'],
+    scienceFiction: ['Neal', 'Arthru', 'Ribert'],
+    fantasy: ['J.R.Tole', 'J.M.R', 'Terry P.K']
+  },
+  Addres: []
+}
 
+// // ES5
+// let r = []
+// for (let [k, v] of Object.entries(authors.allAuthors)) {
+//   r = r.concat(v)
+// }
+// console.log(r)
+
+// authors is not iterable(迭代)
+// ES6
+authors[Symbol.iterator] = function () {
+  let allAuthors = this.allAuthors
+  let keys = Reflect.ownKeys(allAuthors)
+  let values = []
+  return {
+    next () {
+      if (!values.length) {
+        if (keys.length) {
+          values = allAuthors[keys[0]]
+          keys.shift()
+        }
+      }
+      return {
+        done: !values.length,
+        value: values.shift()
+      }
+    }
+  }
+}
+let r = []
+for (let v of authors) {
+  r.push(v)
+}
+console.log(r)
 ```
 
 
 
 ###    2-61 Generator
 
+```js
+let authors = {
+  allAuthors: {
+    fiction: ['Agla', 'Skks', 'Lp'],
+    scienceFiction: ['Neal', 'Arthru', 'Ribert'],
+    fantasy: ['J.R.Tole', 'J.M.R', 'Terry P.K']
+  },
+  Addres: []
+}
+
+// 使用 Generator 给自定义数据结构写个遍历器
+authors[Symbol.iterator] = function * () {
+  let allAuthors = this.allAuthors
+  let keys = Reflect.ownKeys(allAuthors)
+  let values = []
+  while (true) {
+    if (!values.length) {
+      if (keys.length) {
+        values = allAuthors[keys[0]]
+        keys.shift()
+        yield values.shift()
+      } else {
+        return false
+      }
+    } else {
+      yield values.shift()
+    }
+  }
+}
+
+let r = []
+for (let v of authors) {
+  r.push(v)
+}
+console.log(r)
 ```
 
-```
 
 
+- 练习
+  1. 什么是自定义遍历,如果有复杂的数据结构会使用自定义遍历了吗
+  2. 什么是迭代协议\ 可迭代协议
+  3. Generator 和 Iterator 的关联关系理解了吗
 
 ## module
 
