@@ -1516,8 +1516,141 @@ console.log(g.next())
 
 ###    2-57 Scene Pratice(现场练习)
 
+- 练习-抽奖函数
+
+```js
+// // 练习-抽奖函数-ES5
+// function draw (first = 1, second = 3, third = 5) {
+//   let firstPrice = ['1A', '1B', '1C', '1D', '1E']
+//   let secondPrice = ['3A', '2B', '2C', '2D', '2E', '2F', '2G', '2H', '2I', '2J', '2K']
+//   let thirdPrice = ['3A', '3B', '3C', '3D', '3E', '3F', '3G', '3H', '3I', '3J', '3K', '3L', '3M', '3N']
+//   let random
+//   let result = []
+
+//   // 抽一等奖
+//   for (let i = 0; i < first; i++) {
+//     random = Math.floor(Math.random() * firstPrice.length)
+//     result = result.concat(firstPrice.splice(random, 1))
+//   }
+//   // 抽二等奖
+//   for (let i = 0; i < second; i++) {
+//     random = Math.floor(Math.random() * secondPrice.length)
+//     result = result.concat(secondPrice.splice(random, 1))
+//   }
+//   // 抽三等奖
+//   for (let i = 0; i < third; i++) {
+//     random = Math.floor(Math.random() * thirdPrice.length)
+//     result = result.concat(thirdPrice.splice(random, 1))
+//   }
+//   return result
+// }
+
+// let t = draw()
+// for (let value of t) {
+//   console.log(value)
+// }
+
+// 练习-抽奖函数-ES6
+function * draw (first = 1, second = 3, third = 5) {
+  let firstPrice = ['1A', '1B', '1C', '1D', '1E']
+  let secondPrice = ['3A', '2B', '2C', '2D', '2E', '2F', '2G', '2H', '2I', '2J', '2K']
+  let thirdPrice = ['3A', '3B', '3C', '3D', '3E', '3F', '3G', '3H', '3I', '3J', '3K', '3L', '3M', '3N']
+  let count = 0
+  let random
+
+  while (true) {
+    if (count < first) {
+      random = Math.floor(Math.random() * firstPrice.length)
+      yield firstPrice[random]
+      count++
+      firstPrice.splice(random, 1)
+    } else if (count < first + second) {
+      random = Math.floor(Math.random() * secondPrice.length)
+      yield secondPrice[random]
+      count++
+      secondPrice.splice(random, 1)
+    } else if (count < first + second + third) {
+      random = Math.floor(Math.random() * thirdPrice.length)
+      yield thirdPrice[random]
+      count++
+      thirdPrice.splice(random, 1)
+    } else {
+      return false
+    }
+  }
+}
+const d = draw()
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
 ```
 
+
+
+- 练习-数到三的人喝酒
+
+```JS
+// 练习-数到三的人喝酒
+function * count (x = 1) {
+  while (true) {
+    if (x % 3 === 0) {
+      yield x
+    }
+    x++
+  }
+}
+let num = count()
+console.log(num.next().value)
+console.log(num.next().value)
+console.log(num.next().value)
+```
+
+
+
+- 练习
+
+  1. 用 Generator 实现一个斐波那契数列?
+
+     > 什么是斐波那契数列，1,1,2,3,5,8,13...这样一个数列就是斐波那契数列，求第n项的值。
+     >
+     > **一、经典求法**
+     >
+     > 观察数列可得，除了第一项和第二项，所有的数列的值都是前一项和前一项的前一项的加和，转换成函数也就是f(n) = f(n-1) + f(n-2)
+     >
+     > 显然，递归n次，时间复杂度O(2^n)，太恐怖，所以，必须优化。
+     >
+     > **二、顺序求法**
+     >
+     > 因为斐波那契数列可以从左到右顺序的求出每一项的值，因此只需要顺序计算到n项即可，时间复杂度为O(n)的，我们可以把它看成在单链表的最后插入一个右最后一个和倒数第二个指针指向的值来决定的。
+
+  2. 用 Generator 给自定义数据结构写一个遍历器?
+
+```js
+// 用 Generator 实现一个斐波那契数列 1,1,2,3,5,8,13...
+function * draw () {
+  let n1 = 1
+  let n2 = 1
+  let n3 = 0
+  while (true) {
+    yield n3 = n1 + n2
+    n1 = n2
+    n2 = n3
+  }
+}
+let d = draw()
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
+console.log(d.next().value)
 ```
 
 
