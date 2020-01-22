@@ -1764,19 +1764,183 @@ console.log(r)
 
 ###    2-63 Export Import（如何把代码进行模块化设计）
 
+```js
+// lesson2-14-mod.js
+// export const name = 'hello'
+// export let addr = 'beijing'
+// export let arr = [1, 2, 3]
+
+const name = 'hello3'
+let addr = 'Beijing'
+let arr = [1, 2, 3]
+
+export default name
+export {
+  addr,
+  arr
+}
 ```
 
+```js
+// lesson2-14.js
+import name, { addr as addr2, arr } from './lesson2-14-mod'
+console.log(name, addr2, arr)
+
+// import name2 from './lesson2-14-mod'
+// console.log(name2)
 ```
 
 
 
 ###    2-64 Export Import（2）
 
+```js
+导出函数
+export function say (content) {
+  console.log(content)
+}
+
+export function run () {
+  console.log('I am running')
+}
+
+const say = (content) => {
+  console.log(content)
+}
+const run = () => {
+  console.log('I am running')
+}
+export default say
+export {
+  run
+}
+
+导出对象
+export default {
+  code: 0,
+  message: 'success'
+}
+
+const data = {
+  code: 1,
+  message: 'success'
+}
+const des = {
+  age: 20,
+  addr: 'Beijing'
+}
+
+export default {
+  data,
+  des
+}
+
+导出类
+class Test {
+  constructor () {
+    this.id = 2
+  }
+}
+export default Test
+export {
+  Test
+}
+
+export default class Test {
+  constructor () {
+    this.id = 2
+  }
+}
+
+export default class {
+  constructor () {
+    this.id = 5
+  }
+}
+
+export class Test {
+  constructor () {
+    this.id = 2
+  }
+}
+```
+
+
+
+```js
+	// 导入函数
+import say, { run } from './lesson2-14-mod'
+say('hello world')
+run()
+
+导入对象
+import obj from './lesson2-14-mod'
+let { data, des } = obj
+console.log(data, des)
+
+导入类
+// import { Test } from './lesson2-14-mod'
+import Test from './lesson2-14-mod'
+let test = new Test()
+console.log(test.id)
+```
+
 
 
 ###    2-65 Export Import（3）
 
+```js
+// 导出多个类,批量导入
+export class Test {
+  constructor () {
+    this.id = 6
+  }
+}
+export class Animal {
+  constructor () {
+    this.name = 'dog'
+  }
+}
 
+export default class Peiple {
+  constructor () {
+    this.id = 123
+  }
+}
+```
+
+```js
+// 批量导入
+import * as Mod from './lesson2-14-mod'
+let test = new Mod.Test()
+console.log(test.id)
+let animal = new Mod.Animal()
+console.log(animal.name)
+let people = new Mod.default()
+console.log(people.id)
+```
+
+
+
+- 练习 
+  1. 被导出的模块是否能在本模块中使用
+     - 结果: 可以使用
+
+```js
+// 导入函数
+import { say, run } from './lesson2-14-mod'
+say('hello world')
+run()
+// 导出函数
+export function say (content) {
+  console.log(content)
+  run()
+}
+
+export function run () {
+  console.log('I am running')
+}
+```
 
 
 
