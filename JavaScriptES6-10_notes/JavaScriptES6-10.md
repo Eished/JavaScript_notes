@@ -1971,7 +1971,8 @@ console.log(2 ** 5)
 
 #   第4章 ES8基础知识
 
-  ES8在异步操作、Object、String能力上做了进一步增强，让代码编写更加效率
+1. ES8在异步操作、Object、String能力上做了进一步增强，让代码编写更加效率
+2. Aysnc/Await &amp; Object.values
 
 ##    4-1 Async\Await（有没有比Promise更优雅的异步方式）
 
@@ -2112,49 +2113,234 @@ console.log(Object.keys(data))
 
 
 
-##    4-5 Aysnc/Await &amp; Object.values ……
-
-```js
-
-```
-
-
-
 #   第5章 ES9基础知识
 
   ES9主要解决了遍历中异步、异步的归一操作等问题、也提供了对象的拷贝、筛选功能并且提升了正则的处理能力
 
 ##    5-1 For await of（异步操作集合是如何遍历的）
 
+- 异步操作集合使用
+
+```js
+// 异步函数生成
+function Gen (time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(time)
+    }, time)
+  })
+}
+
+// ES8
+// async function test () {
+//   let arr = [Gen(2000), Gen(100), Gen(3000)]
+//   for (let item of arr) {
+//     console.log(Date.now(), await item.then(console.log))
+//   }
+// }
+// test()
+
+// ES9 异步操作遍历
+async function test () {
+  let arr = [Gen(2000), Gen(100), Gen(3000)]
+  for await (let item of arr) {
+    console.log(Date.now(), item)
+  }
+}
+test()
+```
+
 
 
 ##    5-2 For await of(2)
+
+- 对异步自定义数据结构遍历
+
+```js
+// 对异步自定义数据结构遍历
+const obj = {
+  count: 0,
+  // 生成器
+  Gen (time) {
+    return new Promise((resolve, reject) => {
+      setTimeout(function () {
+        resolve({
+          done: false,
+          value: time
+        })
+      }, time)
+    })
+  },
+  // 声明遍历方式,迭代器
+  [Symbol.asyncIterator] () {
+    let self = this
+    return {
+      next () {
+        self.count++
+        if (self.count < 4) {
+          return self.Gen(Math.random() * 1000)
+        } else {
+          return Promise.resolve({
+            done: true,
+            value: ''
+          })
+        }
+      }
+    }
+  }
+}
+
+async function test () {
+  for await (let item of obj) {
+    console.log(Date.now(), item)
+  }
+}
+test()
+
+```
 
 
 
 ##    5-3 Promise.finally（Promise是如何“兜底”操作的）
 
+```js
+// Promise 生成器
+function Gen (time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      if (time < 500) {
+        reject(time)
+      } else {
+        resolve(time)
+      }
+    }, time)
+  })
+}
+// 异步调用函数 无论成功还是失败都会执行 finally 的内容
+Gen(Math.random() * 1000)
+  .then(val => console.log('resolve', val))
+  .catch(err => console.log('reject', err))
+  .finally(() => {
+    console.log('finish')
+  })
+
+```
+
 
 
 ##    5-4 Object.rest.spread（新增Object的Rest和Spread方法）
+
+```js
+// // spread
+// const input = {
+//   a: 1,
+//   b: 2
+// }
+
+// const test = {
+//   d: 5
+// }
+
+// const output = {
+//   // spread 扩展, 是深拷贝, 不是引用
+//   ...input,
+//   ...test,
+//   c: 3
+// }
+
+// console.log(input, output)
+// input.a = 4
+// console.log(input, output)
+
+// rest
+const input = {
+  a: 1,
+  b: 2,
+  c: 3,
+  d: 4
+}
+
+const { a, b, ...rest } = input
+console.log(a, b, rest)
+
+```
 
 
 
 ##    5-5 RegExp-dotAll
 
+- dotAll 增强 `.` 的匹配能力, 相当于加强版
+- 四字节字符, 行终止符(`\`) , `.` 无法匹配
+
+```js
+// 正则后面加 s 增强点的匹配能力 \
+// 四字节字符则加 u, ES6中已经讲过
+// console.log(/foo.bar/s.test('foo\nbar'))
+// console.log(/foo.bar/.test('foo\nbar'))
+
+// 是否启用 dotAll 模式
+const re = /foo.bar/sgiu
+console.log(re.dotAll)
+// 查看修饰符
+console.log(re.flags)
+
+```
+
 
 
 ##    5-6 RegExp-named captured groups(命名分组捕获)
+
+```js
+// 命名分组捕获
+// console.log('12-2019-06-07'.match(/(\d{4})-(\d{2})-(\d{2})/))
+
+const t = '12-2019-06-07'.match(/(?<year>\d{4})-(?<mouth>\d{2})-(?<day>\d{2})/)
+// console.log(t[1])
+// console.log(t[2])
+// console.log(t[3])
+console.log(t)
+console.log(t.groups.year, t.groups.mouth, t.groups.day)
+```
 
 
 
 ##    5-7 RegExp-lookbehind assert(后行断言)
 
+```js
+// 先行断言
+let test = 'hello world'
+console.log(test.match(/hello(?=\sworld)/))
+// 后行断言
+console.log(test.match(/(?<=hello\s)world/))
+
+```
 
 
-##    5-8 For await of ……
 
+- 练习
 
+  1. 请把 `'$foo %foo foo'`字符串中前面是$符号的foo 替换成bar
+
+     ```js
+     const re = /(?<=\$)foo/
+     let str = '$foo %foo foo'
+     // console.log(re.test(str))
+     str = str.replace(re, 'bar')
+     console.log(str)
+     ```
+
+     
+
+  2. 请提取 `'$1 is worth about ￥123'`
+
+     ```js
+     const re2 = /(?<=\$)\d/
+     let str2 = '$1 is worth about ￥123'
+     str2 = str2.match(re2)
+     console.log(str2)
+     ```
+
+     
 
 #   第6章 ES10基础知识
 
