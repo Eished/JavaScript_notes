@@ -1118,11 +1118,11 @@ Promise.race([p1(), p2()]).then((value) => {
 
 
 
-##    Reflect 反射制
+## Reflect 反射制
 
-###    2-44 Reflect.apply（反射机制）
+### 2-44 Reflect.apply（反射机制）
 
-- Java 的反射机制是在编译阶段不知道是哪个类被加载 ，而是在运行的时候加载、执行
+  Java 的反射机制是在编译阶段不知道是哪个类被加载 ，而是在运行的时候加载、执行
 
 ```js
 console.log(Math.floor.apply(null, [3.111]))
@@ -1948,9 +1948,26 @@ export function run () {
 
   ES7在ES6基础上新增了两项功能，一个是数组的 include 方法、一个是 Math.pow 的简写语法
 
-##    3-1 includes+pow（数组中如何判断元素是否存在）
+##    3-1 includes + pow（数组中如何判断元素是否存在）
+
+```js
+// 数组中如何判断元素是否存在
+const arr = [1, 2, 3]
+console.log(arr.includes(4))
+```
+
+
 
 ##    3-2 Array.prototype.includes &amp; Math.pow
+
+```js
+// 指数运算
+console.log(Math.pow(2, 5))
+// 简写指数运算
+console.log(2 ** 5)
+```
+
+
 
 #   第4章 ES8基础知识
 
@@ -1958,13 +1975,150 @@ export function run () {
 
 ##    4-1 Async\Await（有没有比Promise更优雅的异步方式）
 
+- async
+  - 异步函数声明, 把函数返回值自动处理为promise对象
+- await
+  - 等待异步执行结束, 可以自动把后面返回值转换为promise对象
+- 必须成对使用, 是语法糖, 原理是Promise
+
+```js
+// async function firstAsync () {
+//   return 27
+//   // return Promise.resolve(28)
+// }
+
+// firstAsync().then(val => {
+//   console.log(val)
+// })
+
+// console.log(firstAsync() instanceof Promise)
+
+// await 异步操作
+async function firstAsync () {
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve('now it is done')
+    }, 1000)
+  })
+  console.log(await promise)
+  console.log(await Promise.resolve(48))
+  console.log(2)
+  return Promise.resolve(28)
+}
+
+firstAsync().then(val => {
+  console.log(val)
+})
+```
+
+
+
 ##    4-2 Object keys.values.entries(新增对Object快速遍历的方法,了解下？)
+
+```js
+let grade = {
+  'lilei': 95,
+  'hanmei': 97,
+  'lisi': 99
+}
+
+// Iterator方式遍历
+// grade[Symbol.iterator] = function () {
+//   let All = this
+//   let keys = Reflect.ownKeys(grade)
+//   let values = []
+//   // console.log(All, keys, '内部数据')
+//   return {
+//     next () {
+//       if (!values.length) {
+//         if (keys.length - 1) {
+//           values.push(All[keys[0]])
+//           keys.shift()
+//           // console.log(values, values.length, All[keys[0]], keys, '内部')
+//         }
+//       }
+//       return {
+//         done: !values.length,
+//         value: values.shift()
+//       }
+//     }
+//   }
+// }
+// let result = []
+// for (let v of grade) {
+//   result.push(v)
+// }
+// console.log(result)
+
+// ES6方式遍历
+let r = []
+for (let [, v] of Object.entries(grade)) {
+  r.push(v)
+}
+console.log(r)
+
+// ES8方式
+console.log(Object.keys(grade))
+console.log(Object.values(grade))
+console.log(Object.entries(grade))
+
+```
+
+
 
 ##    4-3 String Padding（对String补白的方式）
 
+- 前补 `i.toString().padStart(5, '*#')`
+- 后补 `i.toString().padEnd(5, '*#')`
+
+```js
+// for (let i = 1; i < 32; i++) {
+//   if (i < 10) {
+//     console.log(`0${i}`)
+//   } else {
+//     console.log(i)
+//   }
+// }
+
+for (let i = 1; i < 32011; i += 100) {
+  // console.log(i.toString().padStart(5, '*#'))
+  console.log(i.toString().padEnd(5, '*#'))
+}
+
+```
+
+
+
 ##    4-4 Object.getOwnDescriptor（如何获取Object数据的描述符）
 
+- `Object.defineProperty(data, 'Lima', { enumerable: false})` : 设置属性描述符
+- `Object.getOwnPropertyDescriptor(data, 'Lima')` : 查询一项
+- `Object.getOwnPropertyDescriptors(data)` : 查询所有
+
+```js
+const data = {
+  PortLand: '78/50',
+  Dublin: '88/53',
+  Lima: '32/54'
+}
+
+Object.defineProperty(data, 'Lima', {
+  // 描述符
+  enumerable: false
+})
+
+console.log(Object.keys(data))
+```
+
+
+
 ##    4-5 Aysnc/Await &amp; Object.values ……
+
+```js
+
+```
+
+
 
 #   第5章 ES9基础知识
 
@@ -1972,19 +2126,35 @@ export function run () {
 
 ##    5-1 For await of（异步操作集合是如何遍历的）
 
+
+
 ##    5-2 For await of(2)
+
+
 
 ##    5-3 Promise.finally（Promise是如何“兜底”操作的）
 
+
+
 ##    5-4 Object.rest.spread（新增Object的Rest和Spread方法）
+
+
 
 ##    5-5 RegExp-dotAll
 
+
+
 ##    5-6 RegExp-named captured groups(命名分组捕获)
+
+
 
 ##    5-7 RegExp-lookbehind assert(后行断言)
 
+
+
 ##    5-8 For await of ……
+
+
 
 #   第6章 ES10基础知识
 
@@ -1992,11 +2162,19 @@ export function run () {
 
 ##    6-1 ES10新增知识点（1）
 
+
+
 ##    6-2 ES10新增知识点（2）
+
+
 
 ##    6-3 ES10新增知识点（3）
 
+
+
 ##    6-4 JSON.stringify ……
+
+
 
 #   第7章 ES新语法配合Vue实战
 
@@ -2004,23 +2182,43 @@ export function run () {
 
 ##    7-1 vue项目安装
 
+
+
 ##    7-2 vue 指令
+
+
 
 ##    7-3 异步操作 Promise
 
+
+
 ##    7-4 desctructing解构赋值
+
+
 
 ##    7-5 字符串应用
 
+
+
 ##    7-6 代理 Proxy
+
+
 
 ##    7-7 自定义遍历
 
+
+
 ##    7-8 setup
+
+
 
 ##    7-9 Directive
 
+
+
 ##    7-10 ES6+
+
+
 
 #   第8章 构建环境
 
@@ -2028,18 +2226,31 @@ export function run () {
 
 ##    8-1 webpack
 
+
+
 ##    8-2 babel
+
+
 
 ##    8-3 eslint
 
+
+
 ##    8-4 Webpack
+
+
 
 ##    8-5 Babel
 
+
+
 ##    8-6 ESlint
+
+
 
 #   第9章 课程总结
 
   对课程进行整体的回顾与总结。
 
 ##    9-1 课程总结
+
