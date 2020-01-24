@@ -2344,23 +2344,185 @@ console.log(test.match(/(?<=hello\s)world/))
 
 #   第6章 ES10基础知识
 
-  ES10虽然没有大幅的改动，JSON问题修复，数组、字符串、对象、函数等能力进一步增强，同时新增的 BigInt 数据类型也格外引人注目
+  ES10虽然没有大幅的改动，JSON问题修复，数组(Array)、字符串(String)、对象(Object)、函数(function) 等能力进一步增强，同时新增的 BigInt 数据类型也格外引人注目
 
-##    6-1 ES10新增知识点（1）
+##    6-1 ES10新增知识点
+
+### JSON
+
+- `0xD800-0xDFFF` 
+  - 字符无法编码成UTF-8, 而显示错误, 现在以非编码形式转义存在
+
+### Array
+
+- `arr.flat()` : 
+  - flat扁平化, 按照指定深度递归遍历数组, 合并成一个新数组, 默认深度1
+- `arr.map(item => item * 2)` : 
+  - map 对每个元素进行遍历, 参数可以使函数
+  - `arr.map(item => item * 2).flat()`
+- `arr.flatMap(item => item * 2)` : 
+  - flat 和 map 的合并
+
+```js
+// let arr = [1, [2, 3], [4, 5, [6, 7, [8, 9]]]]
+
+// flat扁平化, 按照指定深度递归遍历数组, 合并成一个新数组
+// console.log(arr.flat(3))
+
+// map 对每个元素进行遍历 arr.map(item => item * 2)
+arr.flatMap()
+let arr = [[1], [2], [3]]
+console.log(arr.map(item => item * 2).flat())
+console.log(arr.flatMap(item => item * 2))
+
+// string 字符串
+let str = '   foo   '
+// console.log(str.replace(/^\s+|\s+$/g, '_'))
+console.log(str.trimStart())
+console.log(str.trimLeft())
+console.log(str.trimRight())
+console.log(str.trimEnd())
+console.log(str.trim())
+```
 
 
 
-##    6-2 ES10新增知识点（2）
+### String
+
+1. 去除空格
+   - `str.trimStart()` / `str.trimLeft()` : 去除起始的空格
+   - `str.trimEnd()` / `str.trimRight()` : 去除末尾的空格
+   - `str.trim()` : 去除首尾空格
+2. `str.matchAll(reg)`
+   - 获取所有匹配, 并生成可遍历集合
+
+```js
+// matchAll 匹配
+let str = `"foo" and "bar" and "baz"`
+
+// ES5
+function select (reg, str) {
+  const matches = []
+  while (true) {
+    const match = reg.exec(str)
+    if (match === null) {
+      break
+    }
+    matches.push(match[1])
+  }
+  return matches
+}
+
+console.log(select(/"([^"]*)"/g, str))
+console.log(str.match(/"([^"]*)"/g))
+
+// ES5
+function select2 (reg, str) {
+  const matches = []
+  // replace 传入函数
+  str.replace(reg, function (all, first) {
+    matches.push(first)
+  })
+  return matches
+}
+
+console.log(select2(/"([^"]*)"/g, str))
+
+// ES10
+function select3 (reg, str) {
+  const matches = []
+  for (const match of str.matchAll(reg)) {
+    // console.log(match)
+    matches.push(match[1])
+  }
+  return matches
+}
+console.log(select3(/"([^"]*)"/g, str))
+```
 
 
 
-##    6-3 ES10新增知识点（3）
+### Object
+
+1. Object Array 相互转换
+   - `Object.fromEntries` : 数组转换成对象
+   - `Object.entries` : 转换成数组
+
+```js
+// Object Array 转换
+const arr = [['foo', 1], ['bar', 2]]
+console.log(arr[1][1])
+
+const obj = Object.fromEntries(arr)
+console.log(obj.bar)
+
+// 案例2
+const obj2 = {
+  a: 1,
+  b: 2,
+  g: 3
+}
+// 对象使用数组方法: Object.entries转换成数组, 解构赋值并过滤, Object.fromEntries转换回对象
+let res = Object.fromEntries(
+  Object.entries(obj).filter(([key, val]) => key.length === 3)
+)
+console.log(res)
+```
 
 
 
-##    6-4 JSON.stringify ……
+### Try Catch 函数增强
+
+- 可以省略 `catch` 后面 `(e)`
+
+```js
+// ES5
+try {
+
+} catch (e) {
+
+}
+
+// ES10
+try {
+
+} catch {
+
+}
+```
 
 
+
+### BigInt 数据类型
+
+- BigInt 处理超过 2^53 的数字
+- 在数字后面加 `n` , 就是 BigInt 类型
+
+```js
+// BigInt 处理超过 2^53 的数字
+// const a=11n
+// console.log(typeof a)
+// "bigint" 
+// ESlint 暂不支持
+```
+
+- 练习
+
+  1. 自己如何给 Array 实现一个 Flat 函数?
+
+     ```js
+     
+     ```
+
+     
+
+  2. 利用 Object.fromEntries 把 url 的 search 部分返回一个 object
+
+     ```js
+     
+     ```
+
+     
 
 #   第7章 ES新语法配合Vue实战
 
