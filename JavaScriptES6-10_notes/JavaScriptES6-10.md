@@ -729,10 +729,16 @@ console.log(target, 'source')
 
 ###    2-26 Object Property(存储数据)
 
+- 对象属性简写
+  1. 支持变量或表达式
+  2. 只能用常规函数
+  3. 异步函数名称前加 `*` , Generator
+
 ```JS
 let x = 1
 let y = 2
 let z = 8
+// ES5
 let obj = {
   x: x,
   y: y,
@@ -744,13 +750,14 @@ obj[z] = 3
 obj.hello()
 console.log(obj)
 
+// ES6 对象属性简写
 let obj2 = {
   x,
   y,
-  [z + y]: 6,
+  [z + y]: 6, //支持变量或表达式
   hello () {
     // 只能用常规函数
-    // 异步函数名称前加 *
+    // 异步函数名称前加 * , Generator
     console.log('hello ES6')
   }
 }
@@ -2346,8 +2353,6 @@ console.log(test.match(/(?<=hello\s)world/))
 
   ES10虽然没有大幅的改动，JSON问题修复，数组(Array)、字符串(String)、对象(Object)、函数(function) 等能力进一步增强，同时新增的 BigInt 数据类型也格外引人注目
 
-##    6-1 ES10新增知识点
-
 ### JSON
 
 - `0xD800-0xDFFF` 
@@ -2530,13 +2535,180 @@ try {
 
 ##    7-1 vue项目安装
 
+```shell
+npm install -g @vue/cli@3.11.0
 
+## vue 安装快速原型开发工具
+npm install -g @vue/cli-service-global@3.12.0
+## nvm 切换 node 版本10.0 以上
 
-##    7-2 vue 指令
+## 安装 eslint-plugin-vue
+npm install eslint-plugin-vue -D
+```
 
+### 配置Eslint
 
+```shell
+ vue create vue-lesson
+ # 默认安装
+ cd vue-lesson
+ npm run serve
+ 
+ # eslint 没有生效, 重新安装一遍
+ npm install -g eslint
+ # 初始化 eslint
+ eslint --init
+ 
+ # 配置选项:
+ # To check syntax, find problems, and enforce code style
+ # JavaScript modules(import/export)
+ # Vue.js
+ # Does your project use TyprScript(N)
+ # Browser
+ # Use a popular style guide
+ # Stabdard
+ # JavaScript
+ # Do you wan to upgrade(Y)
+ # Would you like to install them now with npm? (Y)
+ 
+ # 确认 +eslint-config-standard 安装好
+```
+
+### Proxy Mock Config
+
+```config
+Proxy Mock Config
+1. 创建 mock ⽬录
+mkdir mock
+touch mock/user.json
+编辑 user.json
+{
+"code": 0,
+"user": {
+"name": "lilei",
+"addr": "北京市海淀区"
+}
+}
+2. 增加 vue 全局配置⽂件
+module.exports = {
+devServer: {
+proxy: {
+'/user': {
+target: 'http://localhost:8081',
+pathRewrite: {
+'/user': 'user.json'
+}
+},
+'/list': {
+target: 'http://localhost:8081',
+pathRewrite: {
+'/list': 'list.json'
+}
+}
+}
+}
+}
+3. 重启服务
+npm run serve
+```
+
+### vscode Eslint 配置文件
+
+```config
+.vscode/settings.json:
+{
+"eslint.autoFixOnSave": true,
+"prettier.eslintIntegration": true,
+"prettier.semi": false,
+"prettier.singleQuote": true,
+"javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+"vetur.format.defaultFormatter.html": "js-beautify-html",
+"vetur.format.defaultFormatter.js": "vscode-typescript",
+"vetur.format.defaultFormatterOptions": {
+"js-beautify-html": {
+"wrap_attributes": "force-aligned"
+}
+},
+"eslint.validate": [
+"javascript",
+"html"
+],
+"eslint.options": {
+"plugins": ["html"]
+},
+"window.zoomLevel": 1,
+"editor.formatOnSave": true,
+"html.format.enable": false,
+"html.format.indentHandlebars": true,
+"html.format.preserveNewLines": true,
+"workbench.sideBar.location": "left"
+}
+```
+
+## 7-2 vue 指令
+
+> 7-9 Directive_慕课⽹
+> coding.imooc.com/lesson/389.html
+>
+> ### Directive
+>
+> 在 Vue Dirctive 指令中，可以尽情的使⽤ ES6+ 相关知识，我们下⾯来看下：
+> 创建指令⽂件
+>
+> 1.  创建⽂件
+> cd src
+> mkdir dirctive
+> touch directive/make-red.js
+> 2.  代码实现
+> 2.1 编写 make-red.js
+> 在 ES5 的时候，⼤概是这么写的：
+> import Vue from 'vue'
+> Vue.directive('make-red', {
+> inserted: function(el) {
+> el.style.color = 'red'
+> }
+> })
+> 现在就可以这样简写了：
+> import Vue from 'vue'
+> Vue.directive('make-red', {
+> inserted(el) {
+> el.style.color = 'red'
+> }
+> })
+> 2.2 在 main.js 引⼊ make-red.js
+> import Vue from 'vue'
+> import App from './App.vue'
+> import './directive/make-red'
+> Vue.config.productionTip = false
+> new Vue({
+> render: h => h(App),
+> }).$mount('#app')
+> 1/2
+> 2.3 在对应的 HelloWorld.vue 组件中增加指令
+>
+> `<h1 v-make-red>{{ msg }}</h1>`
+>
+> 这样在浏览器中就可以看到效果了。
+> 阅读
+>
+> 1. ⾃定义指令
 
 ##    7-3 异步操作 Promise
+
+```js
+  async mounted () {
+    // 解构赋值 async
+    const { data: { user, code } } = await axios.get('/user')
+    if (user && code === '0') {
+      console.log(user)
+    }
+    // axios.get('/user').then(({ data }) => {
+    //   if (data && data.code === '0') {
+    //     console.log(data.user)
+    //   }
+    // })
+  }
+```
 
 
 
