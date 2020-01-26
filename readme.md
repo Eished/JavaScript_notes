@@ -6654,3 +6654,347 @@ document.getElementById('content').innerHTML = html;
 ```
 
 ![image-20200126152920878](readme.assets/image-20200126152920878.png)
+
+
+
+# 表达式和运算符分类
+
+左侧工具栏是按字母表排序的列表。
+
+### 主要表达式
+
+
+
+JavaScript中基本关键字和常用表达式。
+
+- [`this`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/this)
+
+  `this` 关键字指向函数的执行上下文。
+
+- [`function`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/function)
+
+  `function` 关键字定义了函数表达式。
+
+- [`class`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/class)
+
+  `class` 关键字定义了类表达式。
+
+- [`function*`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/function*)
+
+  `function*` 关键字定义了一个 generator 函数表达式。
+
+- [`yield`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield)
+
+  暂停和恢复 generator 函数。
+
+- [`yield*`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield*)
+
+  委派给另外一个generator函数或可迭代的对象。
+
+- `async function`
+
+  `async function` 定义一个异步函数表达式。
+
+- [`await`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/await)
+
+  暂停或恢复执行异步函数，并等待promise的resolve/reject回调。
+
+- [`[\]`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array)
+
+  数组初始化/字面量语法。
+
+- [`{}`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Object_initializer)
+
+  对象初始化/字面量语法。
+
+- [`/ab+c/i`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+
+  正则表达式字面量语法。
+
+- [`( )`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Grouping)
+
+  分组操作符。
+
+### 左表达式
+
+
+
+左边的值是赋值的目标。
+
+- [属性访问符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Property_accessors)
+
+  成员运算符提供了对对象的属性或方法的访问 (`object.property` 和 `object["property"]`).
+
+- [`new`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)
+
+  `new` 运算符创建了构造函数实例。
+
+- [`new.target`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new.target)
+
+  在构造器中，`new.target` 指向[`new`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)调用的构造器。
+
+- [`super`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/super)
+
+  `super` 关键字调用父类的构造器.
+
+- [`...obj`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_operator)
+
+  展开运算符可以将一个可迭代的对象在函数调用的位置展开成为多个参数,或者在数组字面量中展开成多个数组元素。
+
+### 自增和自减
+
+
+
+前置/后置自增运算符和前置/后置自减运算符.
+
+- [`A++`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Increment)
+
+  后置自增运算符.
+
+- [`A--`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Decrement)
+
+  后置自减运算符.
+
+- [`++A`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Increment)
+
+  前置自增运算符.
+
+- [`--A`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Decrement)
+
+  前置自减运算符.
+
+### 一元运算符
+
+
+
+一元运算符只有一个操作数.
+
+- [`delete`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/delete)
+
+  `delete` 运算符用来删除对象的属性.
+
+- [`void`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/void)
+
+  `void` 运算符表示表达式放弃返回值.
+
+- [`typeof`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/typeof)
+
+  `typeof` 运算符用来判断给定对象的类型.
+
+- [`+`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Unary_plus)
+
+  一元加运算符将操作转换为Number类型.
+
+- [`-`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Unary_negation)
+
+  一元减运算符将操作转换为Number类型并取反.
+
+- [`~`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_NOT)
+
+  按位非运算符.
+
+- [`!`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Logical_Operators#Logical_NOT)
+
+  逻辑非运算符.
+
+### 算术运算符
+
+
+
+算术运算符以二个数值（字面量或变量）作为操作数，并返回单个数值。
+
+- [`+`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Addition)
+
+  加法运算符.
+
+- [`-`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Subtraction)
+
+  减法运算符.
+
+- [`/`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Division)
+
+  除法运算符.
+
+- [`*`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Multiplication)
+
+  乘法运算符.
+
+- [`%`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators#Remainder)
+
+  取模运算符.
+
+### 关系运算符
+
+
+
+比较运算符比较二个操作数并返回基于比较结果的`Boolean`值。
+
+- [`in`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/in)
+
+  `in运算符用来判断对象是否拥有给定属性`.
+
+- [`instanceof`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/instanceof)
+
+  `instanceof` 运算符判断一个对象是否是另一个对象的实例.
+
+- [`<`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Less_than_operator)
+
+  小于运算符
+
+- [`>`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Greater_than_operator)
+
+  大于运算符.
+
+- [`<=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Less_than_or_equal_operator)
+
+  小于等于运算符.
+
+- [`>=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Greater_than_or_equal_operator)
+
+  大于等于运算符。 
+
+**注意： =>** 不是运算符，而是[`箭头函数`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions)的表示符。
+
+### 相等运算符
+
+
+
+如果相等，操作符返回的是Boolean(布尔)类型的true，否则是false。
+
+- [`==`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Equality)
+
+  相等 运算符.
+
+- [`!=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Inequality)
+
+  不等 运算符.
+
+- [`===`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Identity)
+
+  全等 运算符.
+
+- [`!==`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comparison_Operators#Nonidentity)
+
+  非全等 运算符.
+
+### 位移运算符
+
+
+
+在二进制的基础上对数字进行移动操作
+
+- [`<<`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Left_shift)
+
+  按位左移运算符。
+
+- [`>>`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Right_shift)
+
+  按位右移运算符。
+
+- [`>>>`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Unsigned_right_shift)
+
+  按位无符号右移运算符。
+
+### 二进制位运算符
+
+
+
+二进制运算符将它们的操作数作为32个二进制位（0或1）的集合，并返回标准的JavaScript数值。
+
+- [`&`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_AND)
+
+  二进制位与（AND）。
+
+- [`|`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_OR)
+
+  二进制位或（OR）。
+
+- [`^`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#Bitwise_XOR)
+
+  二进制位异或（XOR）。
+
+### 二元逻辑运算符
+
+
+
+逻辑运算符典型的用法是用于boolean(逻辑)值运算, 它们返回boolean值。
+
+- [`&&`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Logical_Operators#Logical_AND)
+
+  逻辑与.
+
+- [`||`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Logical_Operators#Logical_OR)
+
+  逻辑或.
+
+### 条件(三元)运算符
+
+
+
+- [`(condition ? ifTrue : ifFalse)`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Conditional_Operator)
+
+  条件元素运算符把两个结果中其中一个符合运算逻辑的值返回。
+
+### 赋值运算符
+
+
+
+赋值元素符会将右边的操作数的值分配给左边的操作数，并将其值修改为右边操作数相等的值。
+
+- [`=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Assignment)
+
+  赋值运算符。
+
+- [`*=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Multiplication_assignment)
+
+  赋值乘积。
+
+- [`/=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Division_assignment)
+
+  赋值商。
+
+- [`%=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Remainder_assignment)
+
+  赋值求余。
+
+- [`+=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Addition_assignment)
+
+  赋值求和。
+
+- [`-=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Subtraction_assignment)
+
+  赋值求差。
+
+- [`<<=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Left_shift_assignment)
+
+  左位移。
+
+- [`>>=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Right_shift_assignment)
+
+  右位移。
+
+- [`>>>=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Unsigned_right_shift_assignment)
+
+  无符号右位移。
+
+- [`&=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Bitwise_AND_assignment)
+
+  赋值与。
+
+- [`^=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Bitwise_XOR_assignment)
+
+  赋值按位异或。
+
+- [`|=`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Assignment_Operators#Bitwise_OR_assignment)
+
+  赋值或。
+
+- [`[a, b\] = [1, 2]`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) [`{a, b} = {a:1, b:2}`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
+
+  解构赋值允许你分配数组或者对象变量的属性通过使用规定的语法，其看起来和数组和对象字面量很相似。
+
+- 逗号操作符
+
+- [`,`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Comma_Operator)
+
+  逗号操作符允许在一个判断状态中有多个表达式去进行运算并且最后返回最后一个表达式的值。
