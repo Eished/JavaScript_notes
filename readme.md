@@ -6405,9 +6405,13 @@
 
 ### 1、特性
 
-（1）、性能卓越，执行速度通常是 Mustache 与 tmpl 的 20 多倍（性能测试）（2）、支持运行时调试，可精确定位异常模板所在语句（演示）
+（1）、性能卓越，执行速度通常是 Mustache 与 tmpl 的 20 多倍（性能测试）
 
-（3）、对 NodeJS Express 友好支持（4）、安全，默认对输出进行转义、在沙箱中运行编译后的代码（Node版本可以安全执行用户上传的模板）
+（2）、支持运行时调试，可精确定位异常模板所在语句（演示）
+
+（3）、对 NodeJS Express 友好支持
+
+（4）、安全，默认对输出进行转义、在沙箱中运行编译后的代码（Node版本可以安全执行用户上传的模板）
 
 （5）、支持include语句
 
@@ -6429,10 +6433,12 @@
 
 {{ 与 }} 符号包裹起来的语句则为模板的逻辑表达式。
 
+`template('test', data)` : 渲染
+
 （3）、输出表达式
 
-对内容编码输出： {{content}} 
-不编码输出： {{#content}} 
+对内容编码(转义)输出：` {{content}} `
+不编码(转义)输出：` {{#content}} `
 编码可以防止数据中含有 HTML 字符串，避免引起 XSS 攻击。
 
 （4）、条件表达式
@@ -6455,7 +6461,7 @@
 {{each list as value index}} 
  <li>{{index}} - {{value.user}}</li> 
 {{/each}} 
-// 亦可以被简写：
+// 亦可以被简写：$ 特指当前函数中的变量
 {{each list}} 
  <li>{{$index}} - {{$value.user}}</li> 
 {{/each}} 
@@ -6471,10 +6477,10 @@
 
 （7）、辅助方法
 
-使用 `template.helper(name, callback) `注册公用辅助方法：
+使用 `template.defaults.imports.dateFormat = function(arg1,arg2){} `注册公用辅助方法：
 
 ```js
-template.helper('dateFormat', function (date, format) { 
+template.defaults.imports.dateFormat = function(arg1,arg2) { 
  // .. 
  return value; 
 }); 
@@ -6486,35 +6492,89 @@ template.helper('dateFormat', function (date, format) {
 ### 3、实例
 
 ```html
-<!DOCTYPE HTML> 
-<html> 
-<head> 
-<meta charset="UTF-8"> 
-<title>basic-demo</title> 
-<script src="../dist/template.js"></script> 
-</head> 
-<body> 
-<div id="content"></div> 
-<script id="test" type="text/html"> 
-{{if isAdmin}} 
-<h1>{{title}}</h1> 
-<ul> 
- {{each list as value i}} 
-  <li>索引 {{i + 1}} ：{{value}}</li> 
- {{/each}} 
-</ul> 
-{{/if}} 
-</script> 
-<script> 
-var data = { 
- title: '基本例子', 
- isAdmin: true, 
- list: ['文艺', '博客', '摄影', '电影', '民谣', '旅行', '吉他'] 
-}; 
-var html = template('test', data); 
-document.getElementById('content').innerHTML = html; 
-</script> 
-</body> 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+  <script src="./lib/template-web.js"></script>
+</head>
+
+<body>
+  <div id="content"></div>
+  <script id="test" type="text/html">
+    <div>
+      <!-- 输出表达式 -->
+      <p>{{name}}</p>
+      <!-- 不转义输出 -->
+      <p>{{#value}}</p>
+
+      <!-- 条件表达式 -->
+      {{if bool}}
+      <p>{{bool}}</p>
+      {{/if}}
+      {{if num < 1 }}
+      <p>'num < 1'</p> {{else}} <p>error!</p>
+      {{/if}}
+
+      <!-- 遍历表达式 数组 -->
+      <p>遍历表达式 数组</p>
+      {{each list as value index}}
+      <li>{{index}}: {{value}}</li>
+      {{/each}}
+      <!-- $简写 $ 特指当前函数中的变量 -->
+      <p>$简写</p>
+      {{each list}}
+      <li>{{$index}}: {{$value}}</li>
+      {{/each}}
+      <!-- 遍历表达式 对象 -->
+      <p>遍历表达式 对象</p>
+      {{each objList as value index}}
+      <li>{{index}}: {{value}}</li>
+      {{/each}}
+      <!-- $简写 -->
+      <p>$简写</p>
+      {{each objList}}
+      <li>{{$index}}: {{$value}}</li>
+      {{/each}}
+
+      <!-- 模板包含子模板,表达式 -->
+      {{include 'news_list'}}
+
+      <!-- 辅助方法 -->
+    </div>
+  </script>
+
+  <script id="news_list" type="text/html">
+    <p>模板包含子模板,表达式</p>
+    <ul>
+      {{each list as value i}}
+      <li>索引 {{i + 1}} ：{{value + 1}}</li>
+      {{/each}}
+    </ul>
+  </script>
+
+  <script>
+    const data = {
+      name: 'zhangsan',
+      value: '<h1>lisi</h1>',
+      num: 0,
+      bool: true,
+      list: [1, 2, 3, 4, 5],
+      objList: {
+        name: 'zhangsan',
+        age: '18',
+        addr: '广东'
+      }
+    }
+    let temp = template('test', data)
+    document.getElementById('content').innerHTML = temp
+  </script>
+</body>
+
 </html>
 ```
 
@@ -6590,90 +6650,7 @@ document.getElementById('content').innerHTML = html;
 ![image-20200126152842459](readme.assets/image-20200126152842459.png)
 
 ```html
-<!DOCTYPE HTML> 
-<html> 
-<head> 
-<meta charset="UTF-8"> 
-<title>helper-demo</title> 
-<script src="../dist/template.js"></script> 
-</head> 
-  
-<body> 
-<h1>辅助方法</h1> 
-<div id="content"></div> 
-<script id="test" type="text/html"> 
-{{time | dateFormat:'yyyy年 MM月 dd日 hh:mm:ss'}} 
-</script> 
-  
-<script> 
-/** 
- * 对日期进行格式化， 
- * @param date 要格式化的日期 
- * @param format 进行格式化的模式字符串 
- *  支持的模式字母有： 
- *  y:年, 
- *  M:年中的月份(1-12), 
- *  d:月份中的天(1-31), 
- *  h:小时(0-23), 
- *  m:分(0-59), 
- *  s:秒(0-59), 
- *  S:毫秒(0-999), 
- *  q:季度(1-4) 
- * @return String 
- * @author yanis.wang 
- * @see http://yaniswang.com/frontend/2013/02/16/dateformat-performance/ 
- */ 
-template.helper('dateFormat', function (date, format) { 
-  
- if (typeof date === "string") { 
-  var mts = date.match(/(\/Date(\d+)\/)/); 
-  if (mts && mts.length >= 3) { 
-   date = parseInt(mts[2]); 
-  } 
- } 
- date = new Date(date); 
- if (!date || date.toUTCString() == "Invalid Date") { 
-  return ""; 
- } 
-  
- var map = { 
-  "M": date.getMonth() + 1, //月份 
-  "d": date.getDate(), //日 
-  "h": date.getHours(), //小时 
-  "m": date.getMinutes(), //分 
-  "s": date.getSeconds(), //秒 
-  "q": Math.floor((date.getMonth() + 3) / 3), //季度 
-  "S": date.getMilliseconds() //毫秒 
- }; 
-   
-  
- format = format.replace(/([yMdhmsqS])+/g, function(all, t){ 
-  var v = map[t]; 
-  if(v !== undefined){ 
-   if(all.length > 1){ 
-    v = '0' + v; 
-    v = v.substr(v.length-2); 
-   } 
-   return v; 
-  } 
-  else if(t === 'y'){ 
-   return (date.getFullYear() + '').substr(4 - all.length); 
-  } 
-  return all; 
- }); 
- return format; 
-}); 
-  
-// -------- 
-  
-var data = { 
- time: 1408536771253, 
-}; 
-var html = template('test', data); 
-document.getElementById('content').innerHTML = html; 
-</script> 
-</body> 
-</html> 
+
 ```
 
 ![image-20200126152920878](readme.assets/image-20200126152920878.png)
