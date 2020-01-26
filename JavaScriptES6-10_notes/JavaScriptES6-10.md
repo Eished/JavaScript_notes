@@ -732,7 +732,7 @@ console.log(target, 'source')
 - 对象属性简写
   1. 支持变量或表达式
   2. 只能用常规函数
-  3. 异步函数名称前加 `*` , Generator
+  3. 异步函数名称前加 `*` 
 
 ```JS
 let x = 1
@@ -2714,6 +2714,38 @@ npm run serve
 
 ##    7-4 desctructing解构赋值
 
+```vue
+// list.vue
+<template lang="html">
+  <div class="list">
+    <ul>
+      <li v-for="item in list" :key="item.name">
+        {{item.name}}-{{item.addr}}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+export default {
+  name: 'list',
+  data () {
+    return {
+      list: []
+    }
+  },
+  async mounted () {
+    const { data: { list } } = await axios.get('/list')
+    this.$data.list = list
+  }
+}
+</script>
+
+<style lang="css" scoped>
+</style>
+```
+
 
 
 ##    7-5 字符串应用
@@ -2722,21 +2754,133 @@ npm run serve
 
 ##    7-6 代理 Proxy
 
+```vue
+<template lang="html">
+  <div class="price">
+    <ul>
+      <li v-for="item in price" :key="item">{{item}}</li>
+    </ul>
+    <button type="button" name="button" @click="up">升序</button>
+    <button type="button" name="button" @click="down">降序</button>
+    <button type="button" name="button" @click="reset">重置</button>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+export default {
+  data () {
+    return {
+      price: [],
+      proxy: ''
+    }
+  },
+  methods: {
+    up () { this.price = this.proxy.up },
+    down () { this.price = this.proxy.down },
+    reset () { this.price = this.proxy.defalut }
+  },
+  async mounted () {
+    const { data: { price } } = await axios.get('/proxy')
+    Object.freeze(price)
+    this.proxy = new Proxy({}, {
+      get (target, key) {
+        if (key === 'up') {
+          return [].concat(price).sort((a, b) => a - b)
+        } else if (key === 'down') {
+          return [].concat(price).sort((a, b) => b - a)
+        } else {
+          return price
+        }
+      },
+      set () {
+        return false
+      }
+    })
+    // this.$data.price 等同于 this.price 等同于 this.$data.proxy
+    // 预置数据显示
+    this.$data.price = this.proxy.defalut
+  }
+}
+</script>
+
+<style lang="css" scoped>
+ul,
+li {
+  list-style-type: none;
+}
+</style>
+
+```
+
 
 
 ##    7-7 自定义遍历
 
+```vue
+<template lang="html">
+  <div class="list">
+    <h1>Authors</h1>
+    <ul>
+      <li v-for="item in authors" :key="item">{{item}}</li>
+    </ul>
+  </div>
+</template>
 
+<script>
+import axios from 'axios'
+export default {
+  data () {
+    return {
+      authors: {}
+    }
+  },
+  async mounted () {
+    const { data: { allAuthors } } = await axios.get('/author')
+    const author = new Proxy(allAuthors, {
+      has (target, key) {
+        const keys = Reflect.ownKeys(target).slice(0, -1)
+        for (const item of keys) {
+          console.log(target, item)
+          if (target[item].includes(key)) {
+            return true
+          }
+        }
+        return false
+      }
+    })
+    author[Symbol.iterator] = function* () {
+      const all = this
+      const keys = Reflect.ownKeys(this).slice(0, -2)
+      let values = []
+      while (true) {
+        if (!values.length) {
+          if (keys.length) {
+            values = [].concat(all[keys[0]])
+            keys.shift()
+            yield values.shift()
+          } else {
+            return false
+          }
+        } else {
+          yield values.shift()
+        }
+      }
+    }
+    console.log('oiuqr' in author)
+    this.authors = author
+  }
+}
+</script>
 
-##    7-8 setup
+<style>
+ul,
+li {
+  list-style-type: none;
+}
+</style>
 
-
-
-##    7-9 Directive
-
-
-
-##    7-10 ES6+
+```
 
 
 
