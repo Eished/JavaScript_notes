@@ -1662,6 +1662,108 @@ console.log(d.next().value)
 console.log(d.next().value)
 ```
 
+### 附: Generator 是什么
+
+> http://www.pianshen.com/article/3896191627/
+
+**生成器（Generator）**对象是ES6中新增的语法，和Promise一样，都可以用来异步编程。但与Promise不同的是，它不是使用JS现有能力按照一定标准制定出来的，而是一种新型底层操作，async/await就是在它的基础上实现的。
+
+generator对象是由generator function返回的，符合**可迭代协议**和**迭代器协议**。
+
+generator function 可以在JS单线程的背景下，使JS的执行权与数据自由的游走在多个执行栈之间，实现协同开发编程，当项目调用generator function时，会在内部开辟一个单独的执行栈，在执行一个generator function 中，可以暂停执行，或去执行另一个generator function，而当前generator function并不会销毁，而是处于一种被暂停的状态，当执行权回来的时候，再继续执行。
+
+![在这里插入图片描述](JavaScriptES6-10.assets/97a52475c433362e41ffb7cf6e9bd775-1580129648099.png)
+
+**可迭代协议**和**迭代器协议**都是ES6的补充
+
+#### 迭代器（Iterator）
+
+顾名思义，所谓迭代器对象就是满足迭代器协议的对象。
+
+> 迭代器协议
+
+迭代器协议定义了一种标准的方式来产生一个有限或无限序列的值。使的迭代器对象拥有一个`next()`对象，并有以下含义：
+
+- next： 返回一个对象的无参函数，返回对象有两个属性：
+  - done（boolean)
+    - 如果迭代器已经经过了被迭代序列时为 true。这时value可能描述了该迭代器的返回值。
+    - 如果迭代器可以产生序列中的下一个值，则为false。这等于说done属性不指定。
+  - value
+    - 迭代器返回的任何 JavaScript 值。done为true时可省略。
+
+#### 可迭代（Iterable）
+
+满足可迭代协议的对象就是可迭代对象。
+
+**可迭代协议**：允许JS对象去定义或定制它们的迭代行为。
+
+**可迭代对象**：该对象必须实现@@iterator方法，即这个对象或它原型链（prototype chain）上的某个对象必须有一个名字是Symbol.iterator的属性。
+
+> Symbol.iterator：返回一个对象的无参函数，被返回对象符合迭代器协议
+
+在ES6中，所有的集合对象（Array、Set与Map）以及String、TypedArray、arguments都是可迭代对象，它们都有默认的迭代器。
+
+**当一个对象被迭代的时候，它的@@iterator方法被调用并且无参数，并返回一个值迭代器**
+
+- 扩展运算符
+
+  ```js
+  [...'abc']	// ["a", "b", "c"]
+  ...['a', 'b', 'c']	// ["a", "b", "c"]
+  12
+  ```
+
+- yield*
+
+  ```js
+  function* generator() {
+      yield* ['a', 'b', 'c']
+  }
+  generator().next()	// { value: "a", done: false }
+  1234
+  ```
+
+- 解构赋值
+
+  ```js
+  let [a, b, c] = new Set(['a', 'b', 'c'])
+  a	// 'a'
+  12
+  ```
+
+#### 可迭代对象
+
+这里以`for ...of`为例子，加深对可迭代对象的理解
+
+`for...of`接受一个可迭代对象（Iterable），或者能强制转换/包装成一个可迭代对象的值（如’abc’）。遍历时，`for...of`会获取可迭代对象的`[Symbol.iterator]()`，对该迭代器逐次调用next()，直到迭代器返回对象的done属性为true时，遍历结束，不对该value处理。
+
+#### 使迭代器可迭代
+
+在**迭代器**部分我们定义了一个简单的迭代器函数`createIterator`，但是该函数生成的迭代器部分并没有实现可迭代协议，所以不能在`for...of`等语法中使用。需要为该对象实现可迭代协议，
+
+在`[Symbol.iterator]`函数中返回该迭代器自身。
+
+```js
+function createIterator(items) {
+    var i = 0
+    return {
+        next: function () {
+            var done = (i >= items.length)
+            var value = !done ? items[i++] : undefined
+            return {
+                done: done,
+                value: value
+            }
+        }
+        [Symbol.iterator]: function () {
+        	return this
+    	}
+    }
+}
+var iterator = createIterator([1, 2, 3])
+...iterator		// 1, 2, 3
+```
+
 
 
 ## Iterator 迭代器
@@ -2750,6 +2852,13 @@ export default {
 
 ##    7-5 字符串应用
 
+```vue
+<li v-for="item in list"
+  :key="item.name">
+  {{item.name.trim()}}{{item.addr.trim()}}
+</li>
+```
+
 
 
 ##    7-6 代理 Proxy
@@ -2890,31 +2999,1205 @@ li {
 
 ##    8-1 webpack
 
+> 本质上, webpack 是一个现代 JavaScript 应用程序的静态模块打包工具. 当 webpack 处理应用程序时, 他会在内部构建一个 依赖图(dependency graph) , 此依赖图会映射项目所需的每个模块, 并生成一个或多个 bundle(包).
+
+### 入口(entry)
+
+入口起点(entry point) 告诉 webpack 哪个是原始文件. 找到这个原始文件之后开始寻找依赖和各种资源, 根据这些包还有资源选择合适的 loader 进行处理. 这个入口是需要在 webpack 的配置文件 (webpack.config.js) 中来声明的:
+
+```js
+module.exports = {
+	entry: './path/to/my/entry/file.js'
+}
+```
+
+### 出口(output)
+
+所谓的出口(output) 是告诉 webpack 进过各种 loader 处理后的文件应该生成到哪个目录下, 也就是生成文件所在的地方. 同样, 需要显示的告诉 webpack 的配置文件 (webpack.config.js) :
+
+```js
+const path = require('path');
+
+module.exports = {
+  entry: './path/to/my/entry/file.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'my-first-webpack.bundle.js'
+  }
+}
+```
+
+### loader
+
+构建的过程除了处理原生的 JavaScript , 还需要处理其他非 JavaScript 文件, 比如图片\CSS\ES6 等等. webpack loader 的作用就是提供一个机制保证所有的类型资源都可以采用对应的 loader 进行处理, 这样 webpack 就能完成更加复杂的构建过程. 这个 loader 也是需要在配置文件 (webpack.config.js) 中来定义的:
+
+```js
+const path = require('path');
+
+const config = {
+  output: {
+    filename: 'my-first-webpack.bundle.js'
+  },
+  module: {
+    rules: [
+      {test: /\.txt$/, use: 'raw-loader'}
+    ]
+  }
+};
+
+module.exports = config;
+```
+
+###  插件(plugins)
+
+> loader 被用于转换某些资源类型的模块, 而插件则可以用于执行范围更广的任务. 插件的范围包括打包\优化和压缩\重新定义环境中的变量. 插件接口功能及其强大, 可以用来处理各种各样的任务.
+
+想要使用一个插件, 你只需要 require() 它, 然后把它添加到 plugins 数组中. 多数产检可以通过选项(option)自定义. 你也可以在一个配置文件中因为不同目的而多次使用同一个插件, 这是需要通过使用 new 操作符来创建它的一个实例. 
+
+```js
+const path = require('webpack'); // 用于访问内置插件
+const HtmlwebpackPlugin = require('html-webpack-plugin'); // 通过npm安装
+
+const config = {
+  module: {
+    rules: [
+      {test: /\.txt$/, use: 'raw-loader'}
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({template: './src/index.heml'})
+  ]
+};
+
+module.exports = config;
+```
+
+### 模式
+
+我们平时会存在两种状态: 开发模式\生产模式. 够贱的过程中也是需要的, 比如我们在开发环境需要快速的构建, 在生产环境需要构建一个符合线上环境的版本. 这样我们只要在配置文件中 (webpack.config.js) 简单的配置一下就可以达到目的.
+
+```js
+module.exports = {
+	mode: 'producion'
+};
+```
+
+### 实例
+
+```shell
+mkdir webpack-test
+cd webpack-test
+npm init
+npm install -g webpack-cli@3
+npm install -g webpack@4
+touch webpack.config.js
+npm install -g http-server
+```
+
+参考 https://webpack.docschina.org/
+
+```js
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  entry: './index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: './index.min.js'
+  },
+  mode: 'development',
+  // mode: 'production',
+  module: {
+    rules: [{
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
+    }]
+  },
+  plugins: [
+    new HtmlWebpackPlugin()
+  ]
+};
+```
+
+```js
+let say = () => {
+  console.log('hello webpack');
+}
+say()
+```
+
+## 8-2 babel
+
+> Babel 是一个工具链, 主要用于将 ECMAScript2015+ 版本的代码转换为向后兼容的 JavaScript 语法, 以便能够运行在当前和旧版本的浏览器后其它环境中.
+
+```js
+// Babel 输入: ES2015 箭头函数
+[1,2,3].map((n)=>n+1)
+
+// Balbel 输出: ES5 语法实现的同等功能
+[1,2,3].map(function(){
+  return n+1
+})
+```
+
+### 工作原理
+
+从上述代码可以看出 Babel 是从一种代码转换成另一种代码, 基本工作流程如下: 
+
+![babel](https://segmentfault.com/img/remote/1460000019578481?w=1958&h=812)
+
+这个图表示了 Babel 首先是把原始的代码转换成抽象语法树(Abstract Syntax Tree, AST), 然后基于这个 AST 做转换, 每个转换被处理成插件的形式, 最后把 AST 还原成代码. 实际上, 我们应用起来不会这么麻烦, 只需要三步: 根据场景选择引用场景, 安装工具, 配置文件.
+
+### 安装工具
+
+因为每个场景的安装方式不同, 我们选择 Webpack , 这是前段工程师必备技能之一. 
+
+```shell
+npm install --save-dev babel-loader @babel/core @babel/preset-env
+```
+
+安装成功之后, 要在 webpack.config.js 中进行简单开启 Babel:
+
+```js
+ module: {
+    rules: [{
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
+    }]
+  }
+```
+
+### 配置文件
+
+我们知道 Babel 的工作原理是利用各种 plugin 对 AST 做转换, 上面的安装只是开启了 Babel ,  还没有选择使用哪些 plugin , 接下来就是进行 plugin 的配置, 请在项目中创建 .babelrc 文件, 内容如下:
+
+```js
+{
+	"presets": ["@babel/preset-env"]
+}
+```
+
+有的同学发现这个地方使用的不是 plugin 而是presets, 那么两者有什么关系呢? 一句话总结: presets 是 plugin 的集合.
+
+> Tips
+>
+> Windows 无法创建 . 开头的文件, 使用命令行工具创建, 如 gitbash.
+
+## 8-3 eslint
+
+> ESlint 最初是由 Nicholas C. Zakas 于2013年6月创建的开源项目. 它的目标是提供一个插件化\可组装的 JavaScript 和 JSX 检查工具.
+
+### 规则
+
+首先 ESlint 是一个工具, 无论是常规的 JavaScript 项目还是 React\Vue 等项目, 都可以使用它进行代码检查并格式化. ESlint 对代码的检查都基于"规则", 这些规则可以使官方内置的也可以是开发者自定义的. 当然, 内置的规则还进行了分类, 比如 Variables 规则:
+
+每个规则会设置三个检查等级:
+
+- "off" 或 0 关闭规则
+- "warn" 或 1 开启规则, 使用警告级别的错误: warn(不会导致程序退出)
+- "error" 或 2 开启规则, 使用错误级别的错误: error(当被触发的时候, 程序会退出)
+
+```js
+{
+  "rules": {
+    "eqeqeq": "off",
+    "curly": "error",
+    "quotes": ["error", "double"]
+  }
+}
+```
+
+### 插件
+
+ESlint 通过插件机制来拓展规则的建设, 也就是说用来定义规则的, 我们可以使用他人开发的插件也可以自己开发插件.
+
+插件的命名方式是: `eslint-plugin- plugin-name`, 比较流行的 ESLint 插件有 eslint-plugin-standard , eslint-plugin-vue, eslint-plugin-react, eslint-plugin-prettier, eslint-plugin-node. 
+
+### 配置
+
+ESLint 被设计为完全可配置的, 这意味着你可以关闭每一个规则而只运行基本语法验证, 或混合和匹配 ESLint 默认绑定的规则和你的自定义规则, 以让 ESLint 更适合你的项目. 有两种主要的方式来配置 ESLint :
+
+1. Configuration Comments : 使用 JavaScript 注释把配置信息直接嵌入到一个代码源文件中.
+2. Configuration Files : 使用 JavaScript, Json, 或者 YAML 文件为整个目录(处理你的主目录) 和它的子目录指定配置信息. 可以配置一个独立的 .eslintrc.* 文件, 或者直接在 package.json 文件里的 eslintConfig 字段指定配置, ESLint 会查找和自动读取它们, 再者, 你可以在命令行运行时指定一个任意的配置文件.
+
+```js
+{
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"rules": {
+		"semi": 2
+	}
+}
+```
 
 
-##    8-2 babel
 
+##    8-4 babel 文档
 
+把 ES6 代码转换为 ES3/ES5
 
-##    8-3 eslint
+> https://www.npmjs.com/package/babel-loader
+>
+> webpack 4.x | babel-loader 8.x | babel 7.x
 
+```shell
+npm install -D babel-loader @babel/core @babel/preset-env webpack
+```
 
+### Usage
 
-##    8-4 Webpack
+webpack documentation: [Loaders](https://webpack.js.org/loaders/)
 
+Within your webpack configuration object, you'll need to add the babel-loader to the list of modules, like so:
 
+```js
+module: {
+  rules: [
+    {
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
+    }
+  ]
+}
+```
 
-##    8-5 Babel
+### Options
 
+See the `babel` [options](https://babeljs.io/docs/en/options).
 
+You can pass options to the loader by using the [`options`](https://webpack.js.org/configuration/module/#rule-options-rule-query) property:
 
-##    8-6 ESlint
+```js
+module: {
+  rules: [
+    {
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: ['@babel/plugin-proposal-object-rest-spread']
+        }
+      }
+    }
+  ]
+}
+```
 
+This loader also supports the following loader-specific option:
 
+- `cacheDirectory`: Default `false`. When set, the given directory will be used to cache the results of the loader. Future webpack builds will attempt to read from the cache to avoid needing to run the potentially expensive Babel recompilation process on each run. If the value is set to `true` in options (`{cacheDirectory: true}`), the loader will use the default cache directory in `node_modules/.cache/babel-loader` or fallback to the default OS temporary file directory if no `node_modules` folder could be found in any root directory.
+- `cacheIdentifier`: Default is a string composed by the `@babel/core`'s version, the `babel-loader`'s version, the contents of `.babelrc` file if it exists, and the value of the environment variable `BABEL_ENV` with a fallback to the `NODE_ENV` environment variable. This can be set to a custom value to force cache busting if the identifier changes.
+- `cacheCompression`: Default `true`. When set, each Babel transform output will be compressed with Gzip. If you want to opt-out of cache compression, set it to `false` -- your project may benefit from this if it transpiles thousands of files.
+- `customize`: Default `null`. The path of a module that exports a `custom` callback [like the one that you'd pass to `.custom()`](https://www.npmjs.com/package/babel-loader#customized-loader). Since you already have to make a new file to use this, it is recommended that you instead use `.custom` to create a wrapper loader. Only use this is you *must* continue using `babel-loader` directly, but still want to customize.
+
+## 附: Babel 的工作原理以及怎么写一个 Babel 插件
+
+> https://cloud.tencent.com/developer/article/1520124
+
+- Babel 是怎么工作的
+  - [做与不做](javascript:;)
+- Babel 编译的三个阶段
+  - [解析（Parsing）](javascript:;)
+  - [转换（Transformation）](javascript:;)
+- 如何编写一个 Babel 插件
+  - [插件格式](javascript:;)
+  - [写一个简单的插件](javascript:;)
+  - [实现一个简单的按需打包功能](javascript:;)
+- Babel 常用 API
+  - [@babel/core](javascript:;)
+  - [@babel/cli](javascript:;)
+  - [@babel/node](javascript:;)
+  - [babylon](javascript:;)
+  - [babel-traverse](javascript:;)
+  - [babel-types](javascript:;)
+  - [babel-generator](javascript:;)
+- [总结](javascript:;)
+
+在前端圈子里，对于 Babel，大家肯定都比较熟悉了。如果哪天少了它，对于前端工程师来说肯定是个噩梦。Babel 的工作原理是怎样的可能了解的人就不太多了。
+
+本文将主要介绍 Babel 的工作原理以及怎么写一个 Babel 插件。
+
+### **Babel 是怎么工作的**
+
+`Babel` 是一个 `JavaScript` 编译器。
+
+#### **做与不做**
+
+注意很重要的一点就是，`Babel` 只是转译新标准引入的语法，比如：
+
+- 箭头函数
+- let / const
+- 解构
+
+哪些在 Babel 范围外？对于新标准引入的全局变量、部分原生对象新增的原型链上的方法，Babel 表示超纲了。
+
+- 全局变量
+- Promise
+- Symbol
+- WeakMap
+- Set
+- includes
+- generator 函数
+
+对于上面的这些 API，`Babel` 是不会转译的，需要引入 `polyfill` 来解决。
+
+### **Babel 编译的三个阶段**
+
+Babel 的编译过程和大多数其他语言的编译器相似，可以分为三个阶段：
+
+- 解析（Parsing）：将代码字符串解析成抽象语法树。
+- 转换（Transformation）：对抽象语法树进行转换操作。
+- 生成（Code Generation）: 根据变换后的抽象语法树再生成代码字符串。
+
+![img](JavaScriptES6-10.assets/t81ye74b8w.png)
+
+为了理解 `Babel`，我们从最简单一句 `console` 命令下手
+
+#### **解析（Parsing）**
+
+`Babel` 拿到源代码会把代码抽象出来，变成 `AST` （抽象语法树），学过编译原理的同学应该都听过这个词，全称是 **Abstract Syntax Tree**。
+
+抽象语法树是源代码的抽象语法结构的树状表示，树上的每个节点都表示源代码中的一种结构，只所以说是抽象的，是因为抽象语法树并不会表示出真实语法出现的每一个细节，比如说，嵌套括号被隐含在树的结构中，并没有以节点的形式呈现，它们主要用于源代码的简单转换。
+
+`console.log('zcy')；` 的 AST 长这样：
+
+```javascript
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "CallExpression",
+        "callee": {
+          "type": "MemberExpression",
+          "computed": false,
+          "object": {
+            "type": "Identifier",
+            "name": "console"
+          },
+          "property": {
+            "type": "Identifier",
+            "name": "log"
+          }
+        },
+        "arguments": [
+          {
+          "type": "Literal",
+          "value": "zcy",
+          "raw": "'zcy'"
+          }
+        ]
+      }
+    }
+  ],
+  "sourceType": "script"
+}
+```
+
+上面的 `AST` 描述了源代码的每个部分以及它们之间的关系。
+
+##### **AST 是怎么来的？**
+
+整个解析过程分为两个步骤：
+
+- 分词：将整个代码字符串分割成语法单元数组
+- 语法分析：建立分析语法单元之间的关系
+
+**分词**
+
+语法单元通俗点说就是代码中的最小单元，不能再被分割，就像原子是化学变化中的最小粒子一样。
+
+`Javascript` 代码中的语法单元主要包括以下这么几种：
+
+- 关键字：`const`、 `let`、  `var` 等
+- 标识符：可能是一个变量，也可能是 if、else 这些关键字，又或者是 true、false 这些常量
+- 运算符
+- 数字
+- 空格
+- 注释：对于计算机来说，知道是这段代码是注释就行了，不关心其具体内容
+
+其实分词说白了就是简单粗暴地对字符串一个个遍历。为了模拟分词的过程，写了一个简单的 Demo，仅仅适用于和上面一样的简单代码。Babel 的实现比这要复杂得多，但是思路大体上是相同的。对于一些好奇心比较强的同学，可以看下具体是怎么实现的，链接在文章底部。
+
+```javascript
+function tokenizer(input) {
+  const tokens = [];
+  const punctuators = [',', '.', '(', ')', '=', ';'];
+
+  let current = 0;
+  while (current < input.length) {
+
+    let char = input[current];
+
+    if (punctuators.indexOf(char) !== -1) {
+
+      tokens.push({
+        type: 'Punctuator',
+        value: char,
+      });
+      current++;
+      continue;
+    }
+    // 检查空格，连续的空格放到一起
+    let WHITESPACE = /\s/;
+    if (WHITESPACE.test(char)) {
+      current++;
+      continue;
+    }
+
+    // 标识符是字母、$、_开始的
+    if (/[a-zA-Z\$\_]/.test(char)) {
+      let value = '';
+
+      while(/[a-zA-Z0-9\$\_]/.test(char)) {
+        value += char;
+        char = input[++current];
+      }
+      tokens.push({ type: 'Identifier', value });
+      continue;
+    }
+
+    // 数字从0-9开始，不止一位
+    const NUMBERS = /[0-9]/;
+    if (NUMBERS.test(char)) {
+      let value = '';
+      while (NUMBERS.test(char)) {
+        value += char;
+        char = input[++current];
+      }
+      tokens.push({ type: 'Numeric', value });
+      continue;
+    }
+
+    // 处理字符串
+    if (char === '"') {
+      let value = '';
+      char = input[++current];
+
+      while (char !== '"') {
+        value += char;
+        char = input[++current];
+      }
+
+      char = input[++current];
+
+      tokens.push({ type: 'String', value });
+
+      continue;
+    }
+    // 最后遇到不认识到字符就抛个异常出来
+    throw new TypeError('Unexpected charactor: ' + char);
+  }
+
+  return tokens;
+}
+
+const input = `console.log("zcy");`
+
+console.log(tokenizer(input));
+```
+
+结果如下：
+
+```javascript
+[ 
+  { 
+    "type" :  "Identifier" , 
+    "value" :  "console"
+   }, 
+  { 
+    "type" :  "Punctuator" , 
+    "value" :  "."
+   }, 
+  { 
+    "type" :  "Identifier" , 
+    "value" :  "log"
+   }, 
+  { 
+    "type" :  "Punctuator" , 
+    "value" :  "("
+   }, 
+  { 
+    "type" :  "String" ,
+    "value" :  "'zcy'"
+   }, 
+  { 
+    "type" : "Punctuator" , 
+    "value" :  ")"
+   }, 
+  { 
+    "type" :  "Punctuator" , 
+    "value" :  ";"
+   } 
+]
+```
+
+**语法分析**
+
+语义分析则是将得到的词汇进行一个立体的组合，确定词语之间的关系。考虑到编程语言的各种从属关系的复杂性，语义分析的过程又是在遍历得到的语法单元组，相对而言就会变得更复杂。
+
+简单来说语法分析是对语句和表达式识别，这是个递归过程，在解析中，`Babel`  会在解析每个语句和表达式的过程中设置一个暂存器，用来暂存当前读取到的语法单元，如果解析失败，就会返回之前的暂存点，再按照另一种方式进行解析，如果解析成功，则将暂存点销毁，不断重复以上操作，直到最后生成对应的语法树。
+
+#### **转换（Transformation）**
+
+##### **Plugins**
+
+插件应用于 `babel` 的转译过程，尤其是第二个阶段 `Transformation`，如果这个阶段不使用任何插件，那么 `babel` 会原样输出代码。
+
+##### **Presets**
+
+`Babel` 官方帮我们做了一些预设的插件集，称之为 `Preset`，这样我们只需要使用对应的 Preset 就可以了。每年每个 `Preset` 只编译当年批准的内容。而 `babel-preset-env` 相当于 ES2015 ，ES2016 ，ES2017 及最新版本。
+
+##### **Plugin/Preset 路径**
+
+如果 Plugin 是通过 npm 安装，可以传入 Plugin 名字给 Babel，Babel 将检查它是否安装在 `node_modules` 中。
+
+```javascript
+"plugins": ["babel-plugin-myPlugin"]
+```
+
+也可以指定你的 Plugin/Preset 的相对或绝对路径。
+
+```javascript
+"plugins": ["./node_modules/asdf/plugin"]
+```
+
+##### **Plugin/Preset 排序**
+
+如果两次转译都访问相同的节点，则转译将按照 Plugin 或 Preset 的规则进行排序然后执行。
+
+- Plugin 会运行在 Preset 之前。
+- Plugin 会从第一个开始顺序执行。
+- Preset 的顺序则刚好相反(从最后一个逆序执行)。
+
+例如：
+
+```javascript
+{
+  "plugins": [
+    "transform-decorators-legacy",
+    "transform-class-properties"
+  ]
+}
+```
+
+将先执行 `transform-decorators-legacy` 再执行 `transform-class-properties`
+
+但 preset 是反向的
+
+```javascript
+{
+  "presets": [
+    "es2015",
+    "react",
+    "stage-2"
+  ]
+}
+```
+
+会按以下顺序运行:  `stage-2`， `react`， 最后 `es2015`。
+
+那么问题来了，如果 `presets` 和 `plugins` 同时存在，那执行顺序又是怎样的呢？答案是先执行 `plugins` 的配置，再执行 `presets` 的配置。
+
+所以以下代码的执行顺序为
+
+1. @babel/plugin-proposal-decorators
+2. @babel/plugin-proposal-class-properties
+3. @babel/plugin-transform-runtime
+4. @babel/preset-env
+
+```javascript
+// .babelrc 文件
+{
+  "presets": [
+    [
+      "@babel/preset-env"
+    ]
+  ],
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    "@babel/plugin-transform-runtime",
+  ]
+}
+```
+
+##### 
+
+##### **生成（Code Generation）**
+
+用 `babel-generator` 通过 AST 树生成 ES5 代码。
+
+### **如何编写一个 Babel 插件**
+
+基础的东西讲了些，下面说下具体如何写插件，只做简单的介绍，感兴趣的同学可以看 `Babel` 官方的介绍。
+
+#### **插件格式**
+
+先从一个接收了当前 `Babel` 对象作为参数的 `Function` 开始。
+
+```javascript
+export default function(babel) {
+  // plugin contents
+}
+```
+
+我们经常会这样写
+
+```javascript
+export default function({ types: t }) {
+    //
+}
+```
+
+接着返回一个对象，其 `visitor` 属性是这个插件的主要访问者。
+
+```javascript
+export default function({ types: t }) {
+  return {
+    visitor: {
+      // visitor contents
+    }
+  };
+};
+visitor` 中的每个函数接收 2 个参数：`path` 和 `state
+export default function({ types: t }) {
+  return {
+    visitor: {
+      CallExpression(path, state) {}
+    }
+  };
+};
+```
+
+#### **写一个简单的插件**
+
+我们先写一个简单的插件，把所有定义变量名为 `a` 的换成 `b` ，先看下 `var a = 1`的 AST
+
+```javascript
+{
+  "type": "Program",
+  "start": 0,
+  "end": 10,
+  "body": [
+    {
+      "type": "VariableDeclaration",
+      "start": 0,
+      "end": 9,
+      "declarations": [
+        {
+          "type": "VariableDeclarator",
+          "start": 4,
+          "end": 9,
+          "id": {
+            "type": "Identifier",
+            "start": 4,
+            "end": 5,
+            "name": "a"
+          },
+          "init": {
+            "type": "Literal",
+            "start": 8,
+            "end": 9,
+            "value": 1,
+            "raw": "1"
+          }
+        }
+      ],
+      "kind": "var"
+    }
+  ],
+  "sourceType": "module"
+}
+```
+
+从这里看，要找的节点类型就是 `VariableDeclarator` ，下面开始撸代码
+
+```javascript
+export default function({ types: t }) {
+  return {
+    visitor: {
+      VariableDeclarator(path, state) {
+        if (path.node.id.name == 'a') {
+          path.node.id = t.identifier('b')
+        }
+      }
+    }
+  }
+}
+```
+
+我们要把 `id` 属性是 a 的替换成 b 就好了。但是这里不能直接 `path.node.id.name = 'b'` 。如果操作的是Object，就没问题，但是这里是 AST 语法树，所以想改变某个值，就是用对应的 AST 来替换，现在我们用新的标识符来替换这个属性。
+
+最后测试一下
+
+```javascript
+import * as babel from '@babel/core';
+const c = `var a = 1`;
+
+const { code } = babel.transform(c, {
+  plugins: [
+    function({ types: t }) {
+      return {
+        visitor: {
+          VariableDeclarator(path, state) {
+            if (path.node.id.name == 'a') {
+              path.node.id = t.identifier('b')
+            }
+          }
+        }
+      }
+    }
+  ]
+})
+
+console.log(code); // var b = 1
+```
+
+#### **实现一个简单的按需打包功能**
+
+例如我们要实现把 `import { Button } from 'antd'` 转成 `import Button from 'antd/lib/button'`
+
+通过对比 AST 发现，`specifiers`  里的 `type` 和 `source` 不同。
+
+```javascript
+// import { Button } from 'antd'
+"specifiers": [
+    {
+        "type": "ImportSpecifier",
+        ...
+    }
+]
+// import Button from 'antd/lib/button'
+"specifiers": [
+    {
+        "type": "ImportDefaultSpecifier",
+        ...
+    }
+]
+import * as babel from '@babel/core';
+const c = `import { Button } from 'antd'`;
+
+const { code } = babel.transform(c, {
+  plugins: [
+    function({ types: t }) {
+      return {
+        visitor: {
+          ImportDeclaration(path) {
+            const { node: { specifiers, source } } = path;
+            if (!t.isImportDefaultSpecifier(specifiers[0])) { // 对 specifiers 进行判断，是否默认倒入
+              const newImport = specifiers.map(specifier => (
+                t.importDeclaration(
+                  [t.ImportDefaultSpecifier(specifier.local)],
+                  t.stringLiteral(`${source.value}/lib/${specifier.local.name}`)
+                )
+              ))
+              path.replaceWithMultiple(newImport)
+            }
+          }
+        }
+      }
+    }
+  ]
+})
+
+console.log(code); // import Button from "antd/lib/Button";
+```
+
+当然 `babel-plugin-import` 这个插件是有配置项的，我们可以对代码做以下更改。
+
+```javascript
+export default function({ types: t }) {
+  return {
+    visitor: {
+      ImportDeclaration(path, { opts }) {
+        const { node: { specifiers, source } } = path;
+        if (source.value === opts.libraryName) {
+          // ...
+        }
+      }
+    }
+  }
+}
+```
+
+至此，这个插件我们就编写完成了。
+
+### **Babel 常用 API**
+
+#### **@babel/core**
+
+`Babel` 的编译器，核心 API 都在这里面，比如常见的 `transform`、`parse`。
+
+#### **@babel/cli**
+
+`cli` 是命令行工具,  安装了 `@babel/cli` 就能够在命令行中使用 `babel`  命令来编译文件。当然我们一般不会用到，打包工具已经帮我们做好了。
+
+#### **@babel/node**
+
+直接在 `node` 环境中，运行 ES6 的代码。
+
+#### **babylon**
+
+`Babel` 的解析器。
+
+#### **babel-traverse**
+
+用于对 AST 的遍历，维护了整棵树的状态，并且负责替换、移除和添加节点。
+
+#### **babel-types**
+
+用于 AST 节点的 Lodash 式工具库, 它包含了构造、验证以及变换 AST 节点的方法，对编写处理 AST 逻辑非常有用。
+
+#### **babel-generator**
+
+Babel 的代码生成器，它读取 AST 并将其转换为代码和源码映射（sourcemaps）。
+
+### **总结**
+
+文章主要介绍 `Babel` 编译代码的过程和原理以及简单编写了一个 `babel` 插件，欢迎大家对内容进行指正和讨论。
+
+本文分享自微信公众号 - 前端迷（love_frontend）
+
+原文出处及转载信息见文内详细说明，如有侵权，请联系 yunjia_community@tencent.com 删除。
+
+原始发表时间：2019-10-09
+
+本文参与[腾讯云自媒体分享计划](https://cloud.tencent.com/developer/support-plan)，欢迎正在阅读的你也加入，一起分享。
+
+发表于 2019-10-13
+
+## 8-5 插件 文档
+
+> https://www.npmjs.com/package/html-webpack-plugin
+
+### Install
+
+```
+  npm i --save-dev html-webpack-plugin
+  yarn add --dev html-webpack-plugin
+```
+
+This is a [webpack](http://webpack.js.org/) plugin that simplifies creation of HTML files to serve your `webpack` bundles. This is especially useful for `webpack` bundles that include a hash in the filename which changes every compilation. You can either let the plugin generate an HTML file for you, supply your own template using `lodash` templates or use your own loader.
+
+#### `Plugins`
+
+The `html-webpack-plugin` provides [hooks](https://github.com/jantimon/html-webpack-plugin#events) to extend it to your needs. There are already some really powerful plugins which can be integrated with zero configuration
+
+- [webpack-subresource-integrity](https://www.npmjs.com/package/webpack-subresource-integrity) for enhanced asset security
+- [appcache-webpack-plugin](https://github.com/lettertwo/appcache-webpack-plugin) for iOS and Android offline usage
+- [favicons-webpack-plugin](https://github.com/jantimon/favicons-webpack-plugin) which generates favicons and icons for iOS, Android and desktop browsers
+- [html-webpack-harddisk-plugin](https://github.com/jantimon/html-webpack-harddisk-plugin) can be used to always write to disk the html file, useful when webpack-dev-server / HMR are being used
+- [html-webpack-inline-source-plugin](https://github.com/DustinJackson/html-webpack-inline-source-plugin) to inline your assets in the resulting HTML file
+- [html-webpack-inline-svg-plugin](https://github.com/thegc/html-webpack-inline-svg-plugin) to inline SVGs in the resulting HTML file.
+- [html-webpack-exclude-assets-plugin](https://github.com/jamesjieye/html-webpack-exclude-assets-plugin) for excluding assets using regular expressions
+- [html-webpack-include-assets-plugin](https://github.com/jharris4/html-webpack-include-assets-plugin) for including lists of js or css file paths (such as those copied by the copy-webpack-plugin).
+- [script-ext-html-webpack-plugin](https://github.com/numical/script-ext-html-webpack-plugin) to add `async`, `defer` or `module` attributes to your `` elements, or even inline them
+- [style-ext-html-webpack-plugin](https://github.com/numical/style-ext-html-webpack-plugin) to convert your ``s to external stylesheets into `` elements containing internal CSS
+- [resource-hints-webpack-plugin](https://github.com/jantimon/resource-hints-webpack-plugin) to add resource hints for faster initial page loads using `` and ``
+- [preload-webpack-plugin](https://github.com/GoogleChrome/preload-webpack-plugin) for automatically wiring up asynchronous (and other types) of JavaScript chunks using `` helping with lazy-loading
+- [link-media-html-webpack-plugin](https://github.com/yaycmyk/link-media-html-webpack-plugin) allows for injected stylesheet `` tags to have their media attribute set automatically; useful for providing specific desktop/mobile/print etc. stylesheets that the browser will conditionally download
+- [inline-chunk-manifest-html-webpack-plugin](https://github.com/jouni-kantola/inline-chunk-manifest-html-webpack-plugin) for inlining webpack's chunk manifest. Default extracts manifest and inlines in ``
+- [html-webpack-inline-style-plugin](https://github.com/djaax/html-webpack-inline-style-plugin) for inlining styles to HTML elements using [juice](https://github.com/Automattic/juice). Useful for email generation automatisation.
+- [html-webpack-exclude-empty-assets-plugin](https://github.com/KnisterPeter/html-webpack-exclude-empty-assets-plugin) removes empty assets from being added to the html. This fixes some problems with extract-text-plugin with webpack 4.
+- [webpack-concat-plugin](https://github.com/hxlniada/webpack-concat-plugin) for concat and uglify files that needn't to be webpack bundles(for legacy files) and inject to html-webpack-plugin.
+
+### Usage
+
+The plugin will generate an HTML5 file for you that includes all your `webpack` bundles in the body using `script` tags. Just add the plugin to your `webpack` config as follows:
+
+**webpack.config.js**
+
+```
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+ 
+module.exports = {
+  entry: 'index.js',
+  output: {
+    path: __dirname + '/dist',
+    filename: 'index_bundle.js'
+  },
+  plugins: [
+    new HtmlWebpackPlugin()
+  ]
+}
+```
+
+This will generate a file `dist/index.html` containing the following
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Webpack App</title>
+  </head>
+  <body>
+    <script src="index_bundle.js"></script> 
+  </body>
+</html>
+```
+
+If you have multiple `webpack` entry points, they will all be included with `script` tags in the generated HTML.
+
+If you have any CSS assets in webpack's output (for example, CSS extracted with the [ExtractTextPlugin](https://github.com/webpack/extract-text-webpack-plugin)) then these will be included with `` tags in the HTML head.
+
+If you have plugins that make use of it, `html-webpack-plugin` should be ordered first before any of the integrated plugins.
+
+### Options
+
+You can pass a hash of configuration options to `html-webpack-plugin`. Allowed values are as follows
+
+|                             Name                             |             Type              |    Default     | Description                                                  |
+| :----------------------------------------------------------: | :---------------------------: | :------------: | :----------------------------------------------------------- |
+| **[`title`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{String}`           |       ``       | The title to use for the generated HTML document             |
+| **[`filename`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{String}`           | `'index.html'` | The file to write the HTML to. Defaults to `index.html`. You can specify a subdirectory here too (eg: `assets/admin.html`) |
+| **[`template`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{String}`           |       ``       | `webpack` require path to the template. Please see the [docs](https://github.com/jantimon/html-webpack-plugin/blob/master/docs/template-option.md) for details |
+| **[`templateParameters`](https://www.npmjs.com/package/html-webpack-plugin#)** | `{Boolean\|Object\|Function}` |       ``       | Allows to overwrite the parameters used in the template      |
+| **[`inject`](https://www.npmjs.com/package/html-webpack-plugin#)** |      `{Boolean\|String}`      |     `true`     | `true \|\| 'head' \|\| 'body' \|\| false` Inject all assets into the given `template` or `templateContent`. When passing `true` or `'body'` all javascript resources will be placed at the bottom of the body element. `'head'` will place the scripts in the head element |
+| **[`favicon`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{String}`           |       ``       | Adds the given favicon path to the output HTML               |
+| **[`meta`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{Object}`           |      `{}`      | Allows to inject `meta`-tags. E.g. `meta: {viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'}` |
+| **[`minify`](https://www.npmjs.com/package/html-webpack-plugin#)** |      `{Boolean\|Object}`      |     `true`     | Pass [html-minifier](https://github.com/kangax/html-minifier#options-quick-reference)'s options as object to minify the output |
+| **[`hash`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{Boolean}`          |    `false`     | If `true` then append a unique `webpack` compilation hash to all included scripts and CSS files. This is useful for cache busting |
+| **[`cache`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{Boolean}`          |     `true`     | Emit the file only if it was changed                         |
+| **[`showErrors`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{Boolean}`          |     `true`     | Errors details will be written into the HTML page            |
+| **[`chunks`](https://www.npmjs.com/package/html-webpack-plugin#)** |             `{?}`             |      `?`       | Allows you to add only some chunks (e.g only the unit-test chunk) |
+| **[`chunksSortMode`](https://www.npmjs.com/package/html-webpack-plugin#plugins)** |     `{String\|Function}`      |     `auto`     | Allows to control how chunks should be sorted before they are included to the HTML. Allowed values are `'none' \| 'auto' \| 'dependency' \| 'manual' \| {Function}` |
+| **[`excludeChunks`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{Array.}`           |       ``       | Allows you to skip some chunks (e.g don't add the unit-test chunk) |
+| **[`xhtml`](https://www.npmjs.com/package/html-webpack-plugin#)** |          `{Boolean}`          |    `false`     | If `true` render the `link` tags as self-closing (XHTML compliant) |
+
+Here's an example webpack config illustrating how to use these options
+
+**webpack.config.js**
+
+```
+{
+  entry: 'index.js',
+  output: {
+    path: __dirname + '/dist',
+    filename: 'index_bundle.js'
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'My App',
+      filename: 'assets/admin.html'
+    })
+  ]
+}
+```
+
+#### `Generating Multiple HTML Files`
+
+To generate more than one HTML file, declare the plugin more than once in your plugins array
+
+**webpack.config.js**
+
+```
+{
+  entry: 'index.js',
+  output: {
+    path: __dirname + '/dist',
+    filename: 'index_bundle.js'
+  },
+  plugins: [
+    new HtmlWebpackPlugin(), // Generates default index.html
+    new HtmlWebpackPlugin({  // Also generate a test.html
+      filename: 'test.html',
+      template: 'src/assets/test.html'
+    })
+  ]
+}
+```
+
+#### `Writing Your Own Templates`
+
+If the default generated HTML doesn't meet your needs you can supply your own template. The easiest way is to use the `template` option and pass a custom HTML file. The html-webpack-plugin will automatically inject all necessary CSS, JS, manifest and favicon files into the markup.
+
+```
+plugins: [
+  new HtmlWebpackPlugin({
+    title: 'Custom template',
+    // Load a custom template (lodash by default see the FAQ for details)
+    template: 'index.html'
+  })
+]
+```
+
+**index.html**
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+If you already have a template loader, you can use it to parse the template. Please note that this will also happen if you specifiy the html-loader and use `.html` file as template.
+
+**webpack.config.js**
+
+```
+module: {
+  loaders: [
+    { test: /\.hbs$/, loader: "handlebars" }
+  ]
+},
+plugins: [
+  new HtmlWebpackPlugin({
+    title: 'Custom template using Handlebars',
+    template: 'index.hbs'
+  })
+]
+```
+
+You can use the `lodash` syntax out of the box. If the `inject` feature doesn't fit your needs and you want full control over the asset placement use the [default template](https://github.com/jaketrent/html-webpack-template/blob/86f285d5c790a6c15263f5cc50fd666d51f974fd/index.html) of the [html-webpack-template project](https://github.com/jaketrent/html-webpack-template) as a starting point for writing your own.
+
+The following variables are available in the template:
+
+- `htmlWebpackPlugin`: data specific to this plugin
+
+  - `htmlWebpackPlugin.files`: a massaged representation of the `assetsByChunkName` attribute of webpack's [stats](https://github.com/webpack/docs/wiki/node.js-api#stats) object. It contains a mapping from entry point name to the bundle filename, eg:
+
+    ```
+    "htmlWebpackPlugin": {
+      "files": {
+        "css": [ "main.css" ],
+        "js": [ "assets/head_bundle.js", "assets/main_bundle.js"],
+        "chunks": {
+          "head": {
+            "entry": "assets/head_bundle.js",
+            "css": [ "main.css" ]
+          },
+          "main": {
+            "entry": "assets/main_bundle.js",
+            "css": []
+          },
+        }
+      }
+    }
+    ```
+
+    If you've set a publicPath in your webpack config this will be reflected correctly in this assets hash.
+
+  - `htmlWebpackPlugin.options`: the options hash that was passed to the plugin. In addition to the options actually used by this plugin, you can use this hash to pass arbitrary data through to your template.
+
+- `webpack`: the webpack [stats](https://github.com/webpack/docs/wiki/node.js-api#stats) object. Note that this is the stats object as it was at the time the HTML template was emitted and as such may not have the full set of stats that are available after the webpack run is complete.
+
+- `webpackConfig`: the webpack configuration that was used for this compilation. This can be used, for example, to get the `publicPath` (`webpackConfig.output.publicPath`).
+
+- `compilation`: the webpack [compilation](https://webpack.js.org/api/compilation/) object. This can be used, for example, to get the contents of processed assets and inline them directly in the page, through `compilation.assets[...].source()` (see [the inline template example](https://github.com/jantimon/html-webpack-plugin/blob/HEAD/examples/inline/template.jade)).
+
+#### `Filtering Chunks`
+
+To include only certain chunks you can limit the chunks being used
+
+**webpack.config.js**
+
+```
+plugins: [
+  new HtmlWebpackPlugin({
+    chunks: ['app']
+  })
+]
+```
+
+It is also possible to exclude certain chunks by setting the `excludeChunks` option
+
+**webpack.config.js**
+
+```
+plugins: [
+  new HtmlWebpackPlugin({
+    excludeChunks: [ 'dev-helper' ]
+  })
+]
+```
+
+### `Events`
+
+To allow other [plugins](https://github.com/webpack/docs/wiki/plugins) to alter the HTML this plugin executes the following events:
+
+#### `Sync`
+
+- `html-webpack-plugin-alter-chunks`
+
+#### `Async`
+
+- `html-webpack-plugin-before-html-generation`
+- `html-webpack-plugin-before-html-processing`
+- `html-webpack-plugin-alter-asset-tags`
+- `html-webpack-plugin-after-html-processing`
+- `html-webpack-plugin-after-emit`
+
+Example implementation: [html-webpack-harddisk-plugin](https://github.com/jantimon/html-webpack-harddisk-plugin)
+
+**plugin.js**
+
+```
+function MyPlugin(options) {
+  // Configure your plugin with options...
+}
+ 
+MyPlugin.prototype.apply = function (compiler) {
+  compiler.plugin('compilation', (compilation) => {
+    console.log('The compiler is starting a new compilation...');
+ 
+    compilation.plugin(
+      'html-webpack-plugin-before-html-processing',
+      (data, cb) => {
+        data.html += 'The Magic Footer'
+ 
+        cb(null, data)
+      }
+    )
+  })
+}
+ 
+module.exports = MyPlugin
+```
+
+**webpack.config.js**
+
+```
+plugins: [
+  new MyPlugin({ options: '' })
+]
+```
+
+Note that the callback must be passed the HtmlWebpackPluginData in order to pass this onto any other plugins listening on the same `html-webpack-plugin-before-html-processing` event
 
 #   第9章 课程总结
 
   对课程进行整体的回顾与总结。
-
-##    9-1 课程总结
 
