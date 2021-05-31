@@ -1183,7 +1183,16 @@
 
 - 可变函数（不定参数）：`arguments`
 
-  - **参数数组**
+  - 是一个对应于传递给函数的参数的类数组对象。
+
+  - `arguments`对象是所有（非箭头）函数中都可用的**局部变量**。你可以使用`arguments`对象在函数中引用函数的参数。
+
+  - JavaScript 中的函数与其他面向对象语言有几个不同的地方。
+
+    1. 没有函数重载
+    2. 有一个表示实参列表的类数组对象 `arguments`
+
+    ![img](https://upload-images.jianshu.io/upload_images/12636523-7c8ba2c48d65a375.png?imageMogr2/auto-orient/strip|imageView2/2/w/968/format/webp)
 
 - 例子：求和
 
