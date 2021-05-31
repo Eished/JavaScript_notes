@@ -1508,7 +1508,7 @@
   
 - 设置路径：`"url('img/0.png')"`
   
-- JavaScript 中的 String 方法
+- JavaScript 中的 String 字符串操作方法
 
   - `obj.charAt(index)`
     - 返回index位置的字符
@@ -5791,7 +5791,7 @@
           B.prototype[i] = A.ptoyotype[i]; // 深度复制就不会引用，直接复制内容
       }
       var obj = new B();
-    alert(obj.abc);
+      alert(obj.abc);
       obj.show.call(); // call 一般省略
       ```
   
