@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>拖拽</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div1 {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      background-color: rgb(255, 0, 0);
+    }
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+    window.onload = function () {
+      var oDiv = get('div1');
+      // oDiv.onmousedown 很容易移出范围
+      document.onmousedown = function Drag() {
+        var ev = event || ev;
+        var _this = this;
+        // 鼠标可视区位置 - div左边距 = 鼠标在div内的位置
+        var disX = ev.clientX - oDiv.offsetLeft;
+        var disY = ev.clientY - oDiv.offsetTop;
+        console.log(disX, '可视区鼠标X：', ev.clientX, '鼠标Y：', ev.clientY);
+        this.onmousemove = function mouseMove() {
+          // 不断获取Event 对象，坐标才会不断更新
+          var ev = event || ev;
+          // console.log('可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+          // div位置 = 鼠标可视区新的位置 - 鼠标与div的距离
+          var left = ev.clientX - disX;
+          var top = ev.clientY - disY;
+          if (left < 0) {
+            left = 0;
+          }
+          if (top < 0) {
+            top = 0
+          }
+          if (left > document.documentElement.clientWidth - oDiv.offsetWidth) {
+            left = document.documentElement.clientWidth - oDiv.offsetWidth + 'px';
+          }
+          if (top > document.documentElement.clientHeight - oDiv.offsetHeight) {
+            top = document.documentElement.clientHeight - oDiv.offsetHeight + 'px';
+          }
+          oDiv.style.left = left + 'px';
+          oDiv.style.top = top + 'px';
+        }
+        this.onmouseup = function mouseUp() {
+          _this.onmousemove = '';
+          this.onmouseup = '';
+        }
+        // 阻止火狐重影bug
+        return false;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="div1"></div>
+</body>
+
+</html>

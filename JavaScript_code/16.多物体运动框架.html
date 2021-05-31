@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <link rel="stylesheet" href="css/reset.css">
+  <title>缓冲运动及停止条件</title>
+  <style>
+    body {
+      width: 800px;
+      height: 2000px;
+    }
+
+    div {
+      width: 100px;
+      height: 100px;
+      background-color: darkblue;
+    }
+
+    #div1 {
+      position: absolute;
+    }
+
+    #div2 {
+      position: absolute;
+      top: 110px;
+    }
+
+    #div3 {
+      position: absolute;
+      top: 220px;
+    }
+
+    #div4 {
+      position: absolute;
+      top: 330px;
+      opacity: 0.3;
+      filter: alpha(opacity=30);
+    }
+
+    #div5 {
+      position: absolute;
+      top: 440px;
+      opacity: 0.3;
+      filter: alpha(opacity=30);
+    }
+
+    #div6 {
+      position: absolute;
+      top: 550px;
+      opacity: 0.3;
+      filter: alpha(opacity=30);
+    }
+
+    #div7 {
+      left: 400px;
+      position: absolute;
+    }
+
+    #div8 {
+      left: 510px;
+      position: absolute;
+      border: red solid 10px;
+    }
+
+    #div9 {
+      left: 110px;
+      top: 330px;
+      position: absolute;
+      color: seashell;
+    }
+
+    #div10 {
+      left: 110px;
+      top: 440px;
+      position: absolute;
+      border: rgb(255, 106, 0) solid 1px;
+    }
+
+    #div11 {
+      left: 110px;
+      top: 550px;
+      position: absolute;
+      opacity: 0.2;
+      filter: alpha(opacity=20);
+    }
+  </style>
+  <script>
+    window.onload = function () {
+      // 封装getElementById
+      function get(id) {
+        return document.getElementById(id);
+      };
+      // 封装获取计算后元素样式函数，返回小数
+      function getStyle(obj, name) {
+        if (obj.currentStyle) {
+          return obj.currentStyle[name];
+        } else {
+          return getComputedStyle(obj, '')[name];
+        }
+      }
+
+      //  多物体运动框架 offset 获取的是整个盒子的大小，无法通用
+      // function startMove(obj, iTarget, name) {
+      //   clearInterval(obj.timer);
+      //   obj.timer = setInterval(move, 30);
+      //   function move() {
+      //     iTarget = parseInt(iTarget);
+      //     var speed = (iTarget - obj['offset'+name])/7;  
+      //     if (speed < 0) {
+      //       speed = Math.floor(speed);
+      //     } else {
+      //       speed = Math.ceil(speed);
+      //     }
+      //     if (iTarget === obj['offset'+name]) {
+      //       clearInterval(obj.timer);
+      //     } else {
+      //       obj.style[name.toLowerCase()] = obj['offset'+name] + speed + 'px'; 
+      //     }
+
+      //     console.log(iTarget,obj['offset'+name],speed)
+      //   }
+      // }
+
+      // 任意值运动框架
+      function startMove(obj, iTarget, name) {
+        clearInterval(obj.timer);
+        obj.timer = setInterval(move, 30);
+
+        function move() {
+          var objName = 0;
+          if (name === 'opacity') {
+            // 用 parseFloat 保留小数并去掉后面 px ，从左至右提取数字，遇到不是数字跳出
+            // Math.round() 四舍五入取整 
+            objName = Math.round(parseFloat(getStyle(obj, name)) * 100);
+          } else {
+            // 用 parseInt 去掉后面 px ，从左至右提取数字，遇到不是数字跳出
+            objName = parseInt(getStyle(obj, name));
+          }
+          var speed = (iTarget - objName) / 7;
+          if (speed < 0) {
+            speed = Math.floor(speed);
+          } else {
+            speed = Math.ceil(speed);
+          }
+          if (iTarget === objName) {
+            clearInterval(obj.timer);
+          } else {
+            if (name === 'opacity') {
+              obj.style[name] = (objName + speed) / 100;
+              obj.style.filter = "alpha(" + [name] + "=" + (objName + speed) + ")";
+            } else {
+              obj.style[name] = objName + speed + 'px';
+            }
+          }
+          console.log('iTarget', iTarget, 'objName', objName, 'getStyle', getStyle(obj, name), speed)
+        }
+      }
+
+      var oDiv1 = get('div1');
+      var oDiv2 = get('div2');
+      var oDiv3 = get('div3');
+      var oDiv7 = get('div7');
+      var oDiv8 = get('div8');
+      var oDiv9 = get('div9');
+      var oDiv10 = get('div10');
+      var oDiv11 = get('div11');
+      // 变宽
+      oDiv1.onmouseover = function () {
+        startMove(oDiv1, 400, 'width')
+      }
+      oDiv1.onmouseout = function () {
+        startMove(oDiv1, 100, 'width')
+      }
+      oDiv2.onmouseover = function () {
+        startMove(oDiv2, 400, 'width')
+      }
+      oDiv2.onmouseout = function () {
+        startMove(oDiv2, 100, 'width')
+      }
+      oDiv3.onmouseover = function () {
+        startMove(oDiv3, 400, 'width')
+      }
+      oDiv3.onmouseout = function () {
+        startMove(oDiv3, 100, 'width')
+      }
+      // 变高
+      oDiv7.onmouseover = function () {
+        startMove(oDiv7, 400, 'height')
+      }
+      oDiv7.onmouseout = function () {
+        startMove(oDiv7, 100, 'height')
+      }
+      oDiv8.onmouseover = function () {
+        startMove(oDiv8, 400, 'height')
+      }
+      oDiv8.onmouseout = function () {
+        startMove(oDiv8, 100, 'height')
+      }
+      oDiv9.onmouseover = function () {
+        startMove(oDiv9, 40, 'fontSize')
+      }
+      oDiv9.onmouseout = function () {
+        startMove(oDiv9, 12, 'fontSize')
+      }
+      oDiv10.onmouseover = function () {
+        startMove(oDiv10, 100, 'borderWidth')
+      }
+      oDiv10.onmouseout = function () {
+        startMove(oDiv10, 1, 'borderWidth')
+      }
+      oDiv11.onmouseover = function () {
+        startMove(oDiv11, 100, 'opacity')
+      }
+      oDiv11.onmouseout = function () {
+        startMove(oDiv11, 20, 'opacity')
+      }
+
+      // 淡入淡出
+      function shallowMove(obj, iTarget) {
+        clearInterval(obj.timer);
+        obj.timer = setInterval(move, 30);
+
+        function move() {
+          iTarget = parseInt(iTarget);
+          var speed = (iTarget - obj.alpha) / 7;
+          if (speed < 0) {
+            speed = Math.floor(speed);
+          } else {
+            speed = Math.ceil(speed);
+          }
+          if (iTarget === obj.alpha) {
+            clearInterval(obj.timer);
+          } else {
+            obj.alpha += speed;
+            obj.style.opacity = obj.alpha / 100;
+            obj.style.filter = "alpha(opacity=" + obj.alpha + ")";
+          }
+        }
+      }
+      var oDiv4 = get('div4');
+      var oDiv5 = get('div5');
+      var oDiv6 = get('div6');
+      var aDiv = document.getElementsByTagName('div');
+      for (var i in aDiv) {
+        aDiv[i].alpha = 30;
+      }
+
+      oDiv4.onmouseover = function () {
+        shallowMove(oDiv4, 100)
+      }
+      oDiv4.onmouseout = function () {
+        shallowMove(oDiv4, 30)
+      }
+      oDiv5.onmouseover = function () {
+        shallowMove(oDiv5, 100)
+      }
+      oDiv5.onmouseout = function () {
+        shallowMove(oDiv5, 30)
+      }
+      oDiv6.onmouseover = function () {
+        shallowMove(oDiv6, 100)
+      }
+      oDiv6.onmouseout = function () {
+        shallowMove(oDiv6, 30)
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="div1"></div>
+  <div id="div2"></div>
+  <div id="div3"></div>
+  <div id="div4"></div>
+  <div id="div5"></div>
+  <div id="div6"></div>
+  <div id="div7"></div>
+  <div id="div8"></div>
+  <div id="div9">123adsfzv</div>
+  <div id="div10"></div>
+  <div id="div11"></div>
+</body>
+
+</html>

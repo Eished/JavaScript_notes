@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>面对对象的选项卡</title>
+    <style>
+      .div2 {
+        width: 200px;
+        height: 200px;
+        margin-top: 20px;
+        position: relative;
+      }
+      .div1 {
+        width: 200px;
+        height: 20px;
+        position: absolute;
+        top: 0px;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        display: block;
+        background: rgb(157, 234, 253);
+        float: left;
+        position: absolute;
+        display: none;
+        width: 200px;
+        height: 200px;
+      }
+      .ul {
+        display: block;
+      }
+      a {
+        display: block;
+        float: left;
+        width: 49px;
+        height: 20px;
+        background: rgb(7, 184, 253);
+        border-right: 1px solid rgb(255, 0, 234);
+        text-decoration: none;
+      }
+      .a {
+        background: rgb(32, 108, 221);
+      }
+    </style>
+    <script>
+    // 封装 getElementById 函数
+    function get(id) {
+        return document.getElementById(id);
+      }
+    // 封装 getElementsByTagName
+    function gets(obj,tagName) {
+      return obj.getElementsByTagName(tagName)
+    }
+    // onload 作为构造函数
+    window.onload = function () {
+      new TabSwitch('tabS')
+    }
+    
+    // 构造一个对象
+    function TabSwitch(id){
+        var oDiv = get(id);
+        var _this = this; // 避免找不到 this
+        // 全局变量作为属性
+        this.aA = gets(oDiv,'a');
+        this.aUl = gets(oDiv,'ul');
+        // 显示第一个元素
+        this.aUl[0].className = 'ul';
+        // 当鼠标覆盖某个标签时 显示对应元素
+        for (var i = 0; i < this.aUl.length; i++) {
+          this.aA[i].index = i;
+          this.aA[i].onmouseover = function () {
+            // 把当前this作为参数传入，_this作为当前this调用直接传入
+            _this.showTab(this); 
+          }
+        }
+      }
+      // 函数作为方法 事件this作为参数传入
+      TabSwitch.prototype.showTab = function (aA) {
+        // console.log(this); // 当前this是调用方法的_this
+        for (var i = 0; i < this.aA.length; i++) {
+          this.aUl[i].className = '';
+          this.aA[i].className = '';
+        }
+        this.aUl[aA.index].className = 'ul';
+        this.aA.className = 'a';
+      }
+    </script>
+  </head>
+  <body>
+    <div id="tabS">
+      <div class="div1">
+        <a href="javascript:;" id="a0">11</a>
+        <a href="javascript:;" id="a1">22</a>
+        <a href="javascript:;" id="a2">33</a>
+        <a href="javascript:;" id="a3">44</a>
+      </div>
+      <div class="div2">
+        <ul>
+          <li>1</li>
+        </ul>
+        <ul>
+          <li>2</li>
+        </ul>
+        <ul>
+          <li>3</li>
+        </ul>
+        <ul>
+          <li>4</li>
+        </ul>
+    </div>
+    </div>
+  </body>
+</html>

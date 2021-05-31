@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>跟随鼠标的一串div</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    div {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      background-color: rgb(255, 0, 0);
+    }
+  </style>
+  <script>
+    window.onload = function () {
+      // 封装鼠标当前坐标函数
+      function getPos(ev) {
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        var scrollLeft = document.documentElement.scollLeft || document.body.scrollLeft;
+
+        return {
+          x: ev.clientX + scrollLeft,
+          y: ev.clientY + scrollTop
+        };
+      }
+      var oDiv = document.getElementsByTagName('div');
+      document.onmousemove = function () {
+        var ev = ev || event;
+        // 后一个元素跟随前一个元素
+        for (var i = oDiv.length - 1; i > 0; i--) {
+          console.log(oDiv[i].style.left, oDiv[i - 1].offsetLeft)
+          oDiv[i].style.left = oDiv[i - 1].offsetLeft + 'px';
+          oDiv[i].style.top = oDiv[i - 1].offsetTop + 'px';
+        }
+        // 当前多变赋值给第一个元素，
+        var pos = getPos(ev);
+        oDiv[0].style.left = pos.x + 'px';
+        oDiv[0].style.top = pos.y + 'px';
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link id="link1" rel="stylesheet" type="text/css" href="css/grey.css">
+
+    <script>
+    function changeColor() {
+      if (document.getElementById('b1').value == '关灯') {
+        document.getElementById('link1').href = 'css/black.css';
+        document.getElementById('b1').value = '开灯';
+        console.log('black')
+      } else {
+        document.getElementById('link1').href = 'css/grey.css';
+        document.getElementById('b1').value = '关灯';
+        console.log('bl2:', document.getElementById('link1').href)
+      }
+    }
+
+    function changeText() {
+      document.getElementById('text1').value = '456';
+      document.getElementById('text1').title = '文字1';
+    }
+
+    function showHide() {
+      var div2 = document.getElementById('div2');
+      if(div2.style.display == 'block') {
+        div2.style.display ='none';
+        console.log('1');
+      } else {
+        div2.style.display = 'block';
+        div2.style.background = 'blue';
+      }
+      console.log('display:', div2.style.display);
+    }
+
+    function class1() {
+      var div = document.getElementById('div4');
+      div.className='div5';
+      div.id='div5';
+    }
+    </script>
+  </head>
+  <body>
+    <!-- 换肤 -->
+    <input id="b1" type="button" onclick="changeColor()" value="关灯">
+    <div id="div1">1</div>
+    <div id="div2">2</div>
+    <div id="div3">3</div>
+    <input type="button" value="显示隐藏div2" onclick="showHide()">
+    <br>
+    <!-- HTMl 里面怎么写，JS 里面就怎么写 -->
+    <input id="text1" type="text" value="123">
+    <input type="button" value="改文字" onclick="changeText()">
+    <br>
+    <!-- a 链接的使用 -->
+    <a href="javascript:;">javascript:;</a>
+
+    <!-- className 的使用 -->
+    <div id="div4">4</div>
+    <input type="button" value="className" onclick="class1()">
+  </body>
+</html>

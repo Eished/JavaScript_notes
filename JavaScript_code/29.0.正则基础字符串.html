@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>正则表达式应用</title>
+  <style>
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    var arr = [];
+    var temp = '';
+    var str = 'asdf-1234-as24-q2e4';
+    // console.log(str.search('3'));
+    // console.log(str.substring(2,5));
+    // console.log(str.substring(2));
+    // console.log(str.charAt(2));
+    // console.log(str.split('-'));
+    for (var i in str) {
+      if (str.charAt(i) >= 0 && str.charAt(i) <= 9) {
+        // arr.push(str.charAt(i));
+        temp += str.charAt(i);
+      } else if (temp) {
+        arr.push(temp);
+        temp = '';
+      }
+    }
+    arr.push(temp);
+    temp = '';
+    console.log('字符串方法：', arr);
+    console.log('match方法：', str.match(/\d+/g));
+
+
+    window.onload = function () {
+      var btn = get('btn');
+      var btn2 = get('btn2');
+      var btn3 = get('btn3');
+      var btn4 = get('btn4');
+      var text = get('text');
+      var text2 = get('text2');
+
+      // 检验邮箱
+      // 获取内容，把不符合规则的找出来
+      // abc_123@abc123.abc
+      btn.onclick = function () {
+        var reg = /^\w+@{1,}[0-9a-z]+\.{1,}[a-z]+$/i;
+        var txt = text.value;
+        text2.value = '';
+        txt.search(reg);
+        console.log(txt.match(reg), reg.test(txt));
+        if (reg.test(txt)) {
+          text2.value = txt.match(reg);
+        }
+      }
+      // 过滤HTML标签
+      btn2.onclick = function () {
+        var reg = /<[^<>]+>/g;
+        // var reg3 = /&nbsp;+/g;
+        // 过滤视频网站的隐藏乱码
+        var reg4 =
+          /(<font class="jammer">.+[\s\S].+<\/font>)?(<span style="display:none">.+\/span>)?(&nbsp;+)?(<script.+\/script>)?/g
+        // var reg6 = /(<script.+\/script>)?/g
+        // var reg5 = /<span style="display:none">.+span>/g
+        txt = text.value.replace(reg4, '');
+        txt = txt.replace(reg, '')
+        text2.value = txt;
+      }
+      // 检测固定电话
+      btn3.onclick = function () {
+        var reg = /^(0\d{2,3}-)?[1-9]\d{7}(-\d{1,5})?$/;
+        var txt = text.value;
+        text2.value = '';
+        txt.search(reg);
+        console.log(txt.match(reg), reg.test(txt));
+        if (reg.test(txt)) {
+          text2.value = txt.match(reg);
+        }
+      }
+      // 检测密码强度
+      // 数字 低
+      // 数字 英文或符号 中
+      // 数字 英文 符号 高
+      btn4.onclick = function () {
+        var regLow = /\d+/;
+        var regMid = /\d+[a-z]+/i;
+        var regHei = /\d+[a-z_]+\S+/i;
+        var txt = text.value;
+        if (regHei.test(txt)) {
+          text2.value = '高';
+        } else if (regMid.test(txt)) {
+          text2.value = '中';
+        } else if (regLow.test(txt)) {
+          text2.value = '低';
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <textarea name="" id="text" cols="100" rows="100" style="width: auto;height: 50px;"></textarea>
+  <div>
+    <input type="button" value="检测邮箱" id="btn">
+    <input type="button" value="过滤HTML标签" id="btn2">
+    <input type="button" value="检测电话" id="btn3">
+    <input type="button" value="检测密码" id="btn4">
+  </div>
+  <textarea name="" id="text2" cols="100" rows="50"></textarea>
+</body>
+
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>键盘控制元素移动和回车提交</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    /* 评论区 */
+    #div_comments {
+      position: absolute;
+      display: block;
+      padding-top: 20px;
+      width: 640px;
+      background-color: rgb(252, 229, 200);
+    }
+
+    #div_com_inp {
+      margin-top: 5px;
+      border-top: burlywood dashed 1px;
+      border-bottom: burlywood dashed 1px;
+    }
+
+    .text {
+      margin: 20px 0 20px 53px;
+    }
+
+    .btn {
+      margin: 20px 0 20px 20px;
+      width: 70px;
+      height: 70px;
+    }
+
+    #div_com_show {
+      height: 200px;
+      margin: 20px 50px;
+      padding: 0px 20px;
+      background-color: rgb(255, 255, 255);
+      overflow: hidden;
+    }
+
+    .li_comment {
+      white-space: pre-wrap;
+      padding: 10px 5px;
+      float: none;
+      border-bottom: cadetblue dashed 1px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      overflow: hidden;
+    }
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    window.onload = function () {
+      // var oDiv = get('div1');
+      // document.onkeydown = function () {
+      //   var ev = event||ev;
+      //   if (ev.keyCode === 37) {
+      //     oDiv.style.left = oDiv.offsetLeft - 10 + 'px'
+      //   } else if (ev.keyCode === 39) {
+      //     oDiv.style.left = oDiv.offsetLeft + 10 + 'px'
+      //   } else if (ev.keyCode === 38) {
+      //     oDiv.style.top = oDiv.offsetTop - 10 + 'px'
+      //   } else if (ev.keyCode === 40) {
+      //     oDiv.style.top = oDiv.offsetTop + 10 + 'px'
+      //   }
+      // }
+
+      //获取Div元素
+      var oDiv = document.getElementById("div_comments");
+
+      //创建各个方向条件判断初始变量
+      var left = false;
+      var right = false;
+      var top = false;
+      var bottom = false;
+
+      //当按下对应方向键时，对应变量为true
+      document.onkeydown = function (ev) {
+        var oEvent = ev || event;
+        var keyCode = oEvent.keyCode;
+        switch (keyCode) {
+          case 37:
+            left = true;
+            break;
+          case 38:
+            top = true;
+            break;
+          case 39:
+            right = true;
+            break;
+          case 40:
+            bottom = true;
+            break;
+        }
+      };
+
+      //设置一个定时，时间为50左右，不要太高也不要太低
+      setInterval(function () {
+
+        //当其中一个条件为true时，则执行当前函数（移动对应方向）
+        if (left) {
+          oDiv.style.left = oDiv.offsetLeft - 10 + "px";
+        } else if (top) {
+          oDiv.style.top = oDiv.offsetTop - 10 + "px";
+        } else if (right) {
+          oDiv.style.left = oDiv.offsetLeft + 10 + "px";
+        } else if (bottom) {
+          oDiv.style.top = oDiv.offsetTop + 10 + "px";
+        }
+      }, 30);
+
+      //执行完后，所有对应变量恢复为false，保持静止不动
+      document.onkeyup = function (ev) {
+        var oEvent = ev || event;
+        var keyCode = oEvent.keyCode;
+
+        switch (keyCode) {
+          case 37:
+            left = false;
+            break;
+          case 38:
+            top = false;
+            break;
+          case 39:
+            right = false;
+            break;
+          case 40:
+            bottom = false;
+            break;
+        }
+      }
+
+      // btn 提交
+      var btn = get('btn_comment');
+      var txt = get('text_comment');
+      var board = get('div_com_show');
+      btn.onclick = function () {
+        if (true) {
+          var oP = document.createElement('p');
+          oP.innerHTML = txt.value;
+          txt.value = '';
+          if (board.children.length > 0) {
+            board.insertBefore(oP, board.children[0])
+          } else {
+            board.appendChild(oP);
+          }
+        }
+      }
+      // ctrl + enter 提交
+      txt.onkeydown = function (ev) {
+        var ev = ev || event;
+        if (ev.keyCode === 13 && ev.ctrlKey) {
+          var oP = document.createElement('p');
+          oP.innerHTML = txt.value;
+          txt.value = '';
+          if (board.children.length > 0) {
+            board.insertBefore(oP, board.children[0])
+          } else {
+            board.appendChild(oP);
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="div_comments">
+    <div id="div_com_inp">
+      <textarea class="text" name="" id="text_comment" cols="60" rows="5"></textarea>
+      <input class="btn" type="button" name="" id="btn_comment" value="发表评论">
+    </div>
+    <div id="div_com_show">
+      <p>CTRL + 回车 提交</p>
+      <p>键盘控制留言框位置</p>
+    </div>
+  </div>
+</body>
+
+</html>

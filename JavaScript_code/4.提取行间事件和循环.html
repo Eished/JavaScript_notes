@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>提取行间事件</title>
+
+    <style>
+      div {
+        display: block; 
+        border: 1px solid black; 
+        width: 100px; 
+        height: 100px; 
+        margin: 10px;
+        float: left;
+      }
+    </style>
+      
+    <script>
+      window.onload = function () {
+        // 封装 getElementById 函数
+        function get(id) {
+          return document.getElementById(id);
+        }
+
+        // 封装 getElementsByTagName
+        function gets(tagName) {
+          return document.getElementsByTagName(tagName)
+        }
+
+        // 提取行间样式
+        get('btn1').onclick = function () {
+          get('btn1').value = '提取成功';
+        }
+
+        // 修改一组元素中的某一个元素
+        get('btn2').onclick = function () {
+          gets('div')[2].style.background = 'blue';
+        } 
+
+        // 修改一组元素- while 循环
+        get('btn3').onclick = function () {
+          var i = 0;
+          while ( i < gets('div').length ) {
+            gets('div')[i].style.background = 'yellow';
+            i++;
+          }
+        } 
+        // for
+        get('btn4').onclick = function () {
+          for (var i = 0; i < gets('div').length; i++ ){
+            gets('div')[i].style.background = 'pink';
+          }
+        } 
+
+        // 全选的实现 if 判断 无需div
+        get('btn5').onclick = function () {
+          for (var i = 0; i < gets('input').length; i++ ){
+            if (gets('input')[i].type == 'checkbox'){
+              if (gets('input')[i].checked == false) {
+                gets('input')[i].checked = true;
+              } else {
+                gets('input')[i].checked = false;
+              }
+            }
+          }
+        } 
+        // 元素.getElementsByTagName 方法 单个div
+        get('btn6').onclick = function () {
+          var div2 = get('div2');
+          var inp = div2.getElementsByTagName('input');
+          for (var i = 0; i < inp.length; i++ ){
+            // console.log(inp);
+            if (inp[i].checked == false) {
+              inp[i].checked = true;
+            } else {
+              inp[i].checked = false;
+            }
+          }
+        }
+        // 元素.getElementsByTagName 方法 多个div
+        get('btn7').onclick = function () {
+          var div2 = gets('div');
+          for (var i = 0; i < div2.length; i++ ){
+            var div = gets('div')[i];
+            var inps = div.getElementsByTagName('input');
+            for (var a = 0; a < inps.length; a++){
+              if (inps[a].checked == false) {
+                inps[a].checked = true;
+              } else {
+                inps[a].checked = false;
+              }
+            }
+          }
+        }  
+      };
+    </script>
+  </head>
+
+  <body>
+    <!-- 提取行间样式 -->
+    <input id="btn1" type="button" value="按钮">
+    <!-- 修改一组元素中的某一个元素 -->
+    <input type="button" id="btn2" value="改第三个元素">
+    <!-- 修改一组元素-循环 -->
+    <input type="button" id="btn3" value="while循环改一组元素">
+    <input type="button" id="btn4" value="for循环改一组元素">
+    <input type="button" id="btn5" value="全选">
+    <input type="button" id="btn6" value="全选2">
+    <input type="button" id="btn7" value="全选3">
+    <div><input type="checkbox" name="1" id="c1"></div>
+    <div><input type="checkbox" name="1" id="c2"></div>
+    <div><input type="checkbox" name="1" id="c3"></div>
+    <div><input type="checkbox" name="1" id="c4"></div>
+    <div><input type="checkbox" name="1" id="c5"></div>
+
+    <div id="div2">
+      <input type="checkbox" name="" id="">
+      <input type="checkbox" name="" id="">
+      <input type="checkbox" name="" id="">
+      <input type="checkbox" name="" id="">
+      <input type="checkbox" name="" id="">
+      <input type="checkbox" name="" id="">
+      <input type="checkbox" name="" id="">
+    </div>
+
+  </body>
+</html>

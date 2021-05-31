@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>运算符</title>
+    <style>
+    .blue {
+      width: auto;
+      height: 20px;
+      background: blue;
+    }
+    .yellow {
+      width: auto;
+      height: 20px;
+      background: yellow;
+    }
+    </style>
+    <script>
+      window.onload = function () {
+        // 封装 getElementById 函数
+        function get(id) {
+          return document.getElementById(id);
+        }
+        // 封装 getElementsByTagName
+        function gets(tagName) {
+          return document.getElementsByTagName(tagName)
+        }
+        // 隔行变色
+        function liCol() {
+          let i = 0;
+          let oLi = gets('li') ;
+          for (i = 0; i < oLi.length; i++) {
+            if (i % 2 === 0) {
+              oLi[i].className = 'blue';
+            } else {
+              oLi[i].className = 'yellow';
+            }
+          }
+        }
+        liCol();
+
+        // 毫秒转日期
+        const date = Date.now();
+        // 60000ms / 1000ms /60s /60m /24h /365d
+        const millisecond = date % 1000 + '毫秒';
+        const second = parseInt(date/1000) % 60 + '秒';
+        const minute = parseInt(date/1000/60) % 60 + '分';
+        const hour = parseInt(date/1000/60/60) % 24 + 8 + '小时';
+        const day = parseInt(date/1000/60/60/24/365) % 30 - 9 + '号';
+        const month = parseInt(date/1000/60/60/24/30) % 12 + 4 + '月'; 
+        const year = parseInt(date/1000/60/60/24/265) + 1951 +'年';
+        const d1 = get('d1');
+        d1.innerHTML = millisecond+ second+ minute+ hour+ day+ month+ year;
+      }
+
+      // 赋值 ` =、+=、-=、*=、/=、%= `
+      let i = 11;
+      i += 2;
+      console.log(i);
+      i -= 3;
+      console.log(i);
+      i *= 2;
+      console.log(i);
+      i /= 2;
+      console.log(i);
+      i %= 3;
+      console.log(i);
+
+      // 判断 <、>、<=、>=、== 、===、!=、!==
+      if (i > 0) {
+      console.log('i > 0');
+      } 
+      if (i <= i) {
+        console.log('i <= i');
+      }
+      if (i == '1') {
+        console.log('i == "1"')
+      }
+      if (i === 1) {
+        console.log('i === 1')
+      }
+      if (i != '1') {
+        console.log('i != 2')
+      }
+      if (i !== 1) {
+        console.log('i !== 1')
+      }
+
+      // 逻辑 &&与、||或、!否
+      if (i<2 && i>0) {
+        console.log('i<2 && i>0')
+      }
+      if (i<2 || i<0) {
+        console.log('i<2 || i<0')
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+    <div id="d1"></div>
+  </body>
+</html>

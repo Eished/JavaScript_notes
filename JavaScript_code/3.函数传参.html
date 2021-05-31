@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>函数传参</title>
+
+    <style>
+      div {
+        display: block; 
+        background: red; 
+        width: 100px; 
+        height: 100px; 
+        font-size: 16px;
+      }
+
+      .div2 {
+        display: block; 
+        background: grey; 
+        width: 100px; 
+        height: 100px; 
+      }
+    </style>
+
+    <script>
+
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    // div1 变绿
+    function toGreen() {
+     get('div1').style.background='green';
+    }
+
+    // div1 变蓝
+    function toblue() {
+      get('div1').style.background='blue';
+    }
+
+    // div1 变红
+    function toRed() {
+      get('div1').style.background='red';
+    }
+    
+    // 点击循环变色
+    var i = 0;
+    function changeColor() {
+      console.log('i=',i)
+      if (i == 0) {
+        toGreen();
+        i++;
+        console.log('i=',i)
+        return;
+      } 
+      if (i == 1) {
+        toblue();
+        i++;
+        console.log('i=',i)
+        return;
+      } 
+      if (i == 2) {
+        toRed();
+        i = i - 2;
+        console.log('i=',i)
+        return;
+      }
+    }
+
+    // 函数传参
+    function toColor(color, width) {
+      get('div1').style.background = color;
+      get('div1').style.width = width;
+    }
+    // 将属性名作为参数传递
+    function chgName(name, width) {
+      // get('div1').style.name = width; // name 会被当作属性赋值
+      get('div1')['style'][name] = width; // 数组 可以加字符串或者变量
+    }
+    // 样式优先级
+    function chgClass(className) {
+      get('div1').className =  className; 
+    }
+    </script>
+  </head>
+
+  <body>
+    <!-- 调用页内函数修改样式 -->
+    <input type="button" onclick="changeColor()" value="循环">
+    <!-- 函数传参 -->
+    <input type="button" onclick="toColor('green', '200px')" value="变绿">
+    <input type="button" onclick="toColor('blue', '300px')" value="变蓝">
+    <input type="button" onclick="toColor('red', '400px')" value="变红">
+    <input type="button" onclick="chgName('height', '200px')" value="变高">
+    <input type="button" onclick="chgClass('div2')" value="class变灰">
+    <div id="div1"></div>
+
+  </body>
+</html>

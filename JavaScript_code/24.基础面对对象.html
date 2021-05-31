@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>面对对象基础</title>
+    <style>
+    </style>
+    <script>
+      // 工厂方式
+      function CreatePerson(name, qq) {
+        var obj = new Object();
+
+        obj.name = name;
+        obj.qq = qq;
+        
+        obj.showName = function () {
+          console.log('名字：', this.name);
+        }
+        obj.showQQ = function () {
+          console.log('QQ：', this.qq)
+        }
+
+        return obj;
+      }
+      var person = CreatePerson('zhangsan','212345678');
+      person.showName();
+      person.showQQ();
+
+      // 使用原型
+      function CreatePerson2(name, qq) {
+        this.name = name;
+        this.qq = qq;
+      }
+              
+      CreatePerson2.prototype.showName2 = function () {
+        console.log('名字：', this.name);
+      }
+      CreatePerson2.prototype.showQQ2 = function () {
+        console.log('QQ：', this.qq)
+      }
+      var people = new CreatePerson2('asdf','535');
+      people.showName2();
+      people.showQQ2();
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

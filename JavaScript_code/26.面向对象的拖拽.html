@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>面对对象的拖拽</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div1 {
+      top: 100px;
+      left: 100px;
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      background-color: rgb(255, 0, 0);
+    }
+
+    #div2 {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      background-color: rgb(0, 255, 170)
+    }
+  </style>
+  <script src="./lib/Drag.js"></script>
+  <script src="./lib/LimitDrag.js"></script>
+  <script>
+    window.onload = function () {
+      new Drag('div1');
+      new LimitDrag('div2');
+    }
+  </script>
+</head>
+
+<body>
+  <div id="div1">普通拖拽</div>
+  <div id="div2">限制范围的拖拽</div>
+</body>
+
+</html>

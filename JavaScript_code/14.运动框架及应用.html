@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>运动框架及应用</title>
+    <style>
+      #div1 {
+        width: 150px;
+        height: 400px;
+        background-color:cyan;
+        position: absolute;
+        margin-top: 10px;
+        left: -150px;
+      }
+      #div1 span {
+        width: 20px;
+        height: 60px;
+        left: 150px;
+        background-color:rgb(106, 176, 255);
+        position: absolute;
+        margin-top: 170px;
+      }
+      #div2 {
+        left: 200px;
+        position: absolute;
+        filter:alpha(opacity=30);
+        opacity: 0.3;
+      }
+    </style>
+    <script>
+      window.onload = function () {
+        // 封装getElementById
+        function get(id) {
+          return document.getElementById(id);
+        };
+
+        var oDiv = get('div1');
+        var timer = '';
+        var speed = 0;
+        var target = 0;
+        // 运动框架
+        function startMove(target) {
+          clearInterval(timer);
+          timer = setInterval(move, 30);
+          function move() {
+            if (oDiv.offsetLeft < target) {
+              speed = 10;
+              oDiv.style.left = oDiv.offsetLeft + speed + 'px';
+            } else if (oDiv.offsetLeft > target) {
+              speed = -10;
+              oDiv.style.left = oDiv.offsetLeft + speed + 'px';
+            } else if (oDiv.offsetLeft === target){
+              clearInterval(timer);
+            }
+          }
+        }
+        // 注册鼠标移入事件
+        oDiv.onmouseover = function () {
+          startMove(0);
+        };
+        oDiv.onmouseout = function () {
+          startMove(-150);
+        };
+
+        // 图片淡入淡出
+        var oDiv2 = get('div2');
+        var alpha = 30;
+        oDiv2.onmouseover = function () {
+          shallow(100);
+        }
+        oDiv2.onmouseout = function () {
+          shallow(30);
+        }
+        function shallow(target) {
+          clearInterval(timer);
+          timer = setInterval(shallowMove, 30);
+          function shallowMove() {
+            if (alpha === target) {
+              clearInterval(timer);
+            } else if (alpha < target) {
+              speed = 10;
+              alpha += speed;
+              oDiv2.style.filter = 'alpha(opacity='+ alpha +')';
+              oDiv2.style.opacity = alpha/100;
+            } else if (alpha > target) {
+              speed = -10;
+              alpha += speed;
+              oDiv2.style.filter = 'alpha(opacity='+ alpha +')';
+              oDiv2.style.opacity = alpha/100;
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="div1">
+      <span>分享到</span>
+    </div>
+    <div id="div2"><img src="images/0.png" alt=""></div>
+  </body>
+</html>

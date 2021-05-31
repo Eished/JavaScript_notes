@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>事件绑定</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div1 {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      background-color: rgb(255, 0, 0);
+    }
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    // 封装 attachEvent 兼容性函数
+    function myAddEvent(obj, ev, fn) {
+      if (obj.attachEvent) {
+        obj.attachEvent('on' + ev, fn);
+      } else {
+        obj.addEventListener(ev, fn, false);
+      }
+    }
+
+    window.onload = function () {
+      var oDiv = get('div1');
+      var btn = get('btn');
+      myAddEvent(btn, 'click', function () {
+        console.log('event');
+        oDiv.style.display = 'none';
+      })
+      myAddEvent(btn, 'click', function () {
+        console.log('event2');
+        setTimeout(function () {
+          oDiv.style.display = 'block';
+        }, 1000);
+      })
+    }
+  </script>
+</head>
+
+<body>
+  <input type="button" id="btn" value="按钮">
+  <div id="div1"></div>
+</body>
+
+</html>

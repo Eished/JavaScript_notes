@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>cookie</title>
+    <style>
+    </style>
+    <script>
+      // 封装 setCookie 函数
+      function setCookie(name, value, iTime) {
+        var oDate = new Date();
+        oDate.setTime(oDate.getTime() + iTime*1000*60*60);
+        document.cookie = name + '=' + value + ';expires=' + oDate;
+      }
+      setCookie('username', '张三', 1);
+      setCookie('passwd', '123', 1);
+      console.log(document.cookie);
+
+      function getCookie(name) {
+        var arr = document.cookie.split('; ');
+        for (var i in arr) {
+          var arr2 = arr[i].split('=');
+          if (arr2[0] === name){
+            return arr2[1];
+          }
+        }
+        return '';
+      }
+      console.log(getCookie('passwd'));
+
+      function removeCookie(name) {
+        setCookie(name, '', -1)
+      }
+      removeCookie('username');
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

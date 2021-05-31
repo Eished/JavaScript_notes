@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>键盘事件和仿select下拉框</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div1 {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      background-color: rgb(255, 0, 0);
+      display: none;
+    }
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    window.onload = function () {
+      var oDiv = get('div1');
+      var btn = get('btn');
+      btn.onclick = function (ev) {
+        var oEvent = ev || event;
+        oDiv.style.display = 'block';
+        console.log(this);
+        oEvent.cancelBubble = true;
+      }
+      document.onclick = function () {
+        oDiv.style.display = 'none';
+        console.log(this);
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <input type="button" value="显示" id="btn">
+  <div id="div1"></div>
+</body>
+
+</html>

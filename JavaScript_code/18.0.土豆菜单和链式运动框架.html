@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>链式运动框架</title>
+    <style>
+      body {
+        width: auto;
+        height: 2000px;
+      }
+      #div1 {
+        width: 50px;
+        height: 50px;
+        background: rgb(99, 128, 255);
+        position: absolute;
+      }
+      #div_p {
+        width: 50px;
+        height: 50px;
+        background-color: cornsilk;
+        position: absolute;
+        right: 0;
+        top: 50%;
+      }
+      #div2 {
+        width: 50px;
+        height: 50px;
+        background: rgb(99, 128, 255);
+        position: absolute;
+      }
+      #div3 {
+        position: absolute;
+        height: 50px;
+        width: 0px;
+        right: 50px;
+        background-color: rgb(119, 95, 255);
+        overflow: hidden;
+      }
+      #div4 {
+        position: absolute;
+        width: 100px;
+        height: 0px;
+        right: 50px;
+        top: 0px;
+        overflow: hidden;
+        background-color: rgb(98, 163, 248);
+      }
+      #close {
+        position: absolute;
+        float: right;
+        right: 5px;
+        color: white;
+      }
+    </style>
+    <script src="./lib/move3.js"></script>
+    <script>
+    window.onload = function () {
+      // 封装 getElementById
+      function get(id) {
+        return document.getElementById(id);
+      }
+
+      var btn1 = get('btn1');
+      var div1 = get('div1');
+      btn1.onclick = function () {
+        startMove(div1,{'height': 400, "width": 101, "opacity": 30, "left": 100, "top": 200}, msg);
+      }
+      function msg() {
+        console.log('链式函数执行完成！')
+      }
+
+      // 跟随页面滚动的缓冲侧边栏
+      var div_p = get('div_p');
+      window.onscroll = function () {
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        var odiv_pHeight = parseInt(getStyle(div_p, 'height'));
+        var target = parseInt((document.documentElement.clientHeight - odiv_pHeight)/2 + scrollTop);
+        startMove(div_p, {"top":target});
+        console.log(
+          '可视区：', document.documentElement.clientHeight,
+          '滚动距离：', scrollTop, 
+          'div3的高度：', getStyle(div_p, 'height'), 
+          '目标值：', target) 
+      }
+
+      // 土豆伸缩菜单栏
+      var div2 = get('div2'); 
+      var div3 = get('div3');
+      var div4 = get('div4');
+      var close = get('close');
+      div2.onclick = function () {
+        // div3.style.display = 'block';
+        // div4.style.display = 'block';
+        startMove(div3, {"width":100},fnEnd)
+        function fnEnd() {
+          startMove(div4,{"height":100, "top":-100})
+        }
+      }
+      close.onclick = function () {
+        startMove(div4, {"top": 0, "height": 0}, fnEnd);
+        function fnEnd() {
+        startMove(div3, {"width":0})
+        }
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <input type="button" id="btn1" value="链式运动">
+    <div id="div1"></div>
+    <div id="div_p">
+      <div id="div2">土豆</div>
+      <div id="div3">播放器</div>
+      <div id="div4"><a id="close" href="javascript:;">关闭</a></div>
+    </div>
+  </body>
+</html>

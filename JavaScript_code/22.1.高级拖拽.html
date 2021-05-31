@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>高级拖拽</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div1 {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      background-color: rgb(82, 177, 255);
+    }
+
+    .box {
+      border: black dashed 1px;
+      position: absolute;
+    }
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+    window.onload = function () {
+      var oDiv = get('div1');
+      var oDiv0 = get('div0');
+
+      // oDiv.onmousedown 很容易移出范围
+      oDiv.onmousedown = function Drag() {
+        var ev = event || ev;
+        var _this = this;
+
+        // 鼠标可视区位置 - div左边距 = 鼠标在div内的位置
+        var disX = ev.clientX - oDiv.offsetLeft;
+        var disY = ev.clientY - oDiv.offsetTop;
+        console.log(disX, '可视区鼠标X：', ev.clientX, '鼠标Y：', ev.clientY);
+
+        // 增加边框
+        var oBox = document.createElement('div');
+        oBox.className = 'box';
+        // 边框的大小 - 线宽 = oDiv 的大小
+        oBox.style.width = this.offsetWidth - 2 + 'px';
+        oBox.style.height = this.offsetHeight - 2 + 'px';
+        oDiv0.appendChild(oBox);
+        // 边框的位置 = oDiv 的位置
+        oBox.style.left = oDiv.offsetLeft + 'px';
+        oBox.style.top = oDiv.offsetTop + 'px';
+        // IE7 兼容
+        if (this.setCapture) {
+          this.onmousemove = mouseMove;
+          this.onmouseup = mouseUp;
+          oDiv.setCapture();
+        } else {
+          document.onmousemove = mouseMove;
+          document.onmouseup = mouseUp;
+        }
+
+        function mouseUp() {
+          this.onmousemove = '';
+          this.onmouseup = '';
+          // 鼠标松开，oDiv 到 oBox 的位置
+          oDiv.style.left = oBox.offsetLeft + 'px';
+          oDiv.style.top = oBox.offsetTop + 'px';
+          // 删除生成的box
+          oDiv0.removeChild(oBox);
+          // IE7 兼容
+          if (this.releaseCapture) {
+            this.releaseCapture();
+          }
+        }
+
+        function mouseMove(ev) {
+          // 不断获取Event 对象，坐标才会不断更新
+          var ev = event || ev;
+          // console.log('可视区鼠标X：', ev.clientX, '鼠标Y：',ev.clientY);
+          // div位置 = 鼠标可视区新的位置 - 鼠标与div的距离
+          var left = ev.clientX - disX;
+          var top = ev.clientY - disY;
+          // 鼠标移动时 移动虚线框
+          oBox.style.left = left + 'px';
+          oBox.style.top = top + 'px';
+        }
+
+        // 阻止火狐重影bug, 解决 chrome FireFox IE9的文字选中问题
+        return false;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="div0">
+    asdfasdfas/sad'234
+    <div id="div1">asdfasdfas/sad</div>
+    asdfasdfas/sad'234
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+<script type="text/javascript">
+function Ajax(url, suc, err) {
+    var oAjax = '';
+    if (window.XMLHttpRequest) {
+      // chrome FF IE9
+      oAjax = new XMLHttpRequest;
+    } else if (window.ActiveXObject) {
+      oAjax = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if (oAjax != '') {
+      oAjax.onreadystatechange = state_change;
+      oAjax.open('get', url, true);
+      oAjax.send();
+    } else {
+      err();
+    }
+
+    function state_change() {
+      if (oAjax.readyState === 4) {
+        // 完成
+        if (oAjax.status === 200) {
+          // 成功
+          if (suc) {
+            suc(oAjax.responseText);
+          } else {
+            return oAjax.responseText;
+          }          
+        } else if (oAjax.status === 404){
+          console.log('url错误或不存在');
+        } else if (err){
+          err();
+        }
+      } else if (oAjax.readyState === 0){
+        console.log('未初始化');
+      } else if (oAjax.readyState === 1){
+        console.log('正在发送请求');
+      } else if (oAjax.readyState === 2){
+        console.log('处理请求中');
+      } else if (oAjax.readyState === 3){
+        console.log('正在解析');
+      }
+    }
+  }
+window.onload = function () {
+  var btn = document.getElementById('btn');
+  btn.onclick = function () {
+    Ajax('/api/blog/list', function (str) {
+        // 使用返回数据
+        console.log('成功')
+        document.getElementById('T1').innerHTML = str;
+    })
+  }
+}
+
+</script>
+</head>
+
+<body>
+<div id="T1" style="border:1px solid black;height:40;width:300;padding:5"></div><br />
+<button id="btn">Click</button>
+</body>
+</html>

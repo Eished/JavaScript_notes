@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<link rel="stylesheet" href="css/reset.css">
+<title>移出延时隐藏</title>
+<style>
+  body {
+    width: 560px;
+    margin: 0 auto;
+  }
+
+  #d2 {
+    margin: 10px;
+    width: 200px;
+    height: 200px;
+    background-color: rgb(0, 204, 255);
+    display: none;
+    float: left;
+  }
+
+  #d1 {
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+    background-color: rgb(0, 255, 149);
+    float: left;
+  }
+
+  #d3 {
+    margin: 220px auto;
+    width: 560px;
+    height: 140px;
+    position: absolute;
+    background-color: rgb(135, 182, 182);
+    overflow: hidden;
+  }
+
+  #u1 {
+    position: relative;
+  }
+
+  #u1 li {
+    float: left;
+  }
+</style>
+<script>
+  window.onload = function () {
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+    // 封装 getElementsByTagName
+    function gets(tagName) {
+      return document.getElementsByTagName(tagName)
+    }
+
+    // 鼠标移动到 d1 上，d2 显示，移出隐藏；
+    // 鼠标移到 d2 上，清除定时器，移出 d2 开启定时器
+    let timer = '';
+    get('d1').onmouseover = get('d2').onmouseover = function () {
+      clearTimeout(timer);
+      get('d2').style.display = 'block';
+    }
+    get('d1').onmouseout = get('d2').onmouseout = function () {
+      timer = setTimeout(hide, 1000);
+    }
+
+    function hide() {
+      get('d2').style.display = 'none';
+    }
+
+    // 无缝滚动
+    get('u1').innerHTML += get('u1').innerHTML;
+    get('u1').style.width = gets('li').length * gets('li')[0].offsetWidth + 'px';
+    let timer2 = '';
+    let speed = 2;
+    // 左移
+    get('btn1').onclick = function () {
+      speed = -2;
+      if (!timer2) {
+        timer2 = setInterval(move, 30);
+      }
+    }
+    // 右移
+    get('btn2').onclick = function () {
+      speed = 2;
+      if (!timer2) {
+        timer2 = setInterval(move, 30);
+      }
+    }
+    // 移动
+    function move() {
+      get('u1').style.left = get('u1').offsetLeft + speed + 'px';
+      if (get('u1').offsetLeft < -get('u1').offsetWidth / 2) {
+        get('u1').style.left = 0;
+      } else if (get('u1').offsetLeft > 0) {
+        get('u1').style.left = -get('u1').offsetWidth / 2 + 'px';
+      }
+      console.log(get('u1').offsetLeft);
+    }
+    // 鼠标悬停
+    get('d3').onmouseover = function () {
+      clearInterval(timer2);
+    }
+    get('d3').onmouseout = function () {
+      timer2 = setInterval(move, 30);
+    }
+  }
+</script>
+
+<body>
+  <div id="d1"></div>
+  <div id="d2"></div>
+  <div id="d3">
+    <ul id="u1">
+      <li><img src="images/1.png" alt=""></li>
+      <li><img src="images/2.png" alt=""></li>
+      <li><img src="images/3.png" alt=""></li>
+      <li><img src="images/4.png" alt=""></li>
+    </ul>
+  </div>
+  <input type="button" name="" id="btn1" value="左移">
+  <input type="button" name="" id="btn2" value="右移">
+</body>
+
+</html>

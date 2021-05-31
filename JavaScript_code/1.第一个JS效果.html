@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>第一个JS效果</title>
+
+    <style>
+      #div2 {
+        display: none; 
+        background: red; 
+        width: 100px; 
+        height: 50px; 
+        font-size: 16px;
+      }
+      #div1 {
+        display: block; 
+        background: red; 
+        width: 100px; 
+        height: 100px; 
+        font-size: 16px;
+      }
+    </style>
+
+    <script>
+
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    // 显示 div2
+    function show() {
+      // div2.style.display='block'; // 部分浏览器不兼容
+      get('div2').style.display='block';
+    }
+
+    // 隐藏 div2
+    function hide() {
+      // div2.style.display='none'; // 部分浏览器不兼容
+      get('div2').style.display='none';
+    }
+
+    // div1 变绿
+    function toGreen() {
+     get('div1').style.background='green';
+    }
+
+    // div1 变蓝
+    function toblue() {
+      get('div1').style.background='blue';
+    }
+
+    // div1 变红
+    function toRed() {
+      get('div1').style.background='red';
+    }
+    
+    // 点击循环变色
+    var i = 0;
+    function changeColor() {
+      console.log('i=',i)
+      if (i == 0) {
+        toGreen();
+        i++;
+        console.log('i=',i)
+        return;
+      } 
+      if (i == 1) {
+        toblue();
+        i++;
+        console.log('i=',i)
+        return;
+      } 
+      if (i == 2) {
+        toRed();
+        i = i - 2;
+        console.log('i=',i)
+        return;
+      }
+    }
+    </script>
+  </head>
+
+  <body>
+    <!-- 调用页内函数修改样式 -->
+    <input type="button" onclick="changeColor()" value="按钮">
+    <div id="div1">
+    </div>
+    <!-- 行内 JS 修改样式 -->
+    <input type="checkbox" onmouseover="div2.style.display='block';" onmouseout="div2.style.display='none';" value="按钮">  
+    <div id="div2">
+      <p>文字<br>文字2</p>
+    </div>
+  </body>
+</html>

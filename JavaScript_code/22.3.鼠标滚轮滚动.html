@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>事件绑定与鼠标滚轮</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div1 {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      background-color: rgb(255, 0, 0);
+    }
+  </style>
+  <script type="text/javascript">
+    var iDis = 0;
+    var scrollFunc = function (e) {
+      var oDiv1 = document.getElementById('div1');
+      e = e || window.event;
+      if (e.wheelDelta) { //判断浏览器IE，谷歌滑轮事件               
+        if (e.wheelDelta > 0) { //当滑轮向上滚动时  
+          iDis += -e.wheelDelta;
+          oDiv1.style.top = iDis / 12 + 'px';
+          console.log("滑轮向上滚动", e.wheelDelta, iDis, oDiv1.offsetTop);
+        }
+        if (e.wheelDelta < 0) { //当滑轮向下滚动时   
+          iDis += -e.wheelDelta;
+          oDiv1.style.top = iDis / 12 + 'px';
+          console.log("滑轮向上滚动", e.wheelDelta, iDis, oDiv1.offsetTop);
+        }
+      } else if (e.detail) { //Firefox滑轮事件  
+        if (e.detail > 0) { //当滑轮向上滚动时  
+          console.log("滑轮向上滚动", e.wheelDelta);
+        }
+        if (e.detail < 0) { //当滑轮向下滚动时  
+          console.log("滑轮向下滚动", e.wheelDelta);
+        }
+      }
+    }
+    //给页面绑定滑轮滚动事件  
+    if (document.addEventListener) { //firefox  
+      document.addEventListener('DOMMouseScroll', scrollFunc, false);
+    }
+    //滚动滑轮触发scrollFunc方法  //ie 谷歌  
+    window.onmousewheel = document.onmousewheel = scrollFunc;
+  </script>
+</head>
+
+<body>
+  <div id="div1"></div>
+</body>
+
+</html>

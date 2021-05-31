@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+  <script src="./lib/template-web.js"></script>
+</head>
+
+<body>
+  <div id="content"></div>
+  <script id="test" type="text/html">
+    <div>
+      <!-- 输出表达式 -->
+      <p>{{name}}</p>
+      <!-- 不转义输出 -->
+      <p>{{#value}}</p>
+
+      <!-- 条件表达式 -->
+      {{if bool}}
+      <p>{{bool}}</p>
+      {{/if}}
+      {{if num < 1 }}
+      <p>'num < 1'</p> {{else}} <p>error!</p>
+      {{/if}}
+
+      <!-- 遍历表达式 数组 -->
+      <p>遍历表达式 数组</p>
+      {{each list as value index}}
+      <li>{{index}}: {{value}}</li>
+      {{/each}}
+      <!-- $简写 $ 特指当前函数中的变量 -->
+      <p>$简写</p>
+      {{each list}}
+      <li>{{$index}}: {{$value}}</li>
+      {{/each}}
+      <!-- 遍历表达式 对象 -->
+      <p>遍历表达式 对象</p>
+      {{each objList as value index}}
+      <li>{{index}}: {{value}}</li>
+      {{/each}}
+      <!-- $简写 -->
+      <p>$简写</p>
+      {{each objList}}
+      <li>{{$index}}: {{$value}}</li>
+      {{/each}}
+
+      <!-- 模板包含子模板,表达式 -->
+      {{include 'news_list'}}
+
+      <!-- 辅助方法 -->
+    </div>
+  </script>
+
+  <script id="news_list" type="text/html">
+    <p>模板包含子模板,表达式</p>
+    <ul>
+      {{each list as value i}}
+      <li>索引 {{i + 1}} ：{{value + 1}}</li>
+      {{/each}}
+    </ul>
+  </script>
+
+  <script>
+    const data = {
+      name: 'zhangsan',
+      value: '<h1>lisi</h1>',
+      num: 0,
+      bool: true,
+      list: [1, 2, 3, 4, 5],
+      objList: {
+        name: 'zhangsan',
+        age: '18',
+        addr: '广东'
+      }
+    }
+    let temp = template('test', data)
+    document.getElementById('content').innerHTML = temp
+  </script>
+</body>
+
+</html>

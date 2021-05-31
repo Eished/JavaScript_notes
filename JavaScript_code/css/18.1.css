@@ -1,0 +1,171 @@
+
+    body {
+      width: 100%;
+      height: 100%;
+      background-color: cornsilk;
+    }
+    li {
+      float: left;
+    }
+    /* 居中 div */
+    #div_center {
+      margin: 20px auto;
+      width: 640px;
+      height: 450px;
+    }
+    /* 定位 div */
+    #div_position {
+      width: 640px;
+      height: 1100px;
+      overflow: hidden;
+      background-color: rgb(70, 70, 70);
+      position: absolute;
+    }
+
+    /* 大图样式 */
+    #div_pic {
+      width: 640px;
+      height: 360px;
+      overflow: hidden;
+      position: absolute;
+    }
+    .ul_pic {
+      position: absolute;
+    }
+    .li_pic {
+      position: absolute;
+    }
+    .li_pic img{
+      width: 640px;
+      height: 360px;
+    }
+
+    /* 左右键样式 */
+    .ul_btn {
+      top: 0px;
+      width: 640px;
+      height: 360px;
+      position: absolute;
+      float: left;
+    }
+    .slider_btn_left, .slider_btn_right {
+      width: 150px;
+      height: 360px;
+    }
+    .slider_btn_right {
+      float: right;
+    }
+    .slider_btn_left img{
+      padding: 150px 105px 150px 10px ;
+      position: relative;
+      width: 35px;
+      height: 60px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      float: left;
+    }
+    .slider_btn_right img{
+      padding: 150px 10px 150px 105px ;
+      position: relative;
+      width: 35px;
+      height: 60px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      float: right;
+    }
+
+    /* 小图样式 */
+    #div_thumbnail {
+      top: 360px;
+      width: 620px;
+      background-color: rgb(70, 70, 70);
+      margin: 0 10px 0 5px;
+      overflow: hidden;
+      position: absolute;
+    }
+    .ul_thumbnail {
+      width: 640px;
+      height: 90px;
+    }
+    .li_thumnali {
+      opacity: 0.5;
+      filter: alpha(opacity=50);
+    }
+    .li_thumnali img{
+      padding: 10px 0px 10px 10px;
+      width: 125px;
+      height: 70px;
+    }
+
+    /* 图片文字栏 */
+    .ul_txt {
+      width: 640px;
+      height: 20px;
+      position: absolute;
+      top: 340px;
+    }
+    .li4_background {
+      width: 640px;
+      height: 20px;
+      top: 0px;
+      background-color: rgb(0, 0, 0);
+      opacity: 0.5;
+      filter: alpha(opacity=50);
+    }
+    .li4_introduction {
+      top: -17px;
+      margin-left: 10px;
+      width: 500px;
+      position: relative;
+      color: rgb(255, 255, 255);
+      filter: alpha(opacity=80);
+      opacity: 0.8;
+    }
+    .li4_sum_num {
+      width: 120px;
+      top: -17px;
+      left: 10px;
+      position: relative;
+      color: rgb(255, 255, 255);
+      filter: alpha(opacity=80);
+      opacity: 0.8;
+    }
+
+     /* 评论区 */
+     #div_comments {
+       position: absolute;
+       display: block;
+       top: 450px;
+       padding-top: 20px;
+       width: 640px;
+       background-color: rgb(252, 229, 200);
+     }
+     #div_com_inp  {
+       margin-top: 5px;
+       border-top: burlywood dashed 1px;
+       border-bottom: burlywood dashed 1px;
+     }
+     .text {
+       margin: 20px 0 20px 53px;
+     }
+     .btn {
+       margin: 20px 0 20px 20px;
+       width: 70px;
+       height: 70px;
+     }
+     #div_com_show {
+      height: 475px;
+      margin: 20px 50px;
+      padding: 0px 20px;
+      background-color: rgb(255, 255, 255);
+      overflow: hidden;
+     }
+     .li_comment {
+       white-space: pre-wrap;
+       padding: 10px 5px;
+       float: none;
+       border-bottom: cadetblue dashed 1px;
+       opacity: 0;
+       filter: alpha(opacity=0);
+       overflow: hidden;
+     }

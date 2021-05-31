@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>变量类型转换</title>
+    <style></style>
+    <script>
+      window.onload = function () {
+        // 封装 getElementById 函数
+        function get(id) {
+          return document.getElementById(id);
+        }
+
+        let t1 = get('t1');
+        let t2 = get('t2');
+        let b1 = get('b1');
+        let s1 = get('s1');
+        let s2 = get('s2');
+        b1.onclick = function (){
+          if (isNaN(t1.value)) {
+            s1.innerHTML = '<br>' + t1.value + '不是数字';
+          } else if (isNaN(t2.value)) {
+            s1.innerHTML = '<br>' + t2.value + '不是数字';
+          } else {
+            console.log('t1:',typeof t1.value, 't2',typeof t2.value);
+            let val = parseInt(t1.value) + parseInt(t2.value);
+            let val2 = parseFloat(t1.value) + parseFloat(t2.value);
+            s1.innerHTML = '<br>int结果：' + val+ '<br>float结果：' + val2;
+            console.log(typeof val);
+
+            // == 和 - 隐式转换
+            let a = t1.value ;
+            let b = t2.value;
+            if (a == b) {
+              s2.innerHTML = 'a == b' + '<br>a - b = ' + (a - b) + '<br>a + b = ' + (a + b);
+            } else if (a === b) {
+              s2.innerHTML = 'a===b！';
+            } else {
+              s2.innerHTML = 'a不等于b！' + '<br>a - b = ' + (a - b) + '<br>a + b = ' + (a + b);
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <input type="text" name="" id="t1">
+    <input type="text" name="" id="t2">
+    <input type="button" name="" id="b1" value="计算">
+    <div>
+        <span id="s1"></span>
+    </div>
+    <div>
+        <span id="s2"></span>
+    </div>
+  </body>
+</html>

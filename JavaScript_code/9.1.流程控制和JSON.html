@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>程序流程控制</title>
+    <script>
+    window.onload = function () {
+      // switch
+      var i = 0;
+      switch (i){
+        case i*++i:
+          console.log('i');
+          break;
+        case 1:
+          console.log('1')
+          break;
+        default:
+          console.log('default');
+          break;
+      }
+
+      // ?:  条件?语句一:语句二
+      var a = 1;
+      a % 2 == 0 ? console.log('双数'):console.log('单数');
+
+      // break continue
+      for (i = 0; i < 5; i++){
+        if (i === 2){
+          // break; // 中断所有循环
+          continue; // 中断本次循环
+        }
+        console.log(i);
+      }
+
+      // json 和 数组
+      const json = {a: 2, b: 5, c:9};
+      const arr = [23, 45, 5467];
+      console.log('b:', json.b, 'c:', json['c'], '没有length', json.length);
+      console.log(arr[2], arr.length);
+
+      // JSON 和 for in
+      for (var i in arr) {
+        console.log('第' + i + '个：' + arr[i]);
+      }
+      for (var i in json) {
+        console.log('第' + i + '个：' + json[i]);
+      }
+    }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
+

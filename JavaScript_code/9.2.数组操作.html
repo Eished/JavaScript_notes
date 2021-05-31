@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>数组操作</title>
+    <style>
+    div {
+      margin-top: 10px;
+    }
+    </style>
+    <script>
+    // 封装getById
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    window.onload = function () {
+      var arr = [23, 435, 567, 321, 9, 4];
+      var arr2 = new Array(3, 1, 'm', 'r', 'a', 'z', 'c', 'p', 'e', '破就', '不发');
+
+      // 显示数组
+      function showArr() {
+        get('d1').innerHTML = arr + ' + ' + arr2;
+      }
+      showArr();
+
+      // 添加元素 从尾部添加
+      get('btn2').onclick = function () {
+        arr.push(222);
+        showArr();
+      }
+
+      // 添加元素 从头部添加
+      get('btn22').onclick = function () {
+        arr.unshift(234);
+        showArr();
+      }
+
+      // 删除元素 从尾部删除
+      get('btn3').onclick = function () {
+        arr.pop();
+        showArr();
+      }
+
+      // 删除元素 从头部删除
+      get('btn33').onclick = function () {
+        arr.shift();
+        showArr();
+      }
+
+      // 排序元素
+      get('btn4').onclick = function () {
+        arr.sort(positiveSort);
+        arr2.sort(positiveSort);
+        showArr();
+      }
+      // 比较函数 数字比大小 字符比ASCII值大小
+      function positiveSort(n1, n2) {
+        if (isNaN(n1)) {
+          if (n1 > n2) {
+            return 1;
+          }
+          if (n1 < n2) {
+            return -1;
+          }
+          if (n1 === n2) {
+            return 0;
+          }
+        } else {
+          return n1 - n2;
+        }
+      }
+
+      // 数组对象排序
+　　  // 如果数组项是对象，根据数组项的某个属性对数组进行排序
+      var arr3 = [{name: "zlw", age: 24}, {name: "wlz", age: 25}];
+      var compare = function (prop) {
+        return function (obj1, obj2) {
+          var val1 = obj1[prop];
+          var val2 = obj2[prop];
+          if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+            val1 = Number(val1);
+            val2 = Number(val2);
+          }
+          if (val1 < val2) {
+            return -1;
+          } else if (val1 > val2) {
+            return 1;
+          } else {
+            return 0;
+          }  
+        } 
+      }
+
+      // 拼接数组
+      get('btn5').onclick = function () {
+        arr = arr.concat(arr2);
+        showArr();
+      }
+      
+      // 分隔符
+      get('btn6').onclick = function () {
+        arr = arr.join('_');
+        showArr();
+      }
+      
+      // splice 插入 splice(起点,长度,元素)
+      get('btn7').onclick = function () {
+        arr.splice(2, 0, 5, 1);
+        showArr();
+      }
+      // splice 删除
+      get('btn8').onclick = function () {
+        arr.splice(0, arr.length);
+        showArr();
+      }
+      // splice 替换 = 删除 + 插入
+      get('btn9').onclick = function () {
+        arr.splice(2, 1, 999, 888);
+        showArr();
+      }
+
+    }
+    </script>
+  </head>
+  <body>
+    <div>
+      <input type="button" name="" id="btn2" value="尾部添加元素">
+      <input type="button" name="" id="btn22" value="头部添加元素">
+      <input type="button" name="" id="btn3" value="尾部删除元素">
+      <input type="button" name="" id="btn33" value="头部删除元素">
+      <input type="button" name="" id="btn4" value="正序排序元素">
+    </div>
+    <div>
+      <input type="button" name="" id="btn5" value="拼接数组">
+      <input type="button" name="" id="btn6" value="分割数组">
+    </div>
+    <div>
+      <input type="button" name="" id="btn7" value="插入元素">
+      <input type="button" name="" id="btn8" value="删除元素">
+      <input type="button" name="" id="btn9" value="替换元素">
+    </div>
+    <div id="d1"></div>
+  </body>
+</html>

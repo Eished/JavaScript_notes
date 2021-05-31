@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>导航选项卡</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #div2 {
+        width: 200px;
+        height: 200px;
+        margin-top: 20px;
+        position: relative;
+      }
+      #div1 {
+        width: 200px;
+        height: 20px;
+        position: absolute;
+        top: 0px;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        display: block;
+        background: rgb(157, 234, 253);
+        float: left;
+        position: absolute;
+        display: none;
+        width: 200px;
+        height: 200px;
+      }
+      .ul {
+        display: block;
+      }
+      a {
+        display: block;
+        float: left;
+        width: 49px;
+        height: 20px;
+        background: rgb(7, 184, 253);
+        border-left: 1px solid rgb(255, 0, 234);
+        text-decoration: none;
+      }
+      .a {
+        background: rgb(32, 108, 221);
+      }
+    </style>
+    <script>
+      window.onload = function (){
+        // 封装 getElementById 函数
+        function get(id) {
+          return document.getElementById(id);
+        }
+        // 封装 getElementsByTagName
+        function gets(tagName) {
+          return document.getElementsByTagName(tagName)
+        }
+        // 显示第一个元素
+        gets('ul')[0].className = 'ul';
+        // 当鼠标覆盖某个标签时 显示对应元素
+        for (var i = 0; i < 4; i++) {
+          gets('a')[i].index = i;
+          gets('a')[i].onmouseover = function () {
+            for (var a = 0; a < 4; a++) {
+              gets('ul')[a].className = '';
+              gets('a')[a].className = '';
+            }
+            // console.log(this);
+            gets('ul')[this.index].className = 'ul';
+            this.className = 'a';
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="div1">
+      <a href="javascript:;" id="a0">1</a>
+      <a href="javascript:;" id="a1">2</a>
+      <a href="javascript:;" id="a2">3</a>
+      <a href="javascript:;" id="a3">4</a>
+    </div>
+    <div id="div2">
+      <ul>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+      </ul>
+      <ul>
+        <li>2</li>
+        <li>2</li>
+        <li>2</li>
+      </ul>
+      <ul>
+        <li>3</li>
+        <li>3</li>
+        <li>3</li>
+      </ul>
+      <ul>
+        <li>4</li>
+        <li>4</li>
+        <li>4</li>
+      </ul>
+    </div>
+  </body>
+</html>

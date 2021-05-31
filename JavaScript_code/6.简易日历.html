@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>简易日历</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      td {
+        width: 59px;
+        height: 59px;
+        border: 5px solid rgb(218, 218, 218);
+        text-align: center;
+        background: rgb(83, 83, 83);
+        color: white;
+      }
+      .td {
+        background: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+      }
+
+      /* 日历数字区 */
+      #t1 {
+        border: 10px solid rgb(218, 218, 218);
+        margin:0 auto;
+        position: relative;
+        width: 240px;
+        height: 320px;
+        background: rgb(218, 218, 218);
+      }
+
+      /* 下方文字 */
+      #d2 {
+        margin:0 auto;
+        width: 240px;
+        height: 100px;
+        background: rgb(218, 218, 218);
+      }
+      #p1 {
+        position: relative;
+        margin: auto;
+        width: 205px;
+        height: 80px;
+        background: rgb(255, 255, 255);
+      }
+    </style>
+    <script>
+      window.onload = function () {
+        // 封装 getElementById 函数
+        function get(id) {
+          return document.getElementById(id);
+        }
+        // 封装 getElementsByTagName
+        function gets(tagName) {
+          return document.getElementsByTagName(tagName)
+        }
+        // 获取所有 td，注册 onmouseover 事件，添加索引
+        // console.log(gets('td')) 
+        var tds = gets('td');
+        var i = 0;
+        for (i = 0; i < tds.length; i++) {
+          tds[i].index = i;
+          tds[i].onmouseover = function () {
+            // 先清空 td className
+            for (var i = 0; i < tds.length; i++) {
+              tds[i].className = '';
+            }
+            // 修改td className 并插入文字
+            tds[this.index].className = 'td';
+            // console.log(i);
+            get('p1').innerHTML = (this.index + 1) + arr[this.index];
+          }
+        }
+
+        arr = [
+        '月活动：学编程、英语', '月活动：学编程、英语', '月活动：学编程、日语', 
+        '月活动：学编程、画画', '月活动：学编程、旅游', '月活动：学编程', 
+        '月活动：学编程', '月活动：学编程', '月活动：学编程', 
+        '月活动：学编程', '月活动：学编程', '月活动：学编程'
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="d1">
+      <table id="t1">
+        <tr>
+          <td>1 <br>JAN</td>
+          <td>2 <br>FER</td>
+          <td>3 <br>MAR</td>
+        </tr>
+        <tr>
+          <td>4 <br>APR</td>
+          <td>5 <br>MAY</td>
+          <td>6 <br>JUN</td>
+        </tr>
+        <tr>
+          <td>7 <br>JUL</td>
+          <td>8 <br>AUG</td>
+          <td>9 <br>SEP</td>
+        </tr>
+        <tr>
+          <td>10 <br>OCT</td>
+          <td>11 <br>NOV</td>
+          <td>12 <br>DEC</td>
+        </tr>
+      </table>
+      <div id="d2">
+        <p id="p1">
+
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

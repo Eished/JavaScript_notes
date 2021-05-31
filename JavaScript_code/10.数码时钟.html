@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>数码时钟</title>
+  <style>
+  body{
+    margin: 0;
+    padding: 0;
+    background-color: rgb(49, 49, 49);
+  }
+  li {
+    list-style: none;
+    float: left;
+    width: 100px;
+    height: 149px;
+  }
+  span {
+    float: left;
+    font-size: 100px;
+    color: rgb(255, 255, 255);
+  }
+  </style>
+  <script>
+  window.onload = function () {
+    // 封装 getElementsByTagName
+    function gets(tagName) {
+      return document.getElementsByTagName(tagName)
+    }
+
+    // 数码时钟
+    // 数字时钟图片设置函数
+    const oLi = gets('li');
+    function clock() {
+      const date = new Date();
+      const str = addZero(date.getHours()) + addZero(date.getMinutes()) + addZero(date.getSeconds());
+    
+      let i = 0;
+      for (i = 0; i < oLi.length; i++) {
+        oLi[i].style.backgroundImage = "url('img/"+ str.charAt(i) +".png')";
+      }
+    }
+    // 补零
+    function addZero(num) {
+      if (num < 10) {
+        num = '0' + num;
+      } else {
+        num = '' + num;
+      }
+      return num;
+    }
+    // 先执行一遍，就不会出现一秒的空白，定时器要 window.onload 完一秒后才执行
+    clock();
+    // 定时器 每秒刷新一次
+    setInterval(clock, 1000);
+  }
+  </script>
+  <body>
+    <ul>
+      <li></li>
+      <li></li>
+      <span>:</span>
+      <li></li>
+      <li></li>
+      <span>:</span>
+      <li></li>
+      <li></li>
+    </ul>
+  </body>
+</html>

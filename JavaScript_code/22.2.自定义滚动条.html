@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <title>自定义滚动条</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <style>
+    #div0 {
+      margin: 10px auto;
+      width: 600px;
+      height: 400px;
+      position: relative;
+      background-color: blanchedalmond;
+    }
+
+    /* 上下滚动条 */
+    #div1 {
+      top: 50px;
+      right: 50px;
+      width: 20px;
+      height: 300px;
+      position: absolute;
+      border: rgb(139, 139, 139) solid 1px;
+    }
+
+    #div1_0 {
+      width: 20px;
+      height: 40px;
+      position: absolute;
+      background-color: rgb(140, 171, 255);
+    }
+
+    /* 文字区 */
+    #div3 {
+      left: 60px;
+      top: 50px;
+      width: 400px;
+      height: 300px;
+      position: absolute;
+      background-color: rgb(255, 255, 255);
+      overflow: hidden;
+
+    }
+
+    #div3_0 {
+      width: 900px;
+      position: absolute;
+      white-space: pre-wrap;
+      background-color: cornsilk;
+    }
+
+    /* 左右滚动条 */
+    #div2 {
+      top: 5px;
+      right: 140px;
+      width: 400px;
+      height: 20px;
+      position: absolute;
+      border: rgb(139, 139, 139) solid 1px;
+    }
+
+    #div2_0 {
+      width: 40px;
+      height: 20px;
+      position: absolute;
+      background-color: rgb(140, 171, 255);
+    }
+  </style>
+  <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+    // 封装获取计算后元素样式函数，返回小数
+    function getStyle(obj, name) {
+      if (obj.currentStyle) {
+        return obj.currentStyle[name];
+      } else {
+        return getComputedStyle(obj, '')[name];
+      }
+    }
+
+    window.onload = function () {
+
+      var oDiv1 = get('div1'); // 上下滚动框
+      var oDiv1_0 = get('div1_0'); // 上下滚动条
+      var oDiv3 = get('div3'); // 文字框
+      // var oDiv3_0 = get('div3_0'); // 文字可视区
+      var oDiv2 = get('div2'); // 左右滚动框
+      var oDiv2_0 = get('div2_0'); // 左右滚动条
+
+      // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+      // 鼠标按下滚动条时触发事件
+      // 鼠标Y移动时，滚动条top 移动
+      // 鼠标松开时，事件结束
+
+      // 合并函数：ev.clientY offsetTop offsetHeight oDiv1 oDiv1_0 oDiv3 oDiv3_0
+      // 去掉 offset 改用 getStyle 
+      // console.log(oDiv1.children[0], oDiv1_0) 
+      // 直接传一个对象取子节点或父节点
+      // 面对对象：srcoll 作为 oDiv1_0 和 oDiv2_0 的方法时，可以用 this 代替 oDiv1_0，只要传入 ev, 'clientY', oDiv3
+      oDiv1_0.onmousedown = function (ev) {
+        scroll(ev, 'clientY', oDiv1, oDiv3);
+        return false; // 可以解决 chrome FireFox IE9的文字选中问题
+      }
+      oDiv2_0.onmousedown = function (ev) {
+        scroll(ev, 'clientX', oDiv2, oDiv3);
+        return false; // 可以解决 chrome FireFox IE9的文字选中问题
+      }
+
+      function scroll(ev, dir, obj1, obj2) {
+        var attr = '';
+        var attr2 = '';
+        if (dir === 'clientY') {
+          attr = 'height';
+          attr2 = 'top';
+        } else if (dir === 'clientX') {
+          attr = 'width';
+          attr2 = 'left';
+        } else {
+          return console.log('参数错误');
+        }
+
+        var oDiv1_0 = obj1.children[0];
+        var oDiv3_0 = obj2.children[0];
+        var ev = ev || event;
+        var disMouse = ev[dir];
+        // 滚动条旧的位置
+        var oldPos = parseInt(getStyle(oDiv1_0, attr2));
+        // 滚动范围 = 滚动条高 + 滚动框高
+        var disScroll = parseInt(getStyle(obj1, attr)) - parseInt(getStyle(oDiv1_0, attr));
+
+        document.onmousemove = function (ev) {
+          ev = ev || event;
+          // 移动距离
+          var disMove = ev[dir] - disMouse;
+          // 滚动条TOP = 滚动条TOP + 移动距离
+          var divScroll = oldPos + disMove;
+          // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+          var disTxt = parseInt(getStyle(obj2, attr)) - parseInt(getStyle(oDiv3_0, attr));
+          var divTxt = (disTxt) * (divScroll / disScroll);
+
+          // 向下移 disMove > 0; 向上移 disMove < 0 
+          if (disMove > 0 && divScroll <= disScroll) {
+            oDiv1_0.style[attr2] = divScroll + 'px';
+            oDiv3_0.style[attr2] = divTxt + 'px';
+            // 文字区
+          } else if (disMove <= 0 && divScroll >= 0) {
+            // 都 = 0；divScroll 才能取到 0px
+            oDiv1_0.style[attr2] = divScroll + 'px';
+            oDiv3_0.style[attr2] = divTxt + 'px';
+          } else {
+            // 防止移动过快超出判断范围, 滚动条距离小于 0 直接到达
+            if (disMove < 0) {
+              oDiv1_0.style[attr2] = 0;
+              oDiv3_0.style[attr2] = 0;
+            } else if (disMove > 0) {
+              oDiv1_0.style[attr2] = disScroll + 'px';
+              oDiv3_0.style[attr2] = disTxt + 'px';
+            }
+          }
+          document.onmouseup = function () {
+            this.onmousemove = '';
+            this.onmouseup = '';
+          }
+          console.log(disMove, divScroll, disScroll, oldPos, divTxt)
+        }
+      }
+
+      // oDiv2_0.onmousedown = function (ev) {
+      //   var ev = ev||event;
+      //   var disMouse = ev.clientX;
+      //   var oldPos = this.offsetLeft;
+      //   // 滚动范围 = 滚动条高 + 滚动框高
+      //   var disScroll = oDiv2.offsetWidth - oDiv2_0.offsetWidth -2; 
+      // 
+      //   document.onmousemove = function (ev) {
+      //     ev = ev||event;
+      //     // 移动距离
+      //     var disMove = ev.clientX - disMouse;
+      //     // 滚动条TOP = 滚动条TOP + 移动距离
+      //     var divScroll = oldPos + disMove;
+
+      //     // 文字TOP = (文字框高-可视区高) * (滚动条TOP/(滚动框高-滚动条高))
+      //     var divTxt= (oDiv3.offsetWidth - oDiv3_0.offsetWidth)*(divScroll / disScroll);
+
+      //     // 向下移 disMove > 0; 向上移 disMove < 0 
+      //     if (disMove > 0 && divScroll <= disScroll) {
+      //       oDiv2_0.style.left = divScroll + 'px';
+      //       oDiv3_0.style.left = divTxt + 'px';
+      //       // 文字区
+      //     } else if (disMove <= 0 && divScroll >= 0) {
+      //       // 都 = 0；divScroll 才能取到 0px
+      //       oDiv2_0.style.left = divScroll + 'px';
+      //       oDiv3_0.style.left = divTxt + 'px';
+      //     } else {
+      //       // 防止移动过快超出判断范围, 滚动条距离小于 30 直接到达
+      //       if (disMove < 0 && divScroll < 30) {
+      //         oDiv2_0.style.left = 0;
+      //         oDiv3_0.style.left = 0;
+      //       } else if (disMove > 0 && disScroll - divScroll < 30) {
+      //         oDiv2_0.style.left = disScroll + 'px';
+      //         oDiv3_0.style.left = oDiv3.offsetWidth - oDiv3_0.offsetWidth + 'px';              
+      //       }
+      //     }
+      //     document.onmouseup = function () {
+      //       this.onmousemove = '';
+      //       this.onmouseup = '';
+      //     }
+      //     console.log(disMove,divScroll,disScroll,oldPos,divTxt)
+      //   }
+      //   return false; // 可以解决 chrome FireFox IE9的文字选中问题
+      // }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="div0">
+    <div id="div1">
+      <div id="div1_0"></div>
+    </div>
+    <div id="div2">
+      <div id="div2_0"></div>
+    </div>
+    <div id="div3">
+      <div id="div3_0">
+        值 描述
+        normal 默认。空白会被浏览器忽略。
+        pre 空白会被浏览器保留。其行为方式类似 HTML 中的 标签。inherit 规定应该从父元素继承 white-space 属性的值。
+        nowrap 文本不会换行，文本会在在同一行上继续，直到遇到 标签为止。
+        pre-wrap 保留空白符序列，但是正常地进行换行。
+        pre-line 合并空白符序列，但是保留换行符。
+        inherit 规定应该从父元素继承 white-space 属性的值。
+        - 拖拽
+        - 只有横向拖拽
+        - 限制范围：范围的大小
+        - 计算比例：当前值/最大值
+        - 控制其他对象
+        - 例子1：控制物体的大小
+        - 例子2：控制物体的透明度
+        - 例子3：控制文字滚动
+        - 代码：- 拖拽
+        - 只有横向拖拽
+        - 限制范围：范围的大小
+        - 计算比例：当前值/最大值
+        - 控制其他对象
+        - 例子1：控制物体的大小
+        - 例子2：控制物体的透明度
+        - 例子3：控制文字滚动
+        - 代码：- 代码：- 拖拽
+        - 只有横向拖拽
+        - 限制范围：范围的大小
+        - 计算比例：当前值/最大值
+        - 控制其他对象
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>28.1.登陆后cookie读取用户名</title>
+    <style>
+    </style>
+    <script>
+      // 封装 setCookie 函数
+      function setCookie(name, value, iTime) {
+        var oDate = new Date();
+        oDate.setTime(oDate.getTime() + iTime*1000*60*60);
+        document.cookie = name + '=' + value + ';expires=' + oDate;
+      }
+      // 封装 getCookie 函数
+      function getCookie(name) {
+        var arr = document.cookie.split('; ');
+        for (var i in arr) {
+          var arr2 = arr[i].split('=');
+          if (arr2[0] === name){
+            return arr2[1];
+          }
+        }
+        return '';
+      }
+      // 封装 removeCookie 函数
+      function removeCookie(name) {
+        setCookie(name, '', -1)
+      }
+
+      window.onload = function () {
+        var oUser = document.getElementById('username');
+        var oPasswd = document.getElementById('passwd');
+        var oBtn_sub = document.getElementById('btn_sub');
+        if (getCookie('username')) {
+          oUser.value = getCookie('username');
+        }
+        oBtn_sub.onclick = function () {
+          setCookie("username", oUser.value, 1);
+          setCookie("passwd", oPasswd.value, 1);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <form action="28.1.登陆后cookie读取用户名.html" method="GET">
+    <input type="text" name="username" id="username">
+    <input type="text" name="passwd" id="passwd">
+    <input type="submit" name="" id="btn_sub" value="登录">
+    </form>
+  </body>
+</html>

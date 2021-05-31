@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Bom应用</title>
+    <style>
+      body {
+        height: 2000px;
+      }
+    </style>
+    <script>
+    // 封装 getElementById 函数
+    function get(id) {
+      return document.getElementById(id);
+    }
+
+    window.onload = function () {
+      // var text =  document.write('新网页');
+      var btn = get('btn');
+      var btn2 = get('btn2');
+      btn.onclick = function () {
+        window.open('27.BOM应用.html','_blank');
+      }
+      btn2.onclick = function () {
+        window.close();
+      }
+
+
+      window.onscroll = function () {
+        var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+        console.log('scrollTop:',scrollTop);
+      }
+      
+      console.log(window.navigator.userAgent);
+      console.log(window.location.href);
+      // alert('0');
+      // confirm('yes?');
+      // prompt('');
+
+      window.onresize = function () {
+        var cliHei = document.documentElement.clientHeight;
+        var cliWid = document.documentElement.clientWidth;
+        console.log('可视区高宽：',cliHei, cliWid)
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <input type="button"  id="btn" value="打开网页">
+    <input type="button"  id="btn2" value="关闭网页">
+  </body>
+</html>
