@@ -37,7 +37,7 @@
 
 ##    1-3 环境准备
 
-### 环境准备
+环境准备
 
 - 原理
   1. ES6-10 ：原生代码
@@ -51,13 +51,13 @@
 
 ##    1-4 Node 安装
 
-- Node 安装：-v 12.2.0
+- Node 安装：`-v 12.2.0`
   - npm
   - npx
 
 ##    1-5 初始化项目
 
-### 初始化项目
+初始化项目
 
 ```
 npx es10-cli create projectName // 创建模板文件命令
@@ -75,6 +75,16 @@ touch static/lesson2-1.js // 新建文件命令
 ##    1-6 编辑器配置
 
 VS code 插件 beautify 和 ESLint
+
+1. 课程框架框架运行逻辑：
+   1. `app.js`
+   2. `routes/user.js`
+   3. `index.min.js`
+   4. `js/index.js`
+   5. `lesson2-1.js`
+2. 修改`js/index.js` 内 `import './lesson2-1'` 代码实现更换课程项目代码。
+
+
 
 #   第2章 ES6基础知识
 
@@ -94,11 +104,11 @@ VS code 插件 beautify 和 ESLint
 - var 定义的变量会变量提升
 - let 定义的变量具有块状作用域
 
-#### this 与 动态作用域 的关系
+**this 与 动态作用域 的关系**
 
 - this 具有动态指向
 
-#### 四种作用域
+**四种作用域**
 
 1. 全局作用域
 2. 函数作用域
@@ -197,16 +207,16 @@ VS code 插件 beautify 和 ESLint
 
 ###    2-8 Array.from（如何将伪数组转换成数组？）
 
-#### ES5
+**ES5**
 
 ```js
 let args = [].slice.call(arguments) // collection
 let imgs = [].slice.call(doncument.querySelectorAll('img')) // NodeList
 ```
 
-#### ES6
+**ES6**
 
-- Array.from(arrayLike, mapFn, thisArg)
+- `Array.from(arrayLike, mapFn, thisArg)`
 
   > ES6 新增方法，专门转换伪数组到数组，也可用于生成数组
 
@@ -216,7 +226,7 @@ Array.from(arrayLike, mapFn, thisArg) // 语法 伪数组，函数返回值，th
 let args = Array.from(arguments)
 ```
 
-#### 什么叫伪数组
+**什么叫伪数组**
 
 1. 按照索引方式存储数据
 2. 具有 length 属性
@@ -275,7 +285,7 @@ console.log(find);
 
 ###    2-12 Class基础语法（怎么声明一个类？）
 
-#### ES5中怎么声明一个类
+ES5中怎么声明一个类
 
 - ```JS
   let Animal = function (type) {
@@ -301,7 +311,7 @@ console.log(find);
 
   
 
-#### ES6中声明一个类
+ES6中声明一个类
 
 - ```JS
   class Animal {
@@ -333,7 +343,7 @@ console.log(find);
 
 ###    2-13 Setter&amp;Getter（如何读写属性？）
 
-#### ES6：set 和 get
+ES6：set 和 get
 
 - 可以把属性写成函数，调用时先运行函数
 
@@ -366,7 +376,7 @@ console.log(dog.age)
 
 ###    2-14 Static Methods（如何操作方法？）
 
-#### 对象实例的方法和类的静态方法
+对象实例的方法和类的静态方法
 
 ```JS
 // ES5
@@ -406,14 +416,14 @@ let dog = new Animal('dog')
 dog.eat()
 ```
 
-#### 什么时候用实例对象的方法，什么时候用类的静态方法？
+什么时候用实例对象的方法，什么时候用类的静态方法？
 
 - 方法依赖于实例对象的属性或方法，要引用实例对象的信息时必须使用实例对象的方法
 - 方法不会涉及实例对象的属性或方法，可以用类的静态方法
 
 ###    2-15 Sub Classes（如何继承一个类？）
 
-#### ES5继承的一种方法
+ES5继承的一种方法
 
 ```JS
 let Animal = function (type) {
@@ -444,7 +454,7 @@ console.log(dog.type);
 
 
 
-#### ES6中如何继承 extends
+ES6中如何继承 extends
 
 ```JS
 class Animal {
@@ -477,7 +487,7 @@ dog.eat()
 
 ###    2-17 Default Parameters（函数参数的默认值）
 
-### ES5
+ES5
 
 ```JS
 function fn(x, y, z) {
@@ -494,7 +504,7 @@ console.log(fn(2, 10, 30))
 
 
 
-#### ES6
+ES6
 
 ```js
 // 没有参数的往前写，否则默认没参数的为字符串类型
@@ -514,7 +524,7 @@ console.log(fn(10, 10, undefined), 4, 12)
 
 ###    2-18 Rest Parameter（怎么处理不确定参数？）
 
-### ES5
+ES5
 
 ```JS
 ES5
@@ -531,7 +541,7 @@ console.log(sum(1, 2, 3, 4))
 
 
 
-#### ES6
+ES6
 
 ```JS
 // ES6
@@ -550,7 +560,7 @@ console.log(sum(1, 2, 3, 4))
 
 ###    2-19 Spread Operator（rest参数的逆运算）
 
-#### ES5
+ES5
 
 ```JS
 // rest参数的逆运算
@@ -564,7 +574,7 @@ console.log(sum.apply(this, data))
 
 
 
-#### ES6
+ES6
 
 ```JS
 function sum (x = 1, y = 2, z = 3) {
@@ -2995,6 +3005,8 @@ li {
 
 #   第8章 构建环境
 
+**建议直接看官网教程！有中文** https://webpack.docschina.org/
+
   浏览器没有全部兼容新语法，需要通过构建的方式把代码转换成浏览器兼容的代码，学会构建也是前端工程师能力提升的另一个标志
 
 ##    8-1 webpack
@@ -3003,7 +3015,7 @@ li {
 >
 > 本质上, webpack 是一个现代 JavaScript 应用程序的静态模块打包工具. 当 webpack 处理应用程序时, 他会在内部构建一个 依赖图(dependency graph) , 此依赖图会映射项目所需的每个模块, 并生成一个或多个 bundle(包).
 
-### 入口(entry)
+**入口(entry)**
 
 入口起点(entry point) 告诉 webpack 哪个是原始文件. 找到这个原始文件之后开始寻找依赖和各种资源, 根据这些包还有资源选择合适的 loader 进行处理. 这个入口是需要在 webpack 的配置文件 (webpack.config.js) 中来声明的:
 
@@ -3013,7 +3025,7 @@ module.exports = {
 }
 ```
 
-### 出口(output)
+**出口(output)**
 
 所谓的出口(output) 是告诉 webpack 进过各种 loader 处理后的文件应该生成到哪个目录下, 也就是生成文件所在的地方. 同样, 需要显示的告诉 webpack 的配置文件 (webpack.config.js) :
 
@@ -3029,9 +3041,14 @@ module.exports = {
 }
 ```
 
-### loader
+**loader**
 
 构建的过程除了处理原生的 JavaScript , 还需要处理其他非 JavaScript 文件, 比如图片\CSS\ES6 等等. webpack loader 的作用就是提供一个机制保证所有的类型资源都可以采用对应的 loader 进行处理, 这样 webpack 就能完成更加复杂的构建过程. 这个 loader 也是需要在配置文件 (webpack.config.js) 中来定义的:
+
+在更高层面，在 webpack 的配置中，**loader** 有两个属性：
+
+1. `test` 属性，识别出哪些文件会被转换。
+2. `use` 属性，定义出在进行转换时，应该使用哪个 loader。
 
 ```js
 const path = require('path');
@@ -3050,7 +3067,7 @@ const config = {
 module.exports = config;
 ```
 
-###  插件(plugins)
+**插件(plugins)**
 
 > loader 被用于转换某些资源类型的模块, 而插件则可以用于执行范围更广的任务. 插件的范围包括打包\优化和压缩\重新定义环境中的变量. 插件接口功能及其强大, 可以用来处理各种各样的任务.
 
@@ -3076,7 +3093,7 @@ module.exports = config;
 
 ### 模式
 
-我们平时会存在两种状态: 开发模式\生产模式. 够贱的过程中也是需要的, 比如我们在开发环境需要快速的构建, 在生产环境需要构建一个符合线上环境的版本. 这样我们只要在配置文件中 (webpack.config.js) 简单的配置一下就可以达到目的.
+我们平时会存在两种状态: 开发模式\生产模式。构建的过程中也是需要的, 比如我们在开发环境需要快速的构建, 在生产环境需要构建一个符合线上环境的版本. 这样我们只要在配置文件中 (webpack.config.js) 简单的配置一下就可以达到目的.
 
 ```js
 module.exports = {
@@ -3650,8 +3667,6 @@ console.log(tokenizer(input));
 }
 ```
 
-##### 
-
 ##### **生成（Code Generation）**
 
 用 `babel-generator` 通过 AST 树生成 ES5 代码。
@@ -4198,8 +4213,4 @@ plugins: [
 ```
 
 Note that the callback must be passed the HtmlWebpackPluginData in order to pass this onto any other plugins listening on the same `html-webpack-plugin-before-html-processing` event
-
-#   第9章 课程总结
-
-  对课程进行整体的回顾与总结。
 
