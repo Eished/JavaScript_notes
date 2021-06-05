@@ -92,7 +92,19 @@ Web Storage 和 IndexedDB。
 
 # 第 1章　什么是JavaScript 1
 
-## 1.1　简短的历史回顾 
+1.1　简短的历史回顾 
+
+## 1.2　JavaScript 实现 
+
+- 完整的 JavaScript 实现包含以下几个部分（见图 1-1）：
+
+  - 核心（ ECMAScript）
+  - 文档对象模型（ DOM）
+  - 浏览器对象模型（ BOM）  
+
+  ![image-20210605161656189](JavaScript高级程序设计第四版-笔记.assets/image-20210605161656189.png)
+
+### 1.2.1 ECMAScript
 
 1. ECMAScript 版本
    1. ES6 正式支持了类、模块、迭代器、生成器、箭头函数、期约、反射、代理和众多新的数据类型。  
@@ -102,65 +114,590 @@ Web Storage 和 IndexedDB。
    5. ES10  增加了 `Array.prototype.flat()/flatMap()、String.prototype.trimStart()/trimEnd()、 Object.fromEntries()`方
       法，以及 `Symbol.prototype.description` 属性，明确定义了`Function.prototype.toString()`的返回值并固定了 `Array.prototype.sort()`的顺序。另外，这次修订解决了与 JSON 字符串兼容的问题，并定义了 catch 子句的可选绑定。  
 2. ECMAScript 符合性是什么意思 
-3. 
-
-## 1.2　JavaScript 实现 
-
-### 1.2.1 ECMAScript
+3. 浏览器对 ECMAScript 的支持  
 
 ### 1.2.2 DOM 
 
+- **文档对象模型（ DOM， Document Object Model）**是一个应用编程接口（ API），用于在 HTML 中使用扩展的 XML。 DOM 将整个页面抽象为一组分层节点。   
+  - DOM 通过创建表示文档的树，让开发者可以随心所欲地控制网页的内容和结构。使用 DOM API，可以轻松地删除、添加、替换、修改节点。 
+
+1. 为什么 DOM 是必需的  
+2. DOM 级别  
+   - 这个规范由两个模块组成： DOM Core 和 DOM  HTML。前者提供了一种映射 XML 文档，从而方便访问和操作文档任意部分的方式；后者扩展了前者，并增加了特定于 HTML 的对象和方法。  
+   - DOM Living Standard 其快照称为DOM4 。
+3. 其他 DOM  
+   1. 可伸缩矢量图（ SVG， Scalable Vector Graphics）
+   2. 数学标记语言（ MathML， Mathematical Markup Language）
+   3. 同步多媒体集成语言（ SMIL， Synchronized Multimedia Integration Language）
+4. Web 浏览器对 DOM 的支持情况  
+
 ### 1.2.3 BOM
 
-## 1.3　JavaScript 版本 
+1. **浏览器对象模型（ BOM） API**  
 
-1.4　小结 10
+   - 用于支持访问和操作浏览器的窗口。使用 BOM，开发者可以操控浏览器显示页面之外的部分。而 BOM 真正独一无二的地方，当然也是问题最多的地方，就是它是唯一一个没有相关标准的 JavaScript 实现。 
+   - HTML5 改变了这个局面，这个版本的 HTML 以正式规范的形式涵盖了尽可能多的 BOM 特性。
+
+2. BOM 主要针对**浏览器窗口和子窗口（ frame）**，不过人们通常会把任何特定于浏览器的扩展都归在 BOM 的范畴内。  比如，下面就是这样一些扩展：  
+
+   1. 弹出新浏览器窗口的能力；
+   2. 移动、缩放和关闭浏览器窗口的能力；
+   3. navigator 对象，提供关于浏览器的详尽信息；
+   4. location 对象，提供浏览器加载页面的详尽信息；  
+   5. screen 对象，提供关于用户屏幕分辨率的详尽信息；
+   6. performance 对象，提供浏览器内存占用、导航行为和时间统计的详尽信息；
+   7. 对 cookie 的支持；
+   8. 其他自定义对象，如 XMLHttpRequest 和 IE 的 ActiveXObject。  
+
+   浏览器实现的都是自己的 BOM。有一些所谓的事实标准，比如对于 window 对象和 navigator 对象，每个浏览器都会给它们定义自己的属性和方法。  
+
+1.3　JavaScript 版本 
+
+## 1.4　小结 10
+
+- JavaScript 是一门用来与网页交互的脚本语言，包含以下三个组成部分。
+  1. ECMAScript：由 ECMA-262 定义并提供核心功能。
+  2. 文档对象模型（ DOM）：提供与网页内容交互的方法和接口。
+  3. 浏览器对象模型（ BOM）：提供与浏览器交互的方法和接口。
 
 # 第 2章　HTML中的JavaScript 11
 
+本章内容
+
+- 使用`<script>`元素
+- 行内脚本与外部脚本的比较
+- 文档模式对 JavaScript 有什么影响
+- 确保 JavaScript 不可用时的用户体验  
+
 ## 2.1　script 元素 11
+
+- `<script>`元素有下列 8 个属性。
+  1. **async**：可选。表示应该立即开始下载脚本，但不能阻止其他页面动作，比如下载资源或等待其他脚本加载。只对外部脚本文件有效。
+  2. **charset**：可选。使用 src 属性指定的代码字符集。这个属性很少使用，因为大多数浏览器不在乎它的值。
+  3. **crossorigin**：可选。配置相关请求的 CORS（跨源资源共享）设置。默认不使用 CORS。 crossorigin="anonymous"配置文件请求不必设置凭据标志。 crossorigin="use-credentials"设置凭据标志，意味着出站请求会包含凭据。
+  4. **defer**：可选。 表示脚本可以延迟到文档完全被解析和显示之后再执行。 只对外部脚本文件有效。在 IE7 及更早的版本中，对行内脚本也可以指定这个属性。
+  5. **integrity**：可选。允许比对接收到的资源和指定的加密签名以验证子资源完整性（ SRI，Subresource Integrity）。如果接收到的资源的签名与这个属性指定的签名不匹配，则页面会报错，脚本不会执行。这个属性可以用于确保内容分发网络（ CDN， Content Delivery Network）不会提供恶意内容。
+  6. language：废弃。
+  7. **src**：可选。表示包含要执行的代码的外部文件。
+  8. **type**：可选。代替 language，表示代码块中**脚本语言的内容类型**（也称 **MIME 类型**）。按照惯
+     例，这个值始终都是"text/javascript"，尽管"text/javascript"和"text/ecmascript"
+     都已经废弃了。 JavaScript 文件的 MIME 类型通常是 "application/x-javascript"，不过给
+     type 属性这个值 有 可 能 导 致 脚 本 被 忽 略 。 在 非 IE 的 浏 览 器 中 有 效 的 其 他 值 还 有
+     "application/javascript"和"application/ecmascript"。如果这个值是 **module**，则代
+     码会被当成 ES6 模块，而且只有这时候代码中才能出现 import 和 export 关键字。  
 
 ### 2.1.1 标签位置
 
+1. 过去，所有`<script>`元素都被放在页面的`<head>`标签内
+
+   - 意味着必须把所有 JavaScript 代码都下载、解析和解释完成后，才能开始渲染页面  
+
+   ```html
+   <!DOCTYPE html>
+   <html>
+   <head>
+   <title>Example HTML Page</title>
+   <script src="example1.js"></script>
+   <script src="example2.js"></script>
+   </head>
+   <body>
+   <!-- 这里是页面内容 -->
+   </body>
+   </html>
+   ```
+
+   
+
+2. 现代 Web 应用程序通常将所有 JavaScript 引用放在`<body>`元素中的页面内容后面：
+
+   - 页面会在处理 JavaScript 代码之前完全渲染页面。  
+
+   ```html
+   <!DOCTYPE html>
+   <html>
+   <head>
+   <title>Example HTML Page</title>
+   </head>
+   <body>
+   <!-- 这里是页面内容 -->
+   <script src="example1.js"></script>
+   <script src="example2.js"></script>
+   </body>
+   </html>
+   ```
+
+   
+
 ### 2.1.2 推迟执行脚本
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Example HTML Page</title>
+<script defer src="example1.js"></script>
+<script defer src="example2.js"></script>
+</head>
+<body>
+<!-- 这里是页面内容 -->
+</body>
+</html>
+```
+
+- 虽然这个例子中的`<script>`元素包含在页面的`<head>`中，但它们会在浏览器解析到结束的
+  `</html>`标签后才会执行。 HTML5 规范要求脚本应该按照它们出现的顺序执行，因此第一个推迟的脚本会在第二个推迟的脚本之前执行，而且两者都会在 DOMContentLoaded 事件之前执行（关于事件，请参考第 17 章）。不过在实际当中，推迟执行的脚本不一定总会按顺序执行或者在 DOMContentLoaded 事件之前执行，因此最好只包含一个这样的脚本。 
+  - defer 属性只对外部脚本文件才有效。   
 
 ### 2.1.3 异步执行脚本
 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Example HTML Page</title>
+<script async src="example1.js"></script>
+<script async src="example2.js"></script>
+</head>
+<body>
+<!-- 这里是页面内容 -->
+</body>
+</html>
+```
+
+- async 属性的目的是告诉浏览器，  不必等脚本下载和执行完后再加载页面，同样也不必等到该异步脚本下载和执行后再加载其他脚本。正因为如此，异步脚本不应该在加载期间修改 DOM。 
+- 异步脚本保证会在页面的 load 事件前执行，但可能会在 DOMContentLoaded（参见第 17 章）之
+  前或之后。    
+
 ### 2.1.4 动态加载脚本
+
+```javascript
+let script = document.createElement('script');
+script.src = 'gibberish.js';
+document.head.appendChild(script);
+```
+
+- 默认情况下，以这种方式创建的`<script>`元素是以异步方式加载的，相当于添加了 async 属性。不过这样做可能会有问题，因为所有浏览器都支持 createElement()方法，但不是所有浏览器都支持 async 属性。因此，如果要统一动态脚本的加载行为，可以明确将其设置为同步加载。
+
+  ```javascript
+  script.async = false;
+  ```
+
+- 这会严重影响它们在资源获取队列中的优先级。根据应用程序的工作方式以及怎么使用，这种方式可能会严重影响性能。要想让预加载器知道这些动态请求文件的存在，可以在文档头部显式声明它们：
+
+  ```html
+  <link rel="preload" href="gibberish.js">
+  ```
+
+   
 
 ### 2.1.5 XHTML 中的变化
 
+- **可扩展超文本标记语言（ XHTML， Extensible HyperText Markup Language）**是将 HTML 作为 XML的应用重新包装的结果。与 HTML 不同，在 XHTML 中使用 JavaScript 必须指定 **type** 属性且值为 text/javascript， HTML 中则可以没有这个属性。 XHTML 虽然已经退出历史舞台，但实践中偶尔
+  可能也会遇到遗留代码，为此本节稍作介绍。  
+
+- 在 HTML 中，解析`<script>`元素会应用特殊规则。 XHTML 中则没有这些规则。这意味着 a < b
+  语句中的小于号（ <）会被解释成一个标签的开始，并且由于作为标签开始的小于号后面不能有空格，这会导致语法错误。  解决方案：
+
+  - 把所有代码都包含到一个 **CDATA** 块中。在 XHTML（及 XML）中， CDATA 块表示文档中**可以包含任意文本**的区块，其内容不作为标签来解析，因此可以在其中包含任意字符，包括小于号，并且不会引发语法错误。使用 CDATA 的格式如下：  
+
+    ```xml
+    <script type="text/javascript"><![CDATA[
+    function compare(a, b) {
+    if (a < b) {
+    console.log("A is less than B");
+    } else if (a > b) {
+    console.log("A is greater than B");
+    } else {
+    console.log("A is equal to B");
+    }
+    }
+    ]]></script>
+    ```
+
+  - 在兼容 XHTML 的浏览器中，这样能解决问题。但在不支持 CDATA 块的**非 XHTML 兼容浏览器**中
+    则不行。为此， CDATA 标记必须使用 JavaScript 注释来抵消：  
+
+    ```XML
+    <script type="text/javascript">
+    //<![CDATA[
+    function compare(a, b) {
+    if (a < b) {
+    console.log("A is less than B");
+    } else if (a > b) {
+    console.log("A is greater than B");
+    } else {
+    console.log("A is equal to B");
+    }
+    }
+    //]]>
+    </script>
+    ```
+
+    
+
 ### 2.1.6 废弃的语法  
+
+- type 属性使用一个 MIME 类型字符串来标识`<script>`的内容，但 MIME 类型并没有跨浏览器标准化。  
+  - 因此，除非你使用 XHTML 或`<script>`标签要求或包含非 JavaScript 代码，最佳做法是不指
+    定 type 属性。  
 
 ## 2.2　行内代码与外部文件 18
 
+- 推荐使用外部文件的理由如下。
+  1. **可维护性**。 JavaScript 代码如果分散到很多 HTML 页面，会导致维护困难。而用一个目录保存
+     所有 JavaScript 文件，则更容易维护，这样开发者就可以独立于使用它们的 HTML 页面来编辑
+     代码。
+  2. **缓存**。浏览器会根据特定的设置缓存所有外部链接的 JavaScript 文件，这意味着如果两个页面都
+     用到同一个文件，则该文件只需下载一次。这最终意味着页面加载更快。
+  3. **适应未来**。 通过把 JavaScript 放到外部文件中，就不必考虑用 XHTML 或前面提到的注释黑科技。包含外部 JavaScript 文件的语法在 HTML 和 XHTML 中是一样的。  
+- 在配置浏览器请求外部文件时，要重点考虑的一点是它们会占用多少带宽。在 SPDY/HTTP2 中，
+  **预请求**的消耗已显著降低，以轻量、独立 JavaScript 组件形式向客户端送达脚本更具优势。
+  - 在初次请求时，如果浏览器支持 SPDY/HTTP2，就可以从同一个地方取得一批文件，并将它们逐个放到浏览器缓存中。从浏览器角度看，通过 SPDY/HTTP2 获取所有这些独立的资源与获取一个大JavaScript 文件的延迟差不多。
+  - 在第二个页面请求时，由于你已经把应用程序切割成了轻量可缓存的文件，第二个页面也依赖的某些组件此时已经存在于浏览器缓存中了。  
+  - 
+
 ## 2.3　文档模式 18
+
+- `doctype`   最初的文档模式有两种： 混杂模式（ quirks mode）和标准模式（ standards mode）。
+
+  - 第三种文档模式： 准标准模式（ almost standards mode）。    
+    - 主要区别在于如何对待图片元素周围的空白（在表格中使用图片时最明显）。  
+  - 标准模式通过下列几种文档类型声明开启：  
+
+  ```html
+  <!-- HTML 4.01 Strict -->
+  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+  "http://www.w3.org/TR/html4/strict.dtd">
+  
+  <!-- XHTML 1.0 Strict -->
+  <!DOCTYPE html PUBLIC
+  "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+  <!-- HTML5 -->
+  <!DOCTYPE html>
+  ```
+
+  - 准标准模式通过过渡性文档类型（ Transitional）和框架集文档类型（ Frameset）来触发：  
+
+  ```html
+  <!-- HTML 4.01 Transitional -->
+  <!DOCTYPE HTML PUBLIC
+  "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+  
+  <!-- HTML 4.01 Frameset -->
+  <!DOCTYPE HTML PUBLIC
+  "-//W3C//DTD HTML 4.01 Frameset//EN"
+  "http://www.w3.org/TR/html4/frameset.dtd">
+  
+  <!-- XHTML 1.0 Transitional -->
+  <!DOCTYPE html PUBLIC
+  "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  
+  <!-- XHTML 1.0 Frameset -->
+  <!DOCTYPE html PUBLIC
+  "-//W3C//DTD XHTML 1.0 Frameset//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+  ```
+
+- 准标准模式与标准模式非常接近，很少需要区分。  本书后面所说的标准模式，指的就是除混杂模式以外的模式。  
 
 ## 2.4　noscript 元素 19
 
-2.5　小结 20
+- `<noscript>` 元素出现，被用于给不支持 JavaScript 的浏览器提供替代内容。虽然如今的浏览器已经 100%支持JavaScript，但对于禁用 JavaScript 的浏览器来说，这个元素仍然有它的用处。
+  - `<noscript>`元素可以包含任何可以出现在`<body>`中的 HTML 元素， `<script>`除外。在下列两种情况下，浏览器将显示包含在`<noscript>`中的内容：
+    - 浏览器不支持脚本；
+    - 浏览器对脚本的支持被关闭。
+  - 任何一个条件被满足，包含在`<noscript>`中的内容就会被渲染。否则，浏览器不会渲染`<noscript>`中的内容。  
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Example HTML Page</title>
+<script defer="defer" src="example1.js"></script>
+<script defer="defer" src="example2.js"></script>
+</head>
+<body>
+<noscript>
+<p>This page requires a JavaScript-enabled browser.</p>
+</noscript>
+</body>
+</html>
+```
+
+- 这个例子是在脚本不可用时让浏览器显示一段话。如果浏览器支持脚本，则用户永远不会看到它。
+
+## 2.5　小结 20
+
+- 要包含外部 JavaScript 文件，必须将 src 属性设置为要包含文件的 URL。文件可以跟网页在同
+  一台服务器上，也可以位于完全不同的域。
+- 所有`<script>`元素会依照它们在网页中出现的次序被解释。在不使用 defer 和 async 属性的
+  情况下，包含在`<script>`元素中的代码必须严格按次序解释。
+- 对不推迟执行的脚本，浏览器必须解释完位于`<script>`元素中的代码，然后才能继续渲染页面
+  的剩余部分。为此，通常应该把`<script>`元素放到页面末尾，介于主内容之后及`</body>`标签
+  之前。
+- 可以使用 defer 属性把脚本推迟到文档渲染完毕后再执行。推迟的脚本原则上按照它们被列出
+  的次序执行。
+- 可以使用 async 属性表示脚本不需要等待其他脚本，同时也不阻塞文档渲染，即异步加载。异
+  步脚本不能保证按照它们在页面中出现的次序执行。
+- 通过使用`<noscript>`元素，可以指定在浏览器不支持脚本时显示的内容。如果浏览器支持并启
+  用脚本，则`<noscript>`元素中的任何内容都不会被渲染。  
 
 # 第3章　语言基础 21
 
+本章内容
+
+- 语法
+- 数据类型
+- 流控制语句
+- 理解函数  
+
 ## 3.1　语法 21
 
-3.1.1 区分大小写
-3.1.2 标识符
-3.1.3 注释 
-3.1.4 严格模式
-3.1.5 语句
+### 3.1.1 区分大小写
+
+- ECMAScript 中一切都区分大小写。无论是变量、函数名还是操作符，都区分大小写。  
+
+### 3.1.2 标识符
+
+- 所谓标识符，就是变量、函数、属性或函数参数的名称。标识符可以由一或多个下列字符组成：
+  1. **第一个字符必须是一个字母、下划线 `_` 或美元符号 `$`；**
+  2. 剩下的其他字符可以是字母、下划线、美元符号或数字。
+  3. 标识符中的字母可以是扩展 ASCII（ Extended ASCII）中的字母，也可以是 Unicode 的字母字符，如 À 和 Æ（但不推荐使用）。
+- 按照惯例， ECMAScript 标识符使用**驼峰大小写**形式，即第一个单词的首字母小写，后面每个单词的首字母大写，如：  `firstSecond、myCar、doSomethingImportant`。
+
+### 3.1.3 注释 
+
+- ECMAScript 采用 C 语言风格的注释，包括单行注释和块注释。  
+
+```javascript
+// 单行注释
+块注释以一个斜杠和一个星号（ /*）开头，以它们的反向组合（ */）结尾，如：
+/* 这是多行
+注释 */
+```
+
+
+
+### 3.1.4 严格模式
+
+- 严格模式（ strict mode）  
+
+  - 要对整个脚本启用严格模式，在脚本开头加上这一行：`"use strict";`  
+
+  - 也可以单独指定一个函数在严格模式下执行，只要把这个预处理指令放到函数体开头即可：
+
+    ```JavaScript
+    function doSomething() {
+    "use strict";
+    // 函数体
+    }
+    ```
+
+  - 严格模式会影响 JavaScript 执行的很多方面，因此本书在用到它时会明确指出来。所有现代浏览
+
+    器都支持严格模式。  
+
+### 3.1.5 语句
+
+- 以分号结尾。省略分号意味着由解析器确定语句在哪里结尾 ：
+
+  ```JavaScript
+  let sum = a + b // 没有分号也有效，但不推荐
+  let diff = a - b; // 加分号有效，推荐
+  ```
+
+  - 即使语句末尾的分号不是必需的，也应该加上。  
+
+- 多条语句可以合并到一个 C 语言风格的代码块中。  
+
+- if 之类的控制语句只在执行多条语句时要求必须有代码块。  
+
+  ```Javascript
+  // 有效，但容易导致错误，应该避免
+  if (test)
+  console.log(test);
+  // 推荐
+  if (test) {
+  console.log(test);
+  }
+  ```
+
+  
 
 ## 3.2　关键字与保留字 23
+
+```javascript
+break 		do 				in 					typeof
+case 			else 			instanceof 	var
+catch 		export 		new 				void
+class 		extends 	return 			while
+const 		finally 	super 			with
+continue 	for 			switch 			yield
+debugger 	function 	this
+default 	if 				throw
+delete 		import 		try
+
+//始终保留:
+enum
+
+//严格模式下保留:
+implements  package 	public
+interface 	protected static
+let 				private
+
+//模块代码中保留:
+await
+```
 
 
 
 ## 3.3　变量 24
 
-3.1.1 区分大小写
-3.1.2 标识符
-3.1.3 注释 
-3.1.4 严格模式
-3.1.5 语句
+### 3.3.1 var 关键字  
+
+- 不仅可以改变保存的值，也可以改变值的类型：
+  - 虽然不推荐改变变量保存值的类型，但这在 ECMAScript 中是完全有效的。  
+
+```javascript
+var message = "hi";
+message = 100; // 合法，但不推荐
+```
+
+1. **var 声明作用域**  
+
+   ```javascript
+   function test() {
+   	var message = "hi"; // 局部变量,该变量将在函数退出时被销毁
+   }
+   test();
+   console.log(message); // 出错！
+   ```
+
+2. 在函数内定义变量时省略 var 操作符，可以创建一个全局变量：  
+
+   ```javascript
+   function test() {
+   	message = "hi"; // 全局变量,不推荐这么做。很难维护
+   }
+   test();
+   console.log(message); // "hi"
+   ```
+
+   - 如果需要定义多个变量，可以在一条语句中用逗号分隔每个变量（及可选的初始化）：  
+
+   ```javascript
+   var message = "hi",found = false, //插入换行和空格缩进并不是必需的
+   age = 29;
+   ```
+
+   - 严格模式下，不能定义名为 eval 和 arguments 的变量，否则会导致语法错误。  
+
+3. **var 声明提升（ hoist）  **
+
+   - 关键字声明的变量会自动提升到函数作用域顶部：  
+
+   ```javascript
+   function foo() {
+   console.log(age);
+   var age = 26;
+   }
+   foo(); // undefined
+   
+   //等价于如下代码：
+   function foo() {
+   var age;
+   console.log(age);
+   age = 26;
+   }
+   foo(); // undefined
+   ```
+
+   - 反复多次使用 var 声明同一个变量也没有问题。
+
+### 3.3.2 let 声明  
+
+- let 声明的范围是**块作用域**，而 var 声明的范围是**函数作用域**。  
+
+  ```javascript
+  if (true) {
+  var name = 'Matt';
+  console.log(name); // Matt
+  }
+  console.log(name); // Matt
+  
+  if (true) {
+  let age = 26;
+  console.log(age); // 26
+  }
+  console.log(age); // ReferenceError: age 没有定义
+  ```
+
+  - age 变量之所以不能在 if 块外部被引用，是因为它的作用域仅限于该块内部。块作用域是函数作用域的子集，因此适用于 var 的作用域限制同样也适用于 let。 
+
+- let 也不允许同一个块作用域中出现冗余声明。这样会导致报错：
+
+  ```javascript
+  var name;
+  var name;
+  
+  let age;
+  let age; // SyntaxError；标识符 age 已经声明过了  
+  ```
+
+- JavaScript 引擎会记录用于变量声明的标识符及其**所在的块作用域**，因此**嵌套使用相同的标识符**不会报错，而这是因为同一个块中没有重复声明：  
+
+  ```javascript
+  var name = 'Nicholas';
+  console.log(name); // 'Nicholas'
+  if (true) {
+  	var name = 'Matt';
+  	console.log(name); // 'Matt'
+  }
+  
+  let age = 30;
+  console.log(age); // 30
+  if (true) {
+  	let age = 26;
+  	console.log(age); // 26
+  }
+  ```
+
+- 对声明冗余报错不会因混用 let 和 var 而受影响。这两个关键字声明的并不是不同类型的变量，
+  它们只是指出变量在相关作用域如何存在。
+
+  ```javascript
+  var name;
+  let name; // SyntaxError
+  
+  let age;
+  var age; // SyntaxError  
+  ```
+
+1. **暂时性死区**
+   let 与 var 的另一个重要的区别，就是 let 声明的变量不会在作用域中被提升。
+
+   ```javascript
+   // name 会被提升
+   console.log(name); // undefined
+   var name = 'Matt';
+   // age 不会被提升
+   console.log(age); // ReferenceError： age 没有定义
+   let age = 26;
+   ```
+
+   - 在解析代码时， JavaScript 引擎也会注意出现在块后面的 let 声明，只不过在此之前不能以任何方式来引用未声明的变量。在 let 声明之前的执行瞬间被称为“暂时性死区”（ temporal dead zone），在此阶段引用任何后面才声明的变量都会抛出 ReferenceError。  
+
+### 3.3.3 const 声明  
+
+
+
+### 3.3.4 声明风格及最佳实践  
+
+
 
 ## 3.4　数据类型 30
 
