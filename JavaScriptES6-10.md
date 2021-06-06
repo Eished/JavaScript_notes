@@ -77,11 +77,27 @@ touch static/lesson2-1.js // 新建文件命令
 VS code 插件 beautify 和 ESLint
 
 1. 课程框架框架运行逻辑：
-   1. `app.js`
-   2. `routes/user.js`
-   3. `index.min.js`
-   4. `js/index.js`
-   5. `lesson2-1.js`
+
+   1. `package.json`  运行`npm start`
+
+      ```json
+      "scripts": {
+          "babel": "babel-node app.js",
+          "start": "nodemon --exec npm run babel",
+          "webpack": "webpack -w"
+        }
+      ```
+
+   2. `app.js`
+
+   3. `routes/user.js`
+
+   4. `index.min.js`
+
+   5. `js/index.js`
+
+   6. `lesson2-1.js`
+
 2. 修改`js/index.js` 内 `import './lesson2-1'` 代码实现更换课程项目代码。
 
 

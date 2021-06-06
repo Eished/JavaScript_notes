@@ -691,24 +691,148 @@ message = 100; // 合法，但不推荐
 
    - 在解析代码时， JavaScript 引擎也会注意出现在块后面的 let 声明，只不过在此之前不能以任何方式来引用未声明的变量。在 let 声明之前的执行瞬间被称为“暂时性死区”（ temporal dead zone），在此阶段引用任何后面才声明的变量都会抛出 ReferenceError。  
 
+2. **全局声明**
+
+   -   let 在全局作用域中声明的变量不会成为 window 对象的属性（ var 声明的变量则会）。 
+
+3. **条件声明**  
+
+   - var 声明变量时，由于声明会被提升， JavaScript 引擎会自动将多余的声明在作用域顶部合并为一个声明。  
+   - **let 的作用域是块**，所以不可能检查前面是否已经使用 let 声明过同名变量。
+     - 不能超出分号块的范围使用。
+
+   ```javascript
+   <script>
+     var name = 'Nicholas';
+     let age = 26;
+   </script>
+   
+   <script>
+     // 假设脚本不确定页面中是否已经声明了同名变量
+     // 那它可以假设还没有声明过
+     var name = 'Matt';
+     // 这里没问题，因为可以被作为一个提升声明来处理
+     // 不需要检查之前是否声明过同名变量
+     let age = 36;
+     // 如果 age 之前声明过，这里会报错
+   </script>
+   
+   //使用 try/catch 语句或 typeof 操作符也不能解决，因为条件块中 let 声明的作用域仅限于该块。
+   <script>
+   let name = 'Nicholas';
+   let age = 36;
+   </script>
+   
+   <script>
+   // 假设脚本不确定页面中是否已经声明了同名变量
+   // 那它可以假设还没有声明过
+   if (typeof name === 'undefined') {
+     let name;
+   }
+   // name 被限制在 if {} 块的作用域内
+   // 因此这个赋值形同全局赋值
+   name = 'Matt';
+   try {
+     console.log(age); // 如果 age 没有声明过，则会报错
+   }
+   catch(error) {
+   	let age;
+   }
+   // age 被限制在 catch {}块的作用域内
+   // 因此这个赋值形同全局赋值
+   age = 26;
+   </script>
+   ```
+
+4. **for 循环中的 let 声明**  
+
+   1. 在 let 出现之前， for 循环定义的迭代变量会渗透到循环体外部：  
+
+      ```javascript
+      for (var i = 0; i < 5; ++i) {
+      	// 循环逻辑
+      }
+      console.log(i); // 5
+      
+      // 改成使用 let 之后，这个问题就消失了，因为迭代变量的作用域仅限于 for 循环块内部：
+      for (let i = 0; i < 5; ++i) {
+      	// 循环逻辑
+      }
+      console.log(i); // ReferenceError: i 没有定义
+      ```
+
+   2. 在使用 var 的时候，最常见的问题就是对**迭代变量**的奇特声明和修改：  
+
+      ```javascript
+      for (var i = 0; i < 5; ++i) {
+      	setTimeout(() => console.log(i), 0)
+      }
+      // 你可能以为会输出 0、 1、 2、 3、 4
+      // 实际上会输出 5、 5、 5、 5、 5
+      // 退出循环时，迭代变量保存的是导致循环退出的值
+      
+      // 使用 let 声明迭代变量时， JavaScript 引擎在后台会为每个迭代循环声明一个新的迭代变量。
+      for (let i = 0; i < 5; ++i) {
+      	setTimeout(() => console.log(i), 0)
+      }
+      // 会输出 0、 1、 2、 3、 4
+      ```
+
+      - 每次迭代声明一个独立变量实例的行为适用于所有风格的 for 循环，包括 for-in 和 for-of 循环。  
+
 ### 3.3.3 const 声明  
 
+- const 的行为与 let 基本相同，唯一一个重要的区别是用它声明变量时必须同时初始化变量，且尝试修改 const 声明的变量会导致运行时错误。  
 
+  - const 声明的限制**只适用于它指向的变量的引用**。换句话说，如果 const 变量引用的是一个对象，那么修改这个对象内部的属性并不违反 const 的限制。  
+
+    ```javascript
+    const person = {};
+    person.name = 'Matt'; // ok
+    ```
+
+  - const 声明一个不会被修改的 for 循环变量  
+
+    ```javascript
+    let i = 0;
+    for (const j = 7; i < 5; ++i) {
+    	console.log(j);
+    }
+    // 7, 7, 7, 7, 7
+    for (const key in {a: 1, b: 2}) {
+    	console.log(key);
+    }
+    // a, b
+    for (const value of [1,2,3,4,5]) {
+      console.log(value);
+    }
+    // 1, 2, 3, 4, 5
+    ```
+
+    
 
 ### 3.3.4 声明风格及最佳实践  
 
-
+1. 不使用 var  
+2. const 优先， let 次之  
 
 ## 3.4　数据类型 30
 
-3.4.1 typeof 操作符
-3.4.2 Undefined 类型
-3.4.3 Null 类型
-3.4.4 Boolean 类型
-3.4.5 Number 类型
-3.4.6 String 类型
-3.4.7 Symbol 类型 
-3.4.8 Object 类型 
+### 3.4.1 typeof 操作符
+
+### 3.4.2 Undefined 类型
+
+### 3.4.3 Null 类型
+
+### 3.4.4 Boolean 类型
+
+### 3.4.5 Number 类型
+
+### 3.4.6 String 类型
+
+### 3.4.7 Symbol 类型 
+
+### 3.4.8 Object 类型 
 
 ## 3.5　操作符 56
 
