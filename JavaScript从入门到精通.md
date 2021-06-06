@@ -6421,6 +6421,515 @@ xhr.onerror = function() {
 - 宿主对象（由浏览器提供的对象）
   - `DOM` / `BOM`
 
+## JavaScript 对象访问器
+
+ECMAScript 5 (2009) 引入了 Getter 和 Setter。
+
+Getter 和 Setter 允许您定义对象访问器（被计算的属性）。
+
+### JavaScript Getter
+
+本例使用 lang 属性来获取 language 属性的值。
+
+**实例**
+
+```javascript
+// 创建对象：
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "en",
+  get lang() {
+    return this.language;
+  }
+};
+
+// 使用 getter 来显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.lang;
+```
+
+### JavaScript Setter
+
+本例使用 lang 属性来设置 language 属性的值。
+
+**实例**
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "",
+  set lang(lang) {
+    this.language = lang;
+  }
+};
+
+// 使用 setter 来设置对象属性：
+person.lang = "en";
+
+// 显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.language;
+```
+
+**例子 1**
+
+```
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  fullName : function() {
+    return this.firstName + " " + this.lastName;
+  }
+};
+
+// 使用方法来显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.fullName();
+```
+
+**例子2**
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  get fullName() {
+    return this.firstName + " " + this.lastName;
+  }
+};
+
+// 使用 getter 来显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.fullName;
+```
+
+例子 1 以函数形式访问 fullName：person.fullName()。
+
+例子 2 以属性形式访问 fullName：person.fullName。
+
+**第二个例子提供了更简洁的语法。**
+
+### 数据质量
+
+使用 getter 和 setter 时，JavaScript 可以确保更好的数据质量。
+
+在本例中，使用 lang 属性以大写形式返回 language 属性的值：
+
+```javascript
+// Create an object:
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "en",
+  get lang() {
+    return this.language.toUpperCase();
+  }
+};
+
+// 使用 getter 来显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.lang;
+```
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "",
+  set lang(lang) {
+    this.language = lang.toUpperCase();
+  }
+};
+
+// 使用 getter 来设置对象属性：
+person.lang = "en";
+
+// 显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.language;
+```
+
+### 为什么使用 Getter 和 Setter？
+
+- 它提供了更简洁的语法
+- 它允许属性和方法的语法相同
+- 它可以确保更好的数据质量
+- 有利于后台工作
+
+### 一个计数器实例
+
+**实例**
+
+```javascript
+var obj = {
+  counter : 0,
+  get reset() {
+    this.counter = 0;
+  },
+  get increment() {
+    this.counter++;
+  },
+  get decrement() {
+    this.counter--;
+  },
+  set add(value) {
+    this.counter += value;
+  },
+  set subtract(value) {
+    this.counter -= value;
+  }
+};
+
+// 操作计数器：
+obj.reset;
+obj.add = 5;
+obj.subtract = 1;
+obj.increment;
+obj.decrement;
+Object.defineProperty()
+```
+
+### Object.defineProperty() 方法也可用于添加 Getter 和 Setter：
+
+```javascript
+// 定义对象
+var obj = {counter : 0};
+
+// 定义 setters
+Object.defineProperty(obj, "reset", {
+  get : function () {this.counter = 0;}
+});
+Object.defineProperty(obj, "increment", {
+  get : function () {this.counter++;}
+});
+Object.defineProperty(obj, "decrement", {
+  get : function () {this.counter--;}
+});
+Object.defineProperty(obj, "add", {
+  set : function (value) {this.counter += value;}
+});
+Object.defineProperty(obj, "subtract", {
+  set : function (value) {this.counter -= value;}
+});
+
+// 操作计数器：
+obj.reset;
+obj.add = 5;
+obj.subtract = 1;
+obj.increment;
+obj.decrement;
+```
+
+## JavaScript 对象构造器
+
+### 对象类型（蓝图）（类）
+
+前一章的实例是有限制的。它们只创建单一对象。
+
+有时我们需要创建相同“类型”的许多对象的“*蓝图*”。
+
+创建一种“对象类型”的方法，是使用*对象构造器函数*。
+
+在上面的例子中，**函数 Person()** 就是对象构造器函数。
+
+通过 **new** 关键词调用构造器函数可以创建相同类型的对象：
+
+```javascript
+function Person(first, last, age, eye) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eye;
+}
+
+var myFather = new Person("Bill", "Gates", 62, "blue");
+var myMother = new Person("Steve", "Jobs", 56, "green");
+```
+
+### *this* 关键词
+
+在 JavaScript 中，被称为 this 的事物是代码的“拥有者”。
+
+this 的值，在对象中使用时，就是对象本身。
+
+在构造器函数中，this 是没有值的。它是新对象的替代物。 当一个新对象被创建时，this 的值会成为这个新对象。
+
+请注意 this 并不是变量。它是关键词。您无法改变 this 的值。
+
+### 为构造器添加属性
+
+与向已有对象添加新属性不同，您无法为对象构造器添加新属性：
+
+如需向构造器添加一个新属性，您必须添加到构造器函数：
+
+```javascript
+Person.nationality = "English"; //The nationality of my friend is undefined
+
+function Person(first, last, age, eyecolor) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eyecolor;
+    this.nationality = "English";
+}
+```
+
+### 为构造器添加方法
+
+您的构造器函数也可以定义方法：
+
+```javascript
+function Person(first, last, age, eyecolor) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eyecolor;
+    this.name = function() {return this.firstName + " " + this.lastName;};
+}
+```
+
+与向已有对象添加新方法不同，您无法为对象构造器添加新方法。
+
+必须在构造器函数内部向一个对象添加方法。
+
+### 内建 JavaScript 构造器
+
+JavaScript 提供用于原始对象的构造器：
+
+```javascript
+var x1 = new Object();    // 一个新的 Object 对象
+var x2 = new String();    // 一个新的 String 对象
+var x3 = new Number();    // 一个新的 Number 对象
+var x4 = new Boolean();   // 一个新的 Boolean 对象
+var x5 = new Array();     // 一个新的 Array 对象
+var x6 = new RegExp();    // 一个新的 RegExp 对象
+var x7 = new Function();  // 一个新的 Function 对象
+var x8 = new Date();      // 一个新的 Date 对象
+```
+
+Math() 对象不再此列。Math 是全局对象。new 关键词不可用于 Math。
+
+### 更快创建对象的方式
+
+正如以上所见，JavaScript 提供原始数据类型字符串、数字和布尔的对象版本。但是并无理由创建复杂的对象。原始值快得多！
+
+请使用对象字面量 `{}` 代替 `new Object()`。
+
+请使用字符串字面量 `""` 代替 `new String()`。
+
+请使用数值字面量代替 `Number()`。
+
+请使用布尔字面量代替 `new Boolean(`)。
+
+请使用数组字面量 `[]` 代替 `new Array()`。
+
+请使用模式字面量代替 `new RexExp()`。
+
+请使用函数表达式 `() {}` 代替 `new Function()`。
+
+```javascript
+var x1 = {};            // 新对象
+var x2 = "";            // 新的原始字符串
+var x3 = 0;             // 新的原始数值
+var x4 = false;         // 新的原始逻辑值
+var x5 = [];            // 新的数组对象
+var x6 = /()/           // 新的正则表达式对象
+var x7 = function(){};  // 新的函数对象
+```
+
+## JavaScript 对象原型
+
+我们已经认识到，您*无法*为已有的对象构造器添加新属性，如需向构造器添加一个新属性，则必须把它添加到构造器函数
+
+### 原型继承
+
+所有 JavaScript 对象都从原型继承属性和方法。
+
+日期对象继承自 Date.prototype。数组对象继承自 Array.prototype。Person 对象继承自 Person.prototype。
+
+Object.prototype 位于原型继承链的顶端：
+
+日期对象、数组对象和 Person 对象都继承自 Object.prototype。
+
+### 使用 prototype 属性
+
+JavaScript prototype 属性允许您为对象构造器添加新属性：
+
+```javascript
+function Person(first, last, age, eyecolor) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eyecolor;
+}
+Person.prototype.nationality = "English";
+```
+
+JavaScript prototype 属性也允许您为对象构造器添加新方法：
+
+```javascript
+function Person(first, last, age, eyecolor) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eyecolor;
+}
+Person.prototype.name = function() {
+    return this.firstName + " " + this.lastName;
+};
+```
+
+## ES5 新的对象方法
+
+```javascript
+// 添加或更改对象属性
+Object.defineProperty(object, property, descriptor)
+
+// 添加或更改多个对象属性
+Object.defineProperties(object, descriptors)
+
+// 访问属性
+Object.getOwnPropertyDescriptor(object, property)
+
+// 以数组返回所有属性
+Object.getOwnPropertyNames(object)
+
+// 以数组返回所有可枚举的属性
+Object.keys(object)
+
+// 访问原型
+Object.getPrototypeOf(object)
+
+// 阻止向对象添加属性
+Object.preventExtensions(object)
+
+// 如果可将属性添加到对象，则返回 true
+Object.isExtensible(object)
+
+// 防止更改对象属性（而不是值）
+Object.seal(object)
+
+// 如果对象被密封，则返回 true
+Object.isSealed(object)
+
+// 防止对对象进行任何更改
+Object.freeze(object)
+
+// 如果对象被冻结，则返回 true
+Object.isFrozen(object)
+```
+
+### 更改属性值
+
+```javascript
+Object.defineProperty(object, property, {value : value})
+```
+
+本例更改了属性值：
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "EN" 
+};
+
+// 更改属性
+Object.defineProperty(person, "language", {value : "ZH"});
+```
+
+### 更改元数据
+
+ES5 允许更改以下属性元数据：
+
+```javascript
+writable : true      // 属性值可修改
+enumerable : true    // 属性可枚举
+configurable : true  // 属性可重新配置
+writable : false     // 属性值不可修改
+enumerable : false   // 属性不可枚举
+configurable : false // 属性不可重新配置
+```
+
+ES5 允许更改 getter 和 setter：
+
+```javascript
+// 定义 getter
+get: function() { return language }
+// 定义 setter
+set: function(value) { language = value }
+```
+
+此例使语言为只读：
+
+```javascript
+Object.defineProperty(person, "language", {writable:false});
+```
+
+此例使语言不可枚举：
+
+```javascript
+Object.defineProperty(person, "language", {enumerable:false});
+```
+
+### 列出所有属性
+
+此例列出对象的所有属性：
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates"
+  language : "EN" 
+};
+
+Object.defineProperty(person, "language", {enumerable:false});
+Object.getOwnPropertyNames(person);  // 返回属性数组
+```
+
+### 列出可枚举的属性
+
+此例只列出对象的所有可枚举属性：
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates"
+  language : "EN" 
+};
+
+Object.defineProperty(person, "language", {enumerable:false});
+Object.keys(person);  // 返回可枚举属性的数组
+```
+
+### 添加属性
+
+此例向对象添加新属性：
+
+```javascript
+// 创建对象
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "EN"
+};
+
+// 添加属性
+Object.defineProperty(person, "year", {value:"2008"});
+```
+
+### 添加 Getter 和 Setter
+
+Object.defineProperty() 方法也可以用于添加 Getter 和 Setter：
+
+```javascript
+// 创建对象
+var person = {firstName:"Bill", lastName:"Gates"};
+
+// 定义 getter
+Object.defineProperty(person, "fullName", {
+  get : function () {return this.firstName + " " + this.lastName;}
+});
+```
+
+
+
 ## BOM 应用
 
 ### BOM 基础
