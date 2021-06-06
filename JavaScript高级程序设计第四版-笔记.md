@@ -142,14 +142,14 @@ Web Storage 和 IndexedDB。
 
    1. 弹出新浏览器窗口的能力；
    2. 移动、缩放和关闭浏览器窗口的能力；
-   3. navigator 对象，提供关于浏览器的详尽信息；
-   4. location 对象，提供浏览器加载页面的详尽信息；  
-   5. screen 对象，提供关于用户屏幕分辨率的详尽信息；
-   6. performance 对象，提供浏览器内存占用、导航行为和时间统计的详尽信息；
+   3. `navigator` 对象，提供关于浏览器的详尽信息；
+   4. `location` 对象，提供浏览器加载页面的详尽信息；  
+   5. `screen` 对象，提供关于用户屏幕分辨率的详尽信息；
+   6. `performance` 对象，提供浏览器内存占用、导航行为和时间统计的详尽信息；
    7. 对 cookie 的支持；
-   8. 其他自定义对象，如 XMLHttpRequest 和 IE 的 ActiveXObject。  
+   8. 其他自定义对象，如 `XMLHttpRequest` 和 IE 的 `ActiveXObject`。  
 
-   浏览器实现的都是自己的 BOM。有一些所谓的事实标准，比如对于 window 对象和 navigator 对象，每个浏览器都会给它们定义自己的属性和方法。  
+   浏览器实现的都是自己的 BOM。有一些所谓的事实标准，比如对于 `window` 对象和 `navigator` 对象，每个浏览器都会给它们定义自己的属性和方法。  
 
 1.3　JavaScript 版本 
 
@@ -179,12 +179,10 @@ Web Storage 和 IndexedDB。
   5. **integrity**：可选。允许比对接收到的资源和指定的加密签名以验证子资源完整性（ SRI，Subresource Integrity）。如果接收到的资源的签名与这个属性指定的签名不匹配，则页面会报错，脚本不会执行。这个属性可以用于确保内容分发网络（ CDN， Content Delivery Network）不会提供恶意内容。
   6. language：废弃。
   7. **src**：可选。表示包含要执行的代码的外部文件。
-  8. **type**：可选。代替 language，表示代码块中**脚本语言的内容类型**（也称 **MIME 类型**）。按照惯
-     例，这个值始终都是"text/javascript"，尽管"text/javascript"和"text/ecmascript"
-     都已经废弃了。 JavaScript 文件的 MIME 类型通常是 "application/x-javascript"，不过给
-     type 属性这个值 有 可 能 导 致 脚 本 被 忽 略 。 在 非 IE 的 浏 览 器 中 有 效 的 其 他 值 还 有
-     "application/javascript"和"application/ecmascript"。如果这个值是 **module**，则代
-     码会被当成 ES6 模块，而且只有这时候代码中才能出现 import 和 export 关键字。  
+  8. **type**：可选。代替 language，表示代码块中**脚本语言的内容类型**（也称 **MIME 类型**）。
+     - 按照惯例，这个值始终都是"text/javascript"，尽管"text/javascript"和"text/ecmascript"都已经废弃了。
+     -  JavaScript 文件的 MIME 类型通常是 "application/x-javascript"，不过给 type 属性这个值 有 可 能 导 致 脚 本 被 忽 略 。 在 非 IE 的 浏 览 器 中 有 效 的 其 他 值 还 有"application/javascript"和"application/ecmascript"。
+     - 如果这个值是 **module**，则代码会被当成 ES6 模块，而且只有这时候代码中才能出现 import 和 export 关键字。  
 
 ### 2.1.1 标签位置
 
@@ -206,8 +204,6 @@ Web Storage 和 IndexedDB。
    </html>
    ```
 
-   
-
 2. 现代 Web 应用程序通常将所有 JavaScript 引用放在`<body>`元素中的页面内容后面：
 
    - 页面会在处理 JavaScript 代码之前完全渲染页面。  
@@ -225,8 +221,6 @@ Web Storage 和 IndexedDB。
    </body>
    </html>
    ```
-
-   
 
 ### 2.1.2 推迟执行脚本
 
@@ -288,8 +282,6 @@ document.head.appendChild(script);
   <link rel="preload" href="gibberish.js">
   ```
 
-   
-
 ### 2.1.5 XHTML 中的变化
 
 - **可扩展超文本标记语言（ XHTML， Extensible HyperText Markup Language）**是将 HTML 作为 XML的应用重新包装的结果。与 HTML 不同，在 XHTML 中使用 JavaScript 必须指定 **type** 属性且值为 text/javascript， HTML 中则可以没有这个属性。 XHTML 虽然已经退出历史舞台，但实践中偶尔
@@ -332,8 +324,6 @@ document.head.appendChild(script);
     //]]>
     </script>
     ```
-
-    
 
 ### 2.1.6 废弃的语法  
 
@@ -416,14 +406,14 @@ document.head.appendChild(script);
 <!DOCTYPE html>
 <html>
 <head>
-<title>Example HTML Page</title>
-<script defer="defer" src="example1.js"></script>
-<script defer="defer" src="example2.js"></script>
+	<title>Example HTML Page</title>
+  <script defer="defer" src="example1.js"></script>
+  <script defer="defer" src="example2.js"></script>
 </head>
 <body>
-<noscript>
-<p>This page requires a JavaScript-enabled browser.</p>
-</noscript>
+  <noscript>
+    <p>This page requires a JavaScript-enabled browser.</p>
+  </noscript>
 </body>
 </html>
 ```
@@ -480,8 +470,6 @@ document.head.appendChild(script);
 注释 */
 ```
 
-
-
 ### 3.1.4 严格模式
 
 - 严格模式（ strict mode）  
@@ -492,8 +480,8 @@ document.head.appendChild(script);
 
     ```JavaScript
     function doSomething() {
-    "use strict";
-    // 函数体
+    	"use strict";
+    	// 函数体
     }
     ```
 
@@ -519,14 +507,13 @@ document.head.appendChild(script);
   ```Javascript
   // 有效，但容易导致错误，应该避免
   if (test)
-  console.log(test);
+  	console.log(test);
+  
   // 推荐
   if (test) {
-  console.log(test);
+  	console.log(test);
   }
   ```
-
-  
 
 ## 3.2　关键字与保留字 23
 
@@ -809,8 +796,6 @@ message = 100; // 合法，但不推荐
     // 1, 2, 3, 4, 5
     ```
 
-    
-
 ### 3.3.4 声明风格及最佳实践  
 
 1. 不使用 var  
@@ -882,17 +867,629 @@ message = 100; // 合法，但不推荐
     console.log(typeof car); // "object"
     ```
 
-  - 
+  - 在定义将来要保存对象值的变量时，**建议使用 null 来初始化**。只要检查这个变量的值是不是 null 就可以知道这个变量是否在后来被重新赋予了一个对象的引用，比如：
+
+    - 用 null 来填充该变量 ，这样就可以保持 null 是空对象指针的语义，并进一步将其与 undefined 区分开来。  
+
+    ```javascript
+    if (car != null) {
+    // car 是一个对象的引用
+    } 
+    ```
+
+  - undefined 值是由 null 值派生而来的，因此 ECMA-262 将它们定义为表面上相等
+
+    ```javascript
+    console.log(null == undefined); // true
+    ```
 
 ### 3.4.4 Boolean 类型
 
+- Boolean（布尔值）类型是 ECMAScript 中使用最频繁的类型之一，有两个字面值： true 和 false。
+
+  - 这两个布尔值不同于数值，因此 **true 不等于 1， false 不等于 0。**    
+
+  - 下面是给变量赋布尔值的例子：
+
+    ```javascript
+    let found = true;
+    let lost = false;  
+    ```
+
+- 将一个其他类型的值转换为布尔值，可以调用特定的 `Boolean()` 转型函数：
+
+  ```javascript
+  let message = "Hello world!";
+  let messageAsBoolean = Boolean(message);  
+  ```
+
+- 下表总结了不同类型与布尔值之间的转换规则。  
+
+  | 数据类型  |    转换为 true 的值    |       转换为 false 的值       |
+  | :-------: | :--------------------: | :---------------------------: |
+  |  Boolean  |          true          |             false             |
+  |  String   |       非空字符串       |       `""`（空字符串）        |
+  |  Number   | 非零数值（包括无穷值） | 0、 NaN（参见后面的相关内容） |
+  |  Object   |        任意对象        |             null              |
+  | Undefined |     N/A（不存在）      |           undefined           |
+
+  - if 等流控制语句会**自动执行其他类型值到布尔值的转换**，例如：
+
+    ```javascript
+    let message = "Hello world!";
+    if (message) {
+    	console.log("Value is true");
+    }  
+    ```
+
 ### 3.4.5 Number 类型
+
+- Number 类型使用 IEEE 754 格式表示**整数和浮点值**（在某些语言中也叫双精度值）。  不同的数值类型相应地也有不同的数值字面量格式。  
+
+  - **十进制**整数 ：`let intNum = 55; // 整数  `
+
+  - **八进制**（以 8 为基数），第一个数字必须是零 ，后面数值 0~7
+
+    ```javascript
+    let octalNum1 = 070; // 八进制的 56
+    let octalNum2 = 079; // 无效的八进制值，当成 79 处理
+    let octalNum3 = 08; // 无效的八进制值，当成 8 处理
+    ```
+
+    - 八进制字面量在严格模式下是无效的，会导致 JavaScript 引擎抛出语法错误。   
+
+  - **十六进制**（以 16 为基数），数值前缀 0x（区分大小写），然后是十六进制数字（ 0~9 以
+    及 A~F）。  
+
+    ```javascript
+    let hexNum1 = 0xA; // 十六进制 10
+    let hexNum2 = 0x1f; // 十六进制 31
+    ```
+
+1. **浮点值**
+
+   -   定义浮点值，数值中必须包含小数点，而且小数点后面必须至少有一个数字。  
+
+     ```javascript
+     let floatNum1 = 1.1;
+     let floatNum2 = 0.1;
+     let floatNum3 = .1; // 有效，但不推荐
+     ```
+
+     - 浮点值使用的内存空间是存储整数值的两倍。
+     - 小数点后面没有数字的情况下，数值就会变成整数。  类似地，  数值本身就是整数，只是小数点后面**跟着 0（如 1.0），那它也会被转换为整数。**  
+
+     ```javascript
+     let floatNum1 = 1.; // 小数点后面没有数字，当成整数 1 处理
+     let floatNum2 = 10.0; // 小数点后面是零，当成整数 10 处理
+     ```
+
+   - 非常大或非常小的数值，浮点值可以用科学记数法来表示。  
+
+     - 一个数值（整数或浮点数）后跟一个大写或小写的字母 e，再加上一个要乘的 10 的多少次幂。比如：  
+
+     ```javascript
+     let floatNum = 3.125e7; // 等于 31250000
+     ```
+
+   - 浮点值的精确度最高可达 17 位小数，但在算术计算中远不如整数精确。
+
+     - 例如， 0.1 加 0.2 得到的不是 0.3，而是 0.300 000 000 000 000 04。由于这种微小的舍入错误，导致很难测试特定的浮点值。比如下面的例子：
+
+       ```javascript
+       if (a + b == 0.3) { // 别这么干！
+       	console.log("You got 0.3.");
+       }  
+       ```
+
+     - **永远不要测试某个特定的浮点值。**  
+
+2. **值的范围**  
+
+   - ECMAScript 可以表示的最小数值保存在 `Number.MIN_VALUE` 中，这个值在多数浏览器中是 `5e-324`；可以表示的最大数值保存在`Number.MAX_VALUE` 中，这个值在多数浏览器中是 `1.797 693 134 862 315 7e+308`。
+
+   - 如果某个计算得到的数值结果超出了 JavaScript 可以表示的范围，那么这个数值会被自动转换为一个特殊的 Infinity（无穷）值。任何无法表示的负数以 **-Infinity（负无穷大）**表示，任何无法表示的正数以 **Infinity（正无穷大）**表示  。
+
+     - 要确定一个值是不是有限大（即介于 JavaScript 能表示的最小值和最大值之间），可以使用 `isFinite()` 函数，如下所示：
+
+       ```javascript
+       let result = Number.MAX_VALUE + Number.MAX_VALUE;
+       console.log(isFinite(result)); // false  
+       ```
+
+3. **NaN**  
+
+   - **“不是数值”（ Not a Number）**，用于表示本来要返回数值的操作失败了（而不是抛出错误）。
+
+   - 比如，用 0 除任意数值在其他语言中通常都会导致错误，从而中止代码执行。但在 ECMAScript 中， 0、 +0 或-0 相除会返回 NaN：
+
+     ```javascript
+     console.log(0/0); // NaN
+     console.log(-0/+0); // NaN  
+     
+     // 如果分子是非 0 值，分母是有符号 0 或无符号 0，则会返回 Infinity 或-Infinity：
+     console.log(5/0); // Infinity
+     console.log(5/-0); // -Infinity
+     ```
+
+   - **NaN 的属性：**
+
+     - 任何涉及 NaN 的操作始终返回 NaN（如 NaN/10），
+     - **NaN 不等于包括 NaN 在内的任何值。**  
+       - `console.log(NaN == NaN); // false  `
+
+   - `isNaN()` 函数。  
+
+     - 任何不能转换为数值的值都会导致这个函数返回 true。举例如下：
+
+       ```javascript
+       console.log(isNaN(NaN)); // true
+       console.log(isNaN(10)); // false， 10 是数值
+       console.log(isNaN("10")); // false，可以转换为数值 10
+       console.log(isNaN("blue")); // true，不可以转换为数值
+       console.log(isNaN(true)); // false，可以转换为数值 1 
+       ```
+
+4. **数值转换  **
+
+   - 3 个函数可以将非数值转换为数值： `Number()`、 `parseInt()` 和 `parseFloat()`。  
+
+   - **`Number()` 函数**基于如下规则执行转换：
+
+     - 布尔值， true 转换为 1， false 转换为 0。
+     - 数值，直接返回。
+     - null，返回 0。
+     - undefined，返回 NaN。
+     - 字符串，应用以下规则：
+       -  如果字符串**包含数值字符**，包括数值字符前面带加、减号的情况，则转换为一个十进制数值。
+         因此， Number("1")返回 1， Number("123")返回 123， Number("011")返回 11（忽略前面
+         的零）。
+       - 如果字符串**包含有效的浮点值**格式如"1.1"，则会转换为相应的浮点值（同样，忽略前面的零）。
+       - 如果字符串**包含有效的十六进制**格式如"0xf"，则会转换为与该十六进制值**对应的十进制整**
+         **数值**。
+       - 如果是空字符串（不包含字符），则返回 0。
+       - 如果字符串包含除上述情况之外的其他字符，则返回 NaN。  
+     - 对象，调用 `valueOf()` 方法，并按照上述规则转换返回的值。如果转换结果是 NaN，则调用`toString()` 方法，再按照转换字符串的规则转换。  
+
+     ```javascript
+     let num1 = Number("Hello world!"); // NaN
+     let num2 = Number(""); // 0
+     let num3 = Number("000011"); // 11
+     let num4 = Number(true); // 1
+     ```
+
+   - 需要得到整数时可以优先使用 **`parseInt()` 函数**。  
+
+     - 字符串最前面的空格会被忽略，从第一个非空格字符开始转换。如果第一个字符不是数值字符、加号或减号， **`parseInt()` 立即返回 NaN**。这意味着**空字符串也会返回 NaN**（这一点跟 `Number()` 不一样，它返回 0）。如果第一个字符是数值字符、加号或减号，则继续依次检测每个字符，直到字符串末尾，或碰到非数值字符。  
+
+       ```javascript
+       let num1 = parseInt("1234blue"); // 1234
+       let num2 = parseInt(""); // NaN
+       let num3 = parseInt("0xA"); // 10，解释为十六进制整数
+       let num4 = parseInt(22.5); // 22
+       let num5 = parseInt("70"); // 70，解释为十进制值
+       let num6 = parseInt("0xf"); // 15，解释为十六进制整数
+       ```
+
+     - 不同的数值格式很容易混淆，因此 `parseInt()` 也接收第二个参数，用于指定底数（进制数）。如果知道要解析的值是十六进制，那么可以传入 16 作为第二个参数，以便正确解析：
+
+       - 为避免解析出错，建议始终传给它第二个参数。  
+
+       ```javascript
+       let num = parseInt("0xAF", 16); // 175
+       
+       // 事实上，如果提供了十六进制参数，那么字符串前面的"0x"可以省掉：
+       let num1 = parseInt("AF", 16); // 175
+       let num2 = parseInt("AF"); // NaN
+       
+       // 通过第二个参数，可以极大扩展转换后获得的结果类型。比如：
+       let num1 = parseInt("10", 2); // 2，按二进制解析
+       let num2 = parseInt("10", 8); // 8，按八进制解析
+       let num3 = parseInt("10", 10); // 10，按十进制解析
+       let num4 = parseInt("10", 16); // 16，按十六进制解析
+       ```
+
+   - **`parseFloat()` 函数**的工作方式跟 `parseInt()` 函数类似，都是从位置 0 开始检测每个字符。同样，它也是解析到字符串末尾或者解析到一个无效的浮点数值字符为止。这意味着第一次出现的小数点是有效的，但第二次出现的小数点就无效了，此时字符串的剩余字符都会被忽略。 
+
+     - `"22.34.5"将转换成 22.34  ` 
+     - parseFloat() 函数的另一个不同之处在于，它始终忽略字符串开头的零。  
+     - 十六进制数值始终会返回 0。因为 parseFloat() **只解析十进制值**，因此不能指定底数。
+     - 如果字符串表示整数（没有小数点或者小数点后面只有一个零），则 parseFloat() 返回整数。    
+
+     ```javascript
+     let num1 = parseFloat("1234blue"); // 1234，按整数解析
+     let num2 = parseFloat("0xA"); // 0
+     let num3 = parseFloat("22.5"); // 22.5
+     let num4 = parseFloat("22.34.5"); // 22.34
+     let num5 = parseFloat("0908.5"); // 908.5
+     let num6 = parseFloat("3.125e7"); // 31250000
+     ```
 
 ### 3.4.6 String 类型
 
+- **String（字符串）**数据类型表示零或多个 16 位 Unicode 字符序列。
+
+  - 字符串可以使用双引号（ `"`）、单引号（ `'`）或反引号（ `）标示。
+  - ECMAScript 语法中表示字符串的引号没有区别。  
+  - 以某种引号作为字符串开头，必须仍然以该种引号作为字符串结尾。  
+
+  ```javascript
+  let firstName = "John";
+  let lastName = 'Jacob';
+  let lastName = `Jingleheimerschmidt`
+  ```
+
+1. **字符字面量  **
+
+   - 字符串数据类型包含一些字符字面量，用于表示非打印字符或有其他用途的字符，如下表所示：  
+
+     | 字 面 量 | 含 义                                                        |
+     | -------- | ------------------------------------------------------------ |
+     | `\n`     | 换行                                                         |
+     | `\t`     | 制表                                                         |
+     | `\b`     | 退格                                                         |
+     | `\r`     | 回车                                                         |
+     | `\f`     | 换页                                                         |
+     | `\\`     | 反斜杠                                                       |
+     | `\'`     | 单引号（`‘`），在字符串以单引号标示时使用，例如  `'He said, \'hey.\''` |
+     | `\"`     | 双引号（ `"`），在字符串以双引号标示时使用，例如 `"He said, \"hey.\""` |
+     | `` \` `` | 反引号（ `` ` ``），在字符串以反引号标示时使用，例如 `` `He said, \`hey.\` ` `` |
+     | `\xnn`   | 以十六进制编码 `nn` 表示的字符（其中 n 是十六进制数字 `0~F`），例如 `\x41` 等于"A" |
+     | `\unnnn` | 以十六进制编码 `nnnn` 表示的 Unicode 字符（其中 n 是十六进制数字 `0~F`），例如 `\u03a3` 等于希腊字符 "Σ" |
+
+     - 这些字符字面量**可以出现在字符串中的任意位置**，且可以**作为单个字符被解释**：
+
+       ```javascript
+       let text = "This is the letter sigma: \u03a3.";
+       
+       // 因为转义序列表示一个字符，所以只算一个字符
+       console.log(text.length); // 28
+       
+       // 如果字符串中包含双字节字符，那么 length 属性返回的值可能不是准确的字符数。
+       ```
+
+2. **字符串的特点  **
+
+   - ECMAScript 中的字符串是**不可变的（ immutable）**，意思是一旦创建，它们的值就不能变了。
+
+     - 要修改某个变量中的字符串值，必须先销毁原始的字符串，然后将包含新值的另一个字符串保存到该变量
+
+       ```javascript
+       let lang = "Java";
+       lang = lang + "Script";
+       ```
+
+3. **转换为字符串  **
+
+   - 有两种方式把一个值转换为字符串。
+
+     - 首先是使用几乎所有值都有的 **`toString()`** 方法。这个方法唯一的用途就是返回当前值的字符串等价物。  
+
+       ```javascript
+       let age = 11;
+       let ageAsString = age.toString(); // 字符串"11"
+       let found = true;
+       let foundAsString = found.toString(); // 字符串"true"
+       ```
+
+     - toString() 方法可见于数值、布尔值、对象和字符串值。（没错，字符串值也有 toString()方法，该方法只是简单地返回自身的一个副本。） null 和 undefined 值没有 toString()方法。
+
+     - 在对数值调用这个方法时， **toString()可以接收一个底数参数**，即以什么底数来输出数值的字符串表示。  
+
+       ```javascript
+       let num = 10;
+       console.log(num.toString()); // "10"
+       console.log(num.toString(2)); // "1010"
+       console.log(num.toString(8)); // "12"
+       console.log(num.toString(10)); // "10"
+       console.log(num.toString(16)); // "a"
+       ```
+
+   - 如果你不确定一个值是不是 null 或 undefined，可以使用 **`String()` 转型函数**，它始终会返回表示相应类型值的字符串。 `String()` 函数遵循如下规则。
+
+     - 如果值有 toString() 方法，则调用该方法（不传参数）并返回结果。
+     - 如果值是 null，返回 "null"。
+     - 如果值是 undefined，返回 "undefined"。  
+
+     ```javascript
+     let value1 = 10;
+     let value2 = true;
+     let value3 = null;
+     let value4;
+     console.log(String(value1)); // "10"
+     console.log(String(value2)); // "true"
+     console.log(String(value3)); // "null"
+     console.log(String(value4)); // "undefined"
+     ```
+
+4. **模板字面量  **
+
+   - ECMAScript 6 新增了使用模板字面量定义字符串的能力。与使用单引号或双引号不同，模板字面量保留换行字符，可以跨行定义字符串：
+
+     ```javascript
+     let myMultiLineString = 'first line\nsecond line';
+     let myMultiLineTemplateLiteral = `first line
+     second line`;
+     
+     console.log(myMultiLineString);
+     // first line
+     // second line"
+     
+     console.log(myMultiLineTemplateLiteral);
+     // first line
+     // second line
+     
+     console.log(myMultiLineString === myMultiLinetemplateLiteral); // true
+     ```
+
+   - 顾名思义，模板字面量在定义模板时特别有用，比如下面这个 HTML 模板：  
+
+     ```javascript
+     let pageHTML = `
+     <div>
+       <a href="#">
+       	<span>Jake</span>
+       </a>
+     </div>`;
+     ```
+
+   - 由于模板字面量会**保持反引号内部的空格**，因此在使用时要格外注意。格式正确的模板字符串看起来可能会缩进不当：  
+
+     ```javascript
+     // 这个模板字面量在换行符之后有 25 个空格符
+     let myTemplateLiteral = `first line
+     second line`;
+     console.log(myTemplateLiteral.length); // 47
+     
+     // 这个模板字面量以一个换行符开头
+     let secondTemplateLiteral = `
+     first line
+     second line`;
+     console.log(secondTemplateLiteral[0] === '\n'); // true
+     
+     // 这个模板字面量没有意料之外的字符
+     let thirdTemplateLiteral = `first line
+     second line`;
+     console.log(thirdTemplateLiteral);
+     // first line
+     // second line
+     ```
+
+5. **字符串插值  **
+
+   - 模板字面量最常用的一个特性是支持字符串插值，也就是可以在一个连续定义中插入一个或多个值。
+
+     ```javascript
+     // 字符串插值通过在${}中使用一个 JavaScript 表达式实现：
+     let value = 5;
+     let exponent = 'second';
+     
+     // 以前，字符串插值是这样实现的：
+     let interpolatedString =
+     value + ' to the ' + exponent + ' power is ' + (value * value);
+     
+     // 现在，可以用模板字面量这样实现：
+     let interpolatedTemplateLiteral =
+     `${ value } to the ${ exponent } power is ${ value * value }`;
+     
+     console.log(interpolatedString); // 5 to the second power is 25
+     console.log(interpolatedTemplateLiteral); // 5 to the second power is 25
+     ```
+
+   - **所有插入的值都会使用 toString() 强制转型为字符串，而且任何 JavaScript 表达式都可以用于插值。**嵌套的模板字符串无须转义：
+
+     ```javascript
+     console.log(`Hello, ${ `World` }!`); // Hello, World!
+     
+     // 将表达式转换为字符串时会调用 toString()：
+     let foo = { toString: () => 'World' };
+     console.log(`Hello, ${ foo }!`); // Hello, World!
+     
+     // 在插值表达式中可以调用函数和方法：
+     function capitalize(word) {
+     	return `${ word[0].toUpperCase() }${ word.slice(1) }`;
+     }
+     console.log(`${ capitalize('hello') }, ${ capitalize('world') }!`); // Hello, World!
+     
+     // 此外，模板也可以插入自己之前的值：
+     let value = '';
+     function append() {
+       value = `${value}abc`
+       console.log(value);
+     }
+     append(); // abc
+     append(); // abcabc
+     append(); // abcabcabc
+     ```
+
+6. **模板字面量标签函数  **
+
+   - 模板字面量也支持定义**标签函数（ tag function）**，而通过标签函数可以**自定义插值**行为。标签函数会接收被插值记号分隔后的模板和对每个表达式求值的结果。  
+
+     ```javascript
+     let a = 6;
+     let b = 9;
+     
+     function simpleTag(strings, aValExpression, bValExpression, sumExpression) {
+       console.log(strings);
+       console.log(aValExpression);
+       console.log(bValExpression);
+       console.log(sumExpression);
+     	return 'foobar';
+     }
+     
+     let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
+     let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
+     // ["", " + ", " = ", ""]
+     // 6
+     // 9
+     // 15
+     
+     console.log(untaggedResult); // "6 + 9 = 15"
+     console.log(taggedResult); // "foobar"
+     ```
+
+   - 因为表达式参数的数量是可变的，所以通常应该使用**剩余操作符（ rest operator）**将它们收集到一个数组中：`function zipTag(strings, ...expressions)`
+
+     - 对于有 n 个插值的模板字面量，传给标签函数的表达式参数的个数始终是 n，而传给标签函数的第一个参数所包含的字符串个数则始终是 n+1。因此，如果你想把这些字符串和对表达式求值的结果拼接起来作为默认返回的字符串，可以这样做：    
+
+     ```javascript
+     let a = 6;
+     let b = 9;
+     
+     function zipTag(strings, ...expressions) {
+       return strings[0] +
+       expressions.map((e, i) => `${e}${strings[i + 1]}`).join('');
+     }
+     
+     let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
+     let taggedResult = zipTag`${ a } + ${ b } = ${ a + b }`;
+     
+     console.log(untaggedResult); // "6 + 9 = 15"
+     console.log(taggedResult); // "6 + 9 = 15"
+     
+     // 等价于
+     let a = 6;
+     let b = 9;
+     
+     function zipTag(strings, ...expressions) {
+       let c = expressions.map((e, i) => {
+         return `${e}${strings[i + 1]}`;
+       });
+       //"" a + b = 15 ""
+       return strings[0] + c.join('');
+     }
+     
+     let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
+     let taggedResult = zipTag `${ a } + ${ b } = ${ a + b }`;
+     
+     console.log(untaggedResult); // "6 + 9 = 15"
+     console.log(taggedResult); // "6 + 9 = 15"
+     ```
+
+7. **原始字符串  **
+
+   - 使用模板字面量也可以直接获取原始的模板字面量内容（如换行符或 Unicode 字符），而不是被转换后的字符表示。为此，可以使用默认的 **String.raw 标签函数**：  
+
+     - 实际的换行符不行。
+
+     ```javascript
+     // Unicode 示例
+     // \u00A9 是版权符号
+     console.log(`\u00A9`); // ©
+     console.log(String.raw `\u00A9`); // \u00A9
+     
+     // 换行符示例
+     console.log(`first line\nsecond line`);
+     // first line
+     // second line
+     
+     console.log(String.raw `first line\nsecond line`); // "first line\nsecond line"
+     
+     // 对实际的换行符来说是不行的
+     // 它们不会被转换成转义序列的形式
+     console.log(`first line
+     second line`);
+     // first line
+     // second line
+     
+     console.log(String.raw `first line
+     second line`);
+     // first line
+     // second line
+     
+     
+     // 另外，也可以通过标签函数的第一个参数，即字符串数组的.raw 属性取得每个字符串的原始内容：
+     function printRaw(strings) {
+       console.log('Actual characters:');
+       for (const string of strings) {
+         console.log(string);
+       }
+       console.log('Escaped characters;');
+       for (const rawString of strings.raw) {
+         console.log(rawString);
+       }
+     }
+     printRaw `\u00A9${ 'and' }\n`;
+     // Actual characters:
+     // ©
+     //（换行符）
+     // Escaped characters:
+     // \u00A9
+     // \n
+     ```
+
 ### 3.4.7 Symbol 类型 
 
+- Symbol（符号）是 ECMAScript 6 新增的数据类型。符号是原始值，且符号实例是**唯一、不可变的**。符号的用途是**确保对象属性使用唯一标识符**，不会发生属性冲突的危险。  
+  - **符号就是用来创建唯一记号，进而用作非字符串形式的对象属性。**
+
+1. **符号的基本用法  **
+
+   1. 符号需要使用 `Symbol()` 函数初始化。因为符号本身是原始类型，所以 `typeof` 操作符对符号返回 `symbol`。  
+
+      ```javascript
+      let sym = Symbol();
+      console.log(typeof sym); // symbol
+      ```
+
+   2. 调用 `Symbol()` 函数时，也可以传入一个字符串参数作为对符号的描述（ `description`），将来可以通过这个字符串来调试代码。但是，这个字符串参数与符号定义或标识完全无关：  
+
+      ```javascript
+      let genericSymbol = Symbol();
+      let otherGenericSymbol = Symbol();
+      let fooSymbol = Symbol('foo');
+      let otherFooSymbol = Symbol('foo');
+      console.log(genericSymbol == otherGenericSymbol); // false
+      console.log(fooSymbol == otherFooSymbol); // false
+      ```
+
+   3. 符号没有字面量语法，这也是它们发挥作用的关键。按照规范，你只要创建 Symbol() 实例并将其用作对象的新属性，就可以保证它不会覆盖已有的对象属性，无论是符号属性还是字符串属性。  
+
+      ```javascript
+      let genericSymbol = Symbol();
+      console.log(genericSymbol); // Symbol()
+      let fooSymbol = Symbol('foo');
+      console.log(fooSymbol); // Symbol(foo);
+      ```
+
+      
+
+2. **使用全局符号注册表  **
+
+3. **使用符号作为属性  **
+
+4. **常用内置符号  **
+
+5. **`Symbol.asyncIterator`  **
+
+6. **`Symbol.hasInstance`  **
+
+7. **`Symbol.isConcatSpreadable`  **
+
+8. **`Symbol.iterator  `**
+
+9. **`Symbol.match  `**
+
+10. **`Symbol.replace  `**
+
+11. **`Symbol.search  `**
+
+12. **`Symbol.species  `**
+
+13. **`Symbol.split  `**
+
+14. **`Symbol.toPrimitive  `**
+
+15. **`Symbol.toStringTag  `**
+
+16. **`Symbol.unscopables  `**
+
+    
+
 ### 3.4.8 Object 类型 
+
+
 
 ## 3.5　操作符 56
 

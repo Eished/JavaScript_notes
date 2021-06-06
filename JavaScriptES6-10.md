@@ -2491,7 +2491,7 @@ console.log(test.match(/(?<=hello\s)world/))
 - `arr.flat()` : 
   - flat扁平化, 按照指定深度递归遍历数组, 合并成一个新数组, 默认深度1
 - `arr.map(item => item * 2)` : 
-  - map 对每个元素进行遍历, 参数可以使函数
+  - map 对每个元素进行遍历, 参数可以是函数
   - `arr.map(item => item * 2).flat()`
 - `arr.flatMap(item => item * 2)` : 
   - flat 和 map 的合并
