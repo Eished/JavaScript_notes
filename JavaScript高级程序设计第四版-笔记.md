@@ -818,11 +818,71 @@ message = 100; // 合法，但不推荐
 
 ## 3.4　数据类型 30
 
+- ECMAScript 有 **6 种简单数据类型**（也称为原始类型）：
+  -  Undefined、 Null、 Boolean、 Number、String 和 Symbol。   
+  - 还有**一种复杂数据类型**叫 Object（对象）。  
+    - Object 是一种**无序名值对的集合**。  
+
 ### 3.4.1 typeof 操作符
+
+- 确定任意变量的数据类型。  
+
+  - 对一个值使用 typeof 操作符会返回下列字符串之一：
+
+    - "undefined"表示值未定义；
+    - "boolean"表示值为布尔值；
+    - "string"表示值为字符串；
+    - "number"表示值为数值；
+    - "object"表示值为对象（而不是函数）或 null；
+    - "function"表示值为函数；
+    - "symbol"表示值为符号。  
+
+  - 下面是使用 typeof 操作符的例子：
+
+    ```javascript
+    let message = "some string";
+    console.log(typeof message); // "string"
+    console.log(typeof(message)); // "string"
+    console.log(typeof 95); // "number"  
+    ```
+
+  - 注意，因为 typeof 是一个**操作符而不是函数**，所以**不需要参数**（但可以使用参数）。
 
 ### 3.4.2 Undefined 类型
 
+- Undefined 类型只有一个值，就是特殊值 undefined。  
+
+  - 当使用 var 或 let 声明了变量但没有初始化时，就相当于给变量赋予了 undefined 值。
+
+    ```javascript
+    let message;
+    console.log(message == undefined); // true
+    ```
+
+  - 在对**未初始化的变量**调用 typeof 时，返回的结果是"undefined"，但对**未声明的变量**调用它时，返回的结果还是"undefined"，这就有点让人看不懂了。比如下面的例子：
+
+    ```javascript
+    let message; // 这个变量被声明了，只是值为 undefined
+    // 确保没有声明过这个变量
+    // let age
+    console.log(typeof message); // "undefined"
+    console.log(typeof age); // "undefined"  
+    ```
+
+    - 建议在声明变量的同时进行初始化，用来区分两种情况。
+
 ### 3.4.3 Null 类型
+
+- Null 类型同样只有一个值，即特殊值 null。  
+
+  - null 值表示一个**空对象指针**，这也是给typeof 传一个 null 会返回"object"的原因：  
+
+    ```javascript
+    let car = null;
+    console.log(typeof car); // "object"
+    ```
+
+  - 
 
 ### 3.4.4 Boolean 类型
 
