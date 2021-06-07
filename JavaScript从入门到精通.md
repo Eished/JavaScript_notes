@@ -6407,7 +6407,6 @@ xhr.onerror = function() {
   }
   ```
 
-  
 
 ### 系统对象
 
@@ -6420,6 +6419,386 @@ xhr.onerror = function() {
     - `Global(无法使用)` / `Math`
 - 宿主对象（由浏览器提供的对象）
   - `DOM` / `BOM`
+
+## JavaScript 对象定义
+
+在 JavaScript 中，几乎“所有事物”都是对象。
+
+- 布尔是对象（如果用 *new* 关键词定义）
+- 数字是对象（如果用 *new* 关键词定义）
+- 字符串是对象（如果用 *new* 关键词定义）
+- 日期永远都是对象
+- 算术永远都是对象
+- 正则表达式永远都是对象
+- 数组永远都是对象
+- 函数永远都是对象
+- 对象永远都是对象
+
+所有 JavaScript 值，除了原始值，都是对象。
+
+### JavaScript 原始值
+
+*原始值*指的是没有属性或方法的值。
+
+*原始数据类型*指的是拥有原始值的数据。
+
+JavaScript 定义了 5 种原始数据类型：
+
+- string
+- number
+- boolean
+- null
+- undefined
+
+原始值是一成不变的（它们是硬编码的，因此不能改变）。
+
+假设 x = 3.14，您能够改变 x 的值。但是您无法改变 3.14 的值。
+
+| 值        | 类型      | 注释                       |
+| :-------- | :-------- | :------------------------- |
+| "Hello"   | string    | "Hello" 始终是 "Hello"     |
+| 3.14      | number    | 3.14 始终是 3.14           |
+| true      | boolean   | true 始终是 true           |
+| false     | boolean   | false 始终是 false         |
+| null      | null      | (object) null 始终是 null  |
+| undefined | undefined | undefined 始终是 undefined |
+
+### 对象是包含变量的变量
+
+JavaScript 变量能够包含单个的值：
+
+```javascript
+var person = "Bill Gates";
+```
+
+对象也是变量。但是对象能够包含很多值。
+
+值按照*名称 : 值*对的形式编写（名称和值以冒号分隔）。
+
+```javascript
+var person = {firstName:"Bill", lastName:"Gates", age:62, eyeColor:"blue"};
+```
+
+JavaScript 对象是*命名值*的集合。
+
+### 对象属性
+
+JavaScript 对象中的命名值，被称为**属性**。
+
+| 属性      | 值    |
+| :-------- | :---- |
+| firstName | Bill  |
+| lastName  | Gates |
+| age       | 62    |
+| eyeColor  | blue  |
+
+以名称值对书写的对象类似于：
+
+- PHP 中的关联数组
+- Python 中的字典
+- C 中的哈希表
+- Java 中的哈希映射
+- Ruby 和 Perl 中的散列
+
+### 对象方法
+
+方法是可以在对象上执行的*动作*。
+
+对象属性可以是原始值、其他对象以及函数。
+
+**对象方法**是包含**函数定义**的对象属性。
+
+| 属性      | 值                                                          |
+| :-------- | :---------------------------------------------------------- |
+| firstName | Bill                                                        |
+| lastName  | Gates                                                       |
+| age       | 62                                                          |
+| eyeColor  | blue                                                        |
+| fullName  | `function() {return this.firstName + " " + this.lastName;}` |
+
+JavaScript 对象是被称为属性和方法的命名值的容器。
+
+您将在下一章中学到更多有关方法的知识。
+
+### 创建 JavaScript 对象
+
+通过 JavaScript，您能够定义和创建自己的对象。
+
+有不同的方法来创建对象：
+
+- 定义和创建单个对象，使用对象文字。
+- 定义和创建单个对象，通过关键词 new。
+- 定义对象构造器，然后创建构造类型的对象。
+
+在 ECMAScript 5 中，也可以通过函数 `Object.create()` 来创建对象。
+
+### 使用对象字面量
+
+这是创建对象最简答的方法。
+
+使用对象文字，您可以在一条语句中定义和创建对象。
+
+对象文字指的是花括号 `{}` 中的 名称:值对（比如 `age:62`）。
+
+下面的例子创建带有四个属性的新的 JavaScript 对象：
+
+```javascript
+var person = {firstName:"Bill", lastName:"Gates", age:62, eyeColor:"blue"};
+```
+
+空格和折行不重要。对象定义可横跨多行：
+
+```javascript
+var person = {
+    firstName:"Bill",
+    lastName:"Gates",
+    age:62,
+    eyeColor:"blue"
+};
+```
+
+### 使用 JavaScript 关键词 new
+
+下面的例子也创建了带有四个属性的新的 JavaScript 对象：
+
+```javascript
+var person = new Object();
+person.firstName = "Bill";
+person.lastName = "Gates";
+person.age = 50;
+person.eyeColor = "blue"; 
+```
+
+上面的两个例子结果是一样的。无需使用 `new Object()`。
+
+出于简易性、可读性和执行速度的考虑，请使用第一种创建方法（对象文字方法）。
+
+### JavaScript 对象是易变的
+
+对象是易变的：它们**通过引用来寻址**，而非值。
+
+如果 person 是一个对象，下面的语句不会创建 person 的副本：
+
+```javascript
+var x = person;  // 这不会创建 person 的副本。
+```
+
+对象 x **并非** person 的副本。它**就是** person。x 和 person 是同一个对象。
+
+对 x 的任何改变都将改变 person，因为 x 和 person 是相同的对象。
+
+```javascript
+var person = {firstName:"Bill", lastName:"Gates", age:62, eyeColor:"blue"}
+ 
+var x = person;
+x.age = 10;           // 这将同时改变 both x.age 和 person.age
+```
+
+**注释：**JavaScript 变量不是易变的。只有 JavaScript 对象如此。
+
+## JavaScript 对象方法
+
+### JavaScript 方法
+
+JavaScript 方法是能够在对象上执行的动作。
+
+JavaScript **方法**是包含**函数定义**的属性。
+
+| 属性      | 值                                                          |
+| :-------- | :---------------------------------------------------------- |
+| firstName | Bill                                                        |
+| lastName  | Gates                                                       |
+| age       | 62                                                          |
+| eyeColor  | blue                                                        |
+| fullName  | `function() {return this.firstName + " " + this.lastName;}` |
+
+方法是存储为对象属性的函数。
+
+### *this* 关键词
+
+在 JavaScript 中，被称为 this 的事物，指的是拥有该 JavaScript 代码的对象。
+
+this 的值，在函数中使用时，是“拥有”该函数的对象。
+
+请注意 this 并非变量。它是关键词。您无法改变 this 的值。
+
+### 访问对象方法
+
+请使用如下语法创建对象方法：
+
+```javascript
+methodName : function() { 代码行 }
+```
+
+请通过如下语法来访问对象方法：
+
+```javascript
+objectName.methodName()
+```
+
+您通常会把 `fullName()` 描述为 person 对象的方法，把 fullName 描述为属性。
+
+fullName 属性在被通过 () 调用后会以函数形式执行。
+
+此例访问 person 对象的 `fullName()` *方法*：
+
+```javascript
+name = person.fullName();
+```
+
+如果您访问 fullName **属性**时没有使用 ()，则将返回**函数定义**：
+
+```javascript
+name = person.fullName;
+```
+
+### 使用内建方法
+
+此例使用 String 对象的 toUpperCase() 方法，把文本转换为大写：
+
+```javascript
+var message = "Hello world!";
+var x = message.toUpperCase();
+```
+
+x 的值，在以上代码执行后将是：
+
+```javascript
+HELLO WORLD!
+```
+
+### 添加新的方法
+
+向对象添加方法是在构造器函数内部完成的：
+
+```javascript
+function person(firstName, lastName, age, eyeColor) {
+    this.firstName = firstName;  
+    this.lastName = lastName;
+    this.age = age;
+    this.eyeColor = eyeColor;
+    this.changeName = function (name) {
+        this.lastName = name;
+    };
+}
+```
+
+changeName() 函数 name 的值赋给了 person 的 lastName 属性。
+
+现在您可以尝试：
+
+```javascript
+myMother.changeName("Jobs");
+```
+
+
+
+## JavaScript 对象属性
+
+属性指的是与 JavaScript 对象相关的值。
+
+JavaScript 对象是无序属性的集合。
+
+属性通常可以被修改、添加和删除，但是某些属性是只读的。
+
+### 访问 JavaScript 属性
+
+访问对象属性的语法是：
+
+```javascript
+objectName.property           // person.age
+```
+
+或者：
+
+```javascript
+objectName["property"]       // person["age"]
+```
+
+或者：
+
+```javascript
+objectName[expression]       // x = "age"; person[x]
+```
+
+表达式必须计算为属性名。
+
+```javascript
+person.firstname + " is " + person.age + " years old.";
+
+person["firstname"] + " is " + person["age"] + " years old.";
+```
+
+### JavaScript for...in 循环
+
+JavaScript for...in 语句遍历对象的属性。
+
+```javascript
+for (variable in object) {
+    要执行的代码
+}
+```
+
+for...in 循环中的代码块会为每个属性执行一次。
+
+### 循环对象的属性：
+
+```javascript
+var person = {fname:"Bill", lname:"Gates", age:62}; 
+
+for (x in person) {
+    txt += person[x];
+}
+```
+
+### 添加新属性
+
+您可以通过简单的赋值，向已存在的对象添加新属性。
+
+假设 person 对象已存在 - 那么您可以为其添加新属性：
+
+```javascript
+person.nationality = "English";
+```
+
+您不能使用预留词作为属性名（或方法名）。请使用 JavaScript 命名规则。
+
+### 删除属性
+
+delete 关键词从对象中删除属性：
+
+```javascript
+var person = {firstName:"Bill", lastName:"Gates", age:62, eyeColor:"blue"};
+delete person.age;   // 或 delete person["age"];
+```
+
+delete 关键词会同时删除属性的值和属性本身。
+
+删除完成后，属性在被添加回来之前是无法使用的。
+
+delete 操作符被设计用于对象属性。它对变量或函数没有影响。
+
+delete 操作符不应被用于预定义的 JavaScript 对象属性。这样做会使应用程序崩溃。
+
+### 属性值
+
+所有属性都有名称。此外它们还有值。
+
+值是属性的特性之一。
+
+其他特性包括：可列举、可配置、可写。
+
+这些特性定义了属性被访问的方式（是可读的还是可写的？）
+
+在 JavaScript 中，所有属性都是可读的，但是只有值是可修改的（只有当属性为可写时）。
+
+（ECMAScript 5 拥有获取和设置所有属性特性的方法）
+
+### 原型属性
+
+JavaScript 对象继承了它们的原型的属性。
+
+delete 关键词不会删除被继承的属性，但是如果您删除了某个原型属性，则将影响到所有从原型继承的对象。
 
 ## JavaScript 对象访问器
 
@@ -6473,7 +6852,7 @@ document.getElementById("demo").innerHTML = person.language;
 
 **例子 1**
 
-```
+```javascript
 var person = {
   firstName: "Bill",
   lastName : "Gates",
@@ -6506,6 +6885,25 @@ document.getElementById("demo").innerHTML = person.fullName;
 例子 2 以属性形式访问 fullName：person.fullName。
 
 **第二个例子提供了更简洁的语法。**
+
+省略写法：
+
+```javascript
+// 创建对象：
+var person = {
+  firstName: "Bill",
+  lastName: "Gates",
+  id: 12345,
+  fullName() { // 省略 fullName:fullName(){}
+    return this.firstName + " " + this.lastName;
+  }
+}
+
+// 显示对象中的数据：
+console.log(person.fullName());
+```
+
+
 
 ### 数据质量
 
@@ -6773,6 +7171,515 @@ function Person(first, last, age, eyecolor) {
 Person.prototype.name = function() {
     return this.firstName + " " + this.lastName;
 };
+```
+
+## ECMAScript 5 特性
+
+这些是 2009 年发布的新特性：
+
+- "use strict" 指令
+- String.trim()
+- Array.isArray()
+- Array.forEach()
+- Array.map()
+- Array.filter()
+- Array.reduce()
+- Array.reduceRight()
+- Array.every()
+- Array.some()
+- Array.indexOf()
+- Array.lastIndexOf()
+- JSON.parse()
+- JSON.stringify()
+- Date.now()
+- 属性 Getter 和 Setter
+- 新的对象属性和方法
+
+### ECMAScript 5 语法更改
+
+- 对字符串的属性访问 [ ]
+- 数组和对象字面量中的尾随逗号
+- 多行字符串字面量
+- 作为属性名称的保留字
+
+### "use strict" 指令
+
+“use strict” 定义 JavaScript 代码应该以“严格模式”执行。
+
+例如，使用严格模式，不能使用未声明的变量。
+
+您可以在所有程序中使用严格模式。它可以帮助您编写更清晰的代码，例如阻止您使用未声明的变量。
+
+“use strict” 只是一个字符串表达式。旧浏览器如果不理解它们就不会抛出错误。
+
+### String.trim()
+
+String.trim() 删除字符串两端的空白字符。
+
+```javascript
+var str = "       Hello World!        ";
+alert(str.trim());
+```
+
+### Array.isArray()
+
+isArray() 方法检查对象是否为数组。
+
+```javascript
+function myFunction() {
+  var fruits = ["Banana", "Orange", "Apple", "Mango"];
+  var x = document.getElementById("demo");
+  x.innerHTML = Array.isArray(fruits);
+}
+```
+
+### Array.forEach()
+
+forEach() 方法为每个数组元素调用一次函数。
+
+```javascript
+var txt = "";
+var numbers = [45, 4, 9, 16, 25];
+numbers.forEach(myFunction);
+
+function myFunction(value) {
+  txt = txt + value + "<br>"; 
+}
+```
+
+### Array.map()
+
+这个例子给每个数组值乘以 2：
+
+```javascript
+var numbers1 = [45, 4, 9, 16, 25];
+var numbers2 = numbers1.map(myFunction);
+
+function myFunction(value) {
+  return value * 2;
+}
+```
+
+### Array.filter()
+
+此例用值大于 18 的元素创建一个新数组：
+
+```javascript
+var numbers = [45, 4, 9, 16, 25];
+var over18 = numbers.filter(myFunction);
+
+function myFunction(value) {
+  return value > 18;
+}
+```
+
+### Array.reduce()
+
+这个例子确定数组中所有数的总和：
+
+```javascript
+var numbers1 = [45, 4, 9, 16, 25];
+var sum = numbers1.reduce(myFunction);
+
+function myFunction(total, value) {
+  return total + value;
+}
+```
+
+### Array.reduceRight()
+
+这个例子同样是确定数组中所有数的总和：
+
+```javascript
+var numbers1 = [45, 4, 9, 16, 25];
+var sum = numbers1.reduceRight(myFunction);
+
+function myFunction(total, value) {
+  return total + value;
+}
+```
+
+### Array.every()
+
+这个例子检查是否所有值都超过 18：
+
+```javascript
+var numbers = [45, 4, 9, 16, 25];
+var allOver18 = numbers.every(myFunction);
+
+function myFunction(value) {
+  return value > 18;
+}
+```
+
+### Array.some()
+
+这个例子检查某些值是否超过 18：
+
+```javascript
+var numbers = [45, 4, 9, 16, 25];
+var allOver18 = numbers.some(myFunction);
+
+function myFunction(value) {
+  return value > 18;
+}
+```
+
+### Array.indexOf()
+
+检索数组中的某个元素值并返回其位置：
+
+```javascript
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+var a = fruits.indexOf("Apple");
+```
+
+### Array.lastIndexOf()
+
+Array.lastIndexOf() 与 Array.indexOf() 类似，但是从数组结尾处开始检索。
+
+```javascript
+var fruits = ["Banana", "Orange", "Apple", "Mango"];
+var a = fruits.lastIndexOf("Apple");
+```
+
+### JSON.parse()
+
+JSON 的一个常见用途是从 Web 服务器接收数据。
+
+想象一下，您从Web服务器收到这条文本字符串：
+
+```javascript
+'{"name":"Bill", "age":62, "city":"Seatle"}'
+```
+
+JavaScript 函数 JSON.parse() 用于将文本转换为 JavaScript 对象：
+
+```javascript
+var obj = JSON.parse('{"name":"Bill", "age":62, "city":"Seatle"}');
+```
+
+### JSON.stringify()
+
+JSON 的一个常见用途是将数据发送到Web服务器。
+
+将数据发送到 Web 服务器时，数据必须是字符串。
+
+想象一下，我们在 JavaScript 中有这个对象：
+
+```javascript
+var obj = {"name":"Bill", "age":62, "city":"Seatle"};
+```
+
+请使用 JavaScript 函数 JSON.stringify() 将其转换为字符串。
+
+```javascript
+var myJSON = JSON.stringify(obj);
+```
+
+结果将是遵循 JSON 表示法的字符串。
+
+myJSON 现在是一个字符串，准备好发送到服务器：
+
+```javascript
+var obj = {"name":"Bill", "age":62, "city":"Seatle"};
+var myJSON = JSON.stringify(obj);
+document.getElementById("demo").innerHTML = myJSON;
+```
+
+### Date.now()
+
+Date.now() 返回自零日期（1970 年 1 月 1 日 00:00:00:00）以来的毫秒数。
+
+```javascript
+var timInMSs = Date.now();
+```
+
+Date.now() 的返回与在 Date 对象上执行 getTime() 的结果相同。
+
+### 属性 Getter 和 Setter
+
+ES5 允许您使用类似于获取或设置属性的语法来定义对象方法。
+
+这个例子为名为 fullName 的属性创建一个 *getter*：
+
+```javascript
+// 创建对象：
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  get fullName() {
+    return this.firstName + " " + this.lastName;
+  }
+};
+
+// 使用 getter 显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.fullName;
+```
+
+这个例子为语言属性创建一个 *setter* 和一个 *getter*：
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "NO",
+  get lang() {
+    return this.language;
+  },
+  set lang(value) {
+    this.language = value;
+  }
+};
+
+// 使用 setter 设置对象属性：
+person.lang = "en";
+
+// 使用 getter 显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.lang;
+```
+
+这个例子使用 setter 来确保语言的大写更新：
+
+```javascript
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "NO",
+  set lang(value) {
+    this.language = value.toUpperCase();
+  }
+};
+
+// 使用 setter 设置对象属性：
+person.lang = "en";
+
+// 显示来自对象的数据：
+document.getElementById("demo").innerHTML = person.language;
+```
+
+### 新的对象属性和方法
+
+**`Object.defineProperty()`** 是 ES5 中的新对象方法。
+
+它允许您定义对象属性和/或更改属性的值和/或元数据。
+
+```javascript
+// 创建对象：
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "NO", 
+};
+
+// 更改属性：
+Object.defineProperty(person, "language", {
+  value: "EN",
+  writable : true,
+  enumerable : true,
+  configurable : true
+});
+
+// 枚举属性
+var txt = "";
+for (var x in person) {
+  txt += person[x] + "<br>";
+}
+document.getElementById("demo").innerHTML = txt;
+```
+
+下一个例子是相同的代码，但它隐藏了枚举中的语言属性：
+
+```javascript
+// 创建对象：
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "NO", 
+};
+
+// 更改属性：
+Object.defineProperty(person, "language", {
+  value: "EN",
+  writable : true,
+  enumerable : false,
+  configurable : true
+});
+
+// 枚举属性
+var txt = "";
+for (var x in person) {
+  txt += person[x] + "<br>";
+}
+document.getElementById("demo").innerHTML = txt;
+```
+
+此例创建一个 **setter 和 getter** 来确保语言的大写更新：
+
+```javascript
+// 创建对象：
+var person = {
+  firstName: "Bill",
+  lastName : "Gates",
+  language : "NO"
+};
+
+// 更改属性：
+Object.defineProperty(person, "language", {
+  get : function() { return language },
+  set : function(value) { language = value.toUpperCase()}
+});
+
+// 更改语言
+person.language = "en";
+
+// 显示语言
+document.getElementById("demo").innerHTML = person.language;
+```
+
+ECMAScript 5 对象方法：
+
+```javascript
+ES5 新的对象方法
+
+// 添加或更改对象属性
+Object.defineProperty(object, property, descriptor)
+
+// 添加或更改多个对象属性
+Object.defineProperties(object, descriptors)
+
+// 访问属性
+Object.getOwnPropertyDescriptor(object, property)
+
+// 将所有属性作为数组返回
+Object.getOwnPropertyNames(object)
+
+// 将可枚举属性作为数组返回
+Object.keys(object)
+
+// 访问原型
+Object.getPrototypeOf(object)
+
+// 防止向对象添加属性
+Object.preventExtensions(object)
+
+// 如果可以将属性添加到对象，则返回 true
+Object.isExtensible(object)
+
+// 防止更改对象属性（而不是值）
+Object.seal(object)
+
+// 如果对象被密封，则返回 true
+Object.isSealed(object)
+
+// 防止对对象进行任何更改
+Object.freeze(object)
+
+// 如果对象被冻结，则返回 true
+Object.isFrozen(object)
+```
+
+### 对字符串的属性访问
+
+**`charAt()`** 方法返回字符串中指定索引（位置）的字符：
+
+```javascript
+var str = "HELLO WORLD";
+str.charAt(0);            // 返回 H
+```
+
+ECMAScript 5 允许对字符串进行属性访问：
+
+```javascript
+var str = "HELLO WORLD";
+str[0];                   // 返回 H
+```
+
+对字符串的属性访问可能有点不可预测。
+
+### 尾随逗号(Trailing Commas)
+
+ECMAScript 5 允许在对象和数组定义中使用尾随逗号：
+
+#### Object 实例
+
+```javascript
+person = {
+  firstName: "Bill",
+  lastName: " Gates",
+  age: 62,
+}
+```
+
+#### Array 实例
+
+```javascript
+points = [
+  1,
+  5,
+  10,
+  25,
+  40,
+  100,
+];
+```
+
+警告！！！
+
+Internet Explorer 8 将崩溃。
+
+JSON 不允许使用尾随逗号。
+
+#### JSON 对象：
+
+```javascript
+// 允许：
+var person = '{"firstName":"Bill", "lastName":"Gates", "age":62}'
+JSON.parse(person)
+
+// 不允许：
+var person = '{"firstName":"Bill", "lastName":"Gates", "age":62,}'
+JSON.parse(person)
+```
+
+#### JSON 数组：
+
+```javascript
+// 允许：
+points = [40, 100, 1, 5, 25, 10]
+
+// 不允许：
+points = [40, 100, 1, 5, 25, 10,]
+```
+
+### 多行字符串
+
+如果使用反斜杠转义，ECMAScript 5 允许多行的字符串文字（字面量）：
+
+```javascript
+"Hello \
+Kitty!";
+```
+
+\ 方法可能没有得到普遍的支持。
+
+较旧的浏览器可能会以不同的方式处理反斜杠周围的空格。
+
+一些旧的浏览器不允许 \ 字符后面的空格。
+
+分解字符串文字的一种更安全的方法是使用字符串添加：
+
+```javascript
+"Hello " + 
+"Kitty!";
+```
+
+### 保留字作为属性名称
+
+ECMAScript 5允许保留字作为属性名称：
+
+```javascript
+var obj = {name: "Bill", new: "yes"}
 ```
 
 ## ES5 新的对象方法
