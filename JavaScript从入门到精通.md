@@ -7217,8 +7217,8 @@ Person.prototype.name = function() {
 String.trim() 删除字符串两端的空白字符。
 
 ```javascript
-var str = "       Hello World!        ";
-alert(str.trim());
+let str = "   \n\n    Hello World!  \n \x11 \r ?  \t\  ";
+console.log(str.trim());
 ```
 
 ### Array.isArray()
@@ -7226,26 +7226,33 @@ alert(str.trim());
 isArray() 方法检查对象是否为数组。
 
 ```javascript
-function myFunction() {
-  var fruits = ["Banana", "Orange", "Apple", "Mango"];
-  var x = document.getElementById("demo");
-  x.innerHTML = Array.isArray(fruits);
-}
+let a = [],
+  b = {};
+console.log(Array.isArray(a), Array.isArray(b));
 ```
 
 ### Array.forEach()
 
-forEach() 方法为每个数组元素调用一次函数。
+forEach() 方法为每个数组元素调用一次函数。不支持 break、continue 等。
 
 ```javascript
-var txt = "";
-var numbers = [45, 4, 9, 16, 25];
-numbers.forEach(myFunction);
+arr.forEach(function(elem, index, array) {
+    if (arr[i] == 2) {
+        continue
+    }
+    console.log(elem, index)
+})
 
-function myFunction(value) {
-  txt = txt + value + "<br>"; 
-}
+[1, 2, 3, 4, 5].forEach(function(i) {
+    if (i === 2) {
+        return;
+    } else {
+        console.log(i)
+    }
+})
 ```
+
+- 这段代码的"本意"是从第一个元素开始遍历，遇到数组项 2 之后就结束遍历，不然打印出所遍历过的数值项。可是，事实让你大跌眼镜，因为它的输出是 1, 3, 4, 5。
 
 ### Array.map()
 
