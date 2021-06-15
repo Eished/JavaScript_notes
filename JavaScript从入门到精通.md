@@ -1100,8 +1100,7 @@
 - 循环：`while、for`
 - 跳出：`break、continue`
 - 什么是真、什么是假
-  - 真：true、非零数字、非空字符串、非空对象
-  - 假：false、数字0、空字符串、空对象、undefiend
+  - 在 [JavaScript](https://developer.mozilla.org/zh-CN/docs/Glossary/JavaScript) 中，**truthy**（真值）指的是在[布尔值](https://developer.mozilla.org/zh-CN/docs/Glossary/Boolean)上下文中，转换后的值为真的值。所有值都是真值，除非它们被定义为 [假值](https://developer.mozilla.org/zh-CN/docs/Glossary/Falsy)（即除 `false`、`0`、`""`、`null`、`undefined` 和 `NaN` 以外皆为真值）。
 - 代码：同下
 
 ### JSON
@@ -8129,14 +8128,65 @@ Object.defineProperty(person, "fullName", {
   - 返回出现的位置
   - 忽略大小写：`i`：ignore
   - 判断浏览器类型
+  
 - `match`：获取匹配的项目，返回元素或
   - 量词：`+` （若干个）
   - 量词变化：`\d`(单个数字一组)   `\d\d`(两个数字一组)   和   `\d+`(若干连续数字)
   - 全局匹配：`g`：global
   - 例子：找出所有数字
+  
 - `replace(reg/str,replacement)`：替换所有匹配
   - 返回替换后的字符串
   - 例子：敏感词过滤
+  
+- `reg.test()` 的问题
+
+  - 一次是true, 一次是false. 原因在于正则表达式中的g, 使得搜索过程后, 如果匹配成功, 则记录上一次的位置, 如果匹配不成功, 则会归零. 
+
+  ```javascript
+  // 人工将位置归零, 防止这个 "错误" 的发生:
+  var re = /^\w$/g;
+  re.test('a'); //返回true
+  re.lastIndex = 0; //归零搜索的位置
+  re.test('b'); //返回true
+  
+  // 或者我们可以更简单地直接将g去掉:
+  var re = /^\w$/;
+  re.test('a'); //返回true
+  re.test('b'); //返回true
+  ```
+
+- `exec()` 方法用于检索字符串中的正则表达式的匹配。
+
+  ```javascript
+  RegExpObject.exec(string)
+  ```
+
+  | 参数     | 描述                 |
+  | :------- | :------------------- |
+  | *string* | 必需。要检索的字符串 |
+
+  如果 exec() 找到了匹配的文本，则返回一个结果数组。否则，返回 null。此数组的第 0 个元素是与正则表达式相匹配的文本，第 1 个元素是与 RegExpObject 的第 1 个子表达式相匹配的文本（如果有的话），第 2 个元素是与 RegExpObject 的第 2 个子表达式相匹配的文本（如果有的话），以此类推。除了数组元素和 length 属性之外，exec() 方法还返回两个属性。index 属性声明的是匹配文本的第一个字符的位置。input 属性则存放的是被检索的字符串 string。我们可以看得出，在调用非全局的 RegExp 对象的 exec() 方法时，返回的数组与调用方法 `String.match()` 返回的数组是相同的。
+
+  但是，当 RegExpObject 是一个全局正则表达式时，exec() 的行为就稍微复杂一些。它会在 RegExpObject 的 lastIndex 属性指定的字符处开始检索字符串 string。当 exec() 找到了与表达式相匹配的文本时，在匹配后，它将把 RegExpObject 的 lastIndex 属性设置为匹配文本的最后一个字符的下一个位置。这就是说，您可以通过反复调用 exec() 方法来遍历字符串中的所有匹配文本。当 exec() 再也找不到匹配的文本时，它将返回 null，并把 lastIndex 属性重置为 0。
+
+  **重要事项：**如果在一个字符串中完成了一次模式匹配之后要开始检索新的字符串，就必须手动地把 lastIndex 属性重置为 0。
+
+  **提示：**请注意，无论 RegExpObject 是否是全局模式，exec() 都会把完整的细节添加到它返回的数组中。这就是 exec() 与 String.match() 的不同之处，后者在全局模式下返回的信息要少得多。因此我们可以这么说，在循环中反复地调用 exec() 方法是唯一一种获得全局模式的完整模式匹配信息的方法。
+
+  ```javascript
+  var str = "Visit W3School"; 
+  var patt = new RegExp("W3School","g");
+  var result;
+  
+  while ((result = patt.exec(str)) != null)  {
+    document.write(result);
+    document.write("<br />");
+    document.write(patt.lastIndex);
+   }
+  ```
+
+  
 
 ### 字符串
 
@@ -8310,6 +8360,135 @@ Object.defineProperty(person, "fullName", {
     </body>
   </html>
   ```
+
+## RegExp 对象
+
+RegExp 对象表示正则表达式，它是对字符串执行模式匹配的强大工具。
+
+### 直接量语法
+
+```
+/pattern/attributes
+```
+
+### 创建 RegExp 对象的语法：
+
+```
+new RegExp(pattern, attributes);
+```
+
+### 参数
+
+参数 ***pattern*** 是一个字符串，指定了**正则表达式的模式或其他正则表达式**。
+
+参数 ***attributes*** 是一个可选的字符串，包含**属性** "g"、"i" 和 "m"，分别用于指定全局匹配、区分大小写的匹配和多行匹配。ECMAScript 标准化之前，不支持 m 属性。如果 *pattern* 是正则表达式，而不是字符串，则必须省略该参数。
+
+### 返回值
+
+一个新的 RegExp 对象，具有指定的模式和标志。如果参数 *pattern* 是正则表达式而不是字符串，那么 RegExp() 构造函数将用与指定的 RegExp 相同的模式和标志创建一个新的 RegExp 对象。
+
+如果不用 new 运算符，而将 RegExp() 作为函数调用，那么它的行为与用 new 运算符调用时一样，只是当 *pattern* 是正则表达式时，它只返回 *pattern*，而不再创建一个新的 RegExp 对象。
+
+### 抛出
+
+SyntaxError - 如果 *pattern* 不是合法的正则表达式，或 *attributes* 含有 "g"、"i" 和 "m" 之外的字符，抛出该异常。
+
+TypeError - 如果 *pattern* 是 RegExp 对象，但没有省略 *attributes* 参数，抛出该异常。
+
+### 修饰符
+
+| 修饰符                                                    | 描述                                                     |
+| :-------------------------------------------------------- | :------------------------------------------------------- |
+| [i](https://www.w3school.com.cn/jsref/jsref_regexp_i.asp) | 执行对大小写不敏感的匹配。                               |
+| [g](https://www.w3school.com.cn/jsref/jsref_regexp_g.asp) | 执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）。 |
+| m                                                         | 执行多行匹配。                                           |
+
+### 方括号
+
+方括号用于查找某个范围内的字符：
+
+| 表达式                                                       | 描述                               |
+| :----------------------------------------------------------- | :--------------------------------- |
+| [[abc\]](https://www.w3school.com.cn/jsref/jsref_regexp_charset.asp) | 查找方括号之间的任何字符。         |
+| [[^abc\]](https://www.w3school.com.cn/jsref/jsref_regexp_charset_not.asp) | 查找任何不在方括号之间的字符。     |
+| [0-9]                                                        | 查找任何从 0 至 9 的数字。         |
+| [a-z]                                                        | 查找任何从小写 a 到小写 z 的字符。 |
+| [A-Z]                                                        | 查找任何从大写 A 到大写 Z 的字符。 |
+| [A-z]                                                        | 查找任何从大写 A 到小写 z 的字符。 |
+| [adgk]                                                       | 查找给定集合内的任何字符。         |
+| [^adgk]                                                      | 查找给定集合外的任何字符。         |
+| (red\|blue\|green)                                           | 查找任何指定的选项。               |
+
+### 元字符
+
+元字符（Metacharacter）是拥有特殊含义的字符：
+
+| 元字符                                                       | 描述                                        |
+| :----------------------------------------------------------- | :------------------------------------------ |
+| [.](https://www.w3school.com.cn/jsref/jsref_regexp_dot.asp)  | 查找单个字符，除了换行和行结束符。          |
+| [\w](https://www.w3school.com.cn/jsref/jsref_regexp_wordchar.asp) | 查找单词字符。                              |
+| [\W](https://www.w3school.com.cn/jsref/jsref_regexp_wordchar_non.asp) | 查找非单词字符。                            |
+| [\d](https://www.w3school.com.cn/jsref/jsref_regexp_digit.asp) | 查找数字。                                  |
+| [\D](https://www.w3school.com.cn/jsref/jsref_regexp_digit_non.asp) | 查找非数字字符。                            |
+| [\s](https://www.w3school.com.cn/jsref/jsref_regexp_whitespace.asp) | 查找空白字符。                              |
+| [\S](https://www.w3school.com.cn/jsref/jsref_regexp_whitespace_non.asp) | 查找非空白字符。                            |
+| [\b](https://www.w3school.com.cn/jsref/jsref_regexp_begin.asp) | 匹配单词边界。                              |
+| [\B](https://www.w3school.com.cn/jsref/jsref_regexp_begin_not.asp) | 匹配非单词边界。                            |
+| \0                                                           | 查找 NUL 字符。                             |
+| [\n](https://www.w3school.com.cn/jsref/jsref_regexp_newline.asp) | 查找换行符。                                |
+| \f                                                           | 查找换页符。                                |
+| \r                                                           | 查找回车符。                                |
+| \t                                                           | 查找制表符。                                |
+| \v                                                           | 查找垂直制表符。                            |
+| [\xxx](https://www.w3school.com.cn/jsref/jsref_regexp_octal.asp) | 查找以八进制数 xxx 规定的字符。             |
+| [\xdd](https://www.w3school.com.cn/jsref/jsref_regexp_hex.asp) | 查找以十六进制数 dd 规定的字符。            |
+| [\uxxxx](https://www.w3school.com.cn/jsref/jsref_regexp_unicode_hex.asp) | 查找以十六进制数 xxxx 规定的 Unicode 字符。 |
+
+### 量词
+
+| 量词                                                         | 描述                                        |
+| :----------------------------------------------------------- | :------------------------------------------ |
+| [n+](https://www.w3school.com.cn/jsref/jsref_regexp_onemore.asp) | 匹配任何包含至少一个 n 的字符串。           |
+| [n*](https://www.w3school.com.cn/jsref/jsref_regexp_zeromore.asp) | 匹配任何包含零个或多个 n 的字符串。         |
+| [n?](https://www.w3school.com.cn/jsref/jsref_regexp_zeroone.asp) | 匹配任何包含零个或一个 n 的字符串。         |
+| [n{X}](https://www.w3school.com.cn/jsref/jsref_regexp_nx.asp) | 匹配包含 X 个 n 的序列的字符串。            |
+| [n{X,Y}](https://www.w3school.com.cn/jsref/jsref_regexp_nxy.asp) | 匹配包含 X 至 Y 个 n 的序列的字符串。       |
+| [n{X,}](https://www.w3school.com.cn/jsref/jsref_regexp_nxcomma.asp) | 匹配包含至少 X 个 n 的序列的字符串。        |
+| [n$](https://www.w3school.com.cn/jsref/jsref_regexp_ndollar.asp) | 匹配任何结尾为 n 的字符串。                 |
+| [^n](https://www.w3school.com.cn/jsref/jsref_regexp_ncaret.asp) | 匹配任何开头为 n 的字符串。                 |
+| [?=n](https://www.w3school.com.cn/jsref/jsref_regexp_nfollow.asp) | 匹配任何其后紧接指定字符串 n 的字符串。     |
+| [?!n](https://www.w3school.com.cn/jsref/jsref_regexp_nfollow_not.asp) | 匹配任何其后没有紧接指定字符串 n 的字符串。 |
+
+### RegExp 对象属性
+
+| 属性                                                         | 描述                                     | FF   | IE   |
+| :----------------------------------------------------------- | :--------------------------------------- | :--- | :--- |
+| [global](https://www.w3school.com.cn/jsref/jsref_regexp_global.asp) | RegExp 对象是否具有标志 g。              | 1    | 4    |
+| [ignoreCase](https://www.w3school.com.cn/jsref/jsref_regexp_ignorecase.asp) | RegExp 对象是否具有标志 i。              | 1    | 4    |
+| [lastIndex](https://www.w3school.com.cn/jsref/jsref_lastindex_regexp.asp) | 一个整数，标示开始下一次匹配的字符位置。 | 1    | 4    |
+| [multiline](https://www.w3school.com.cn/jsref/jsref_multiline_regexp.asp) | RegExp 对象是否具有标志 m。              | 1    | 4    |
+| [source](https://www.w3school.com.cn/jsref/jsref_source_regexp.asp) | 正则表达式的源文本。                     | 1    | 4    |
+
+### RegExp 对象方法
+
+| 方法                                                         | 描述                                               | FF   | IE   |
+| :----------------------------------------------------------- | :------------------------------------------------- | :--- | :--- |
+| [compile](https://www.w3school.com.cn/jsref/jsref_regexp_compile.asp) | 编译正则表达式。                                   | 1    | 4    |
+| [exec](https://www.w3school.com.cn/jsref/jsref_exec_regexp.asp) | 检索字符串中指定的值。返回找到的值，并确定其位置。 | 1    | 4    |
+| [test](https://www.w3school.com.cn/jsref/jsref_test_regexp.asp) | 检索字符串中指定的值。返回 true 或 false。         | 1    | 4    |
+
+### 支持正则表达式的 String 对象的方法
+
+| 方法                                                         | 描述                             | FF   | IE   |
+| :----------------------------------------------------------- | :------------------------------- | :--- | :--- |
+| [search](https://www.w3school.com.cn/jsref/jsref_search.asp) | 检索与正则表达式相匹配的值。     | 1    | 4    |
+| [match](https://www.w3school.com.cn/jsref/jsref_match.asp)   | 找到一个或多个正则表达式的匹配。 | 1    | 4    |
+| [replace](https://www.w3school.com.cn/jsref/jsref_replace.asp) | 替换与正则表达式匹配的子串。     | 1    | 4    |
+| [split](https://www.w3school.com.cn/jsref/jsref_split.asp)   | 把字符串分割为字符串数组。       | 1    | 4    |
+
+- [JS Number](https://www.w3school.com.cn/jsref/jsref_obj_number.asp)
+- [JS String](https://www.w3school.com.cn/jsref/jsref_obj_string.asp)
+
 
 
 ## JS Template 模板引擎
