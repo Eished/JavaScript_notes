@@ -1866,16 +1866,16 @@ console.log(sqrt); // 4
 
 1. 加法操作符  
    1. 如果两个操作数都是数值，加法操作符执行加法运算并根据如下规则返回结果：
-       如果有任一操作数是 NaN，则返回 NaN；
-       如果是 Infinity 加 Infinity，则返回 Infinity；
-       如果是-Infinity 加-Infinity，则返回-Infinity；
-       如果是 Infinity 加-Infinity，则返回 NaN；
-       如果是+0 加+0，则返回+0；
-       如果是-0 加+0，则返回+0；
-       如果是-0 加-0，则返回-0。 
+      - 如果有任一操作数是 NaN，则返回 NaN；
+      - 如果是 Infinity 加 Infinity，则返回 Infinity；
+      - 如果是-Infinity 加-Infinity，则返回-Infinity；
+      - 如果是 Infinity 加-Infinity，则返回 NaN；
+      - 如果是+0 加+0，则返回+0；
+      - 如果是-0 加+0，则返回+0；
+      - 如果是-0 加-0，则返回-0。 
    2. 如果有一个操作数是字符串，则要应用如下规则：
-       如果两个操作数都是字符串，则将第二个字符串**拼接**到第一个字符串后面；
-       如果只有一个操作数是字符串，则将另一个操作数转换为字符串，再将两个字符串**拼接**在一起。
+      - 如果两个操作数都是字符串，则将第二个字符串**拼接**到第一个字符串后面；
+      - 如果只有一个操作数是字符串，则将另一个操作数转换为字符串，再将两个字符串**拼接**在一起。
    3. 如果有任一操作数是对象、数值或布尔值，则调用它们的 toString()方法以获取字符串，然后再应用前面的关于字符串的规则。对于 undefined 和 null，则调用 String()函数，分别获取"undefined"和"null"。   
 2. 减法操作符  
    1. 如果有任一操作数是字符串、布尔值、 null 或 undefined，则先在后台使用 `Number()`将其转换为数值，然后再根据前面的规则执行数学运算。如果转换结果是 NaN，则减法计算的结果是NaN。
@@ -1886,12 +1886,12 @@ console.log(sqrt); // 4
 关系操作符执行比较两个值的操作，包括小于（ `<`）、大于（ `>`）、小于等于（ `<=`）和大于等于（ `>=`），用法跟数学课上学的一样。这几个操作符都返回布尔值。
 
 1. 与 ECMAScript 中的其他操作符一样，在将它们应用到不同数据类型时也会发生类型转换和其他行为。
-    如果操作数都是数值，则执行数值比较。
-    如果操作数都是字符串，则逐个比较字符串中对应字符的编码。
-    如果有任一操作数是数值，则将另一个操作数转换为数值，执行数值比较。
-    如果有任一操作数是对象，则调用其 valueOf()方法，取得结果后再根据前面的规则执行比较。
+   - 如果操作数都是数值，则执行数值比较。
+   - 如果操作数都是字符串，则逐个比较字符串中对应字符的编码。
+   - 如果有任一操作数是数值，则将另一个操作数转换为数值，执行数值比较。
+   - 如果有任一操作数是对象，则调用其 valueOf()方法，取得结果后再根据前面的规则执行比较。
    如果没有 valueOf()操作符，则调用 toString()方法，取得结果后再根据前面的规则执行比较。
-    如果有任一操作数是布尔值，则将其转换为数值再执行比较。
+   - 如果有任一操作数是布尔值，则将其转换为数值再执行比较。
 
 2. 在使用关系操作符比较两个字符串时，会发生一个有趣的现象。很多人认为小于意味着“字母顺序靠前”，而大于意味着“字母顺序靠后”，实际上不是这么回事。对字符串而言，关系操作符会比较字符串中对应字符的编码，而这些编码是数值。比较完之后，会返回布尔值。问题的关键在于，大写字母的编码都小于小写字母的编码，因此以下这种情况就会发生：  
 
@@ -1916,15 +1916,15 @@ console.log(sqrt); // 4
    1. 这两个操作符都会先进行类型转换（通常称为强制类型转换）再确定操作数是否相等。
 
    2. 在转换操作数的类型时，相等和不相等操作符遵循如下规则。
-       如果任一操作数是布尔值，则将其转换为数值再比较是否相等。 false 转换为 0， true 转换为 1。
-       如果一个操作数是字符串，另一个操作数是数值，则尝试将字符串转换为数值，再比较是否相等。
-       如果一个操作数是对象，另一个操作数不是，则调用对象的 valueOf()方法取得其原始值，再根据前面的规则进行比较。
+      - 如果任一操作数是布尔值，则将其转换为数值再比较是否相等。 false 转换为 0， true 转换为 1。
+      - 如果一个操作数是字符串，另一个操作数是数值，则尝试将字符串转换为数值，再比较是否相等。
+      - 如果一个操作数是对象，另一个操作数不是，则调用对象的 valueOf()方法取得其原始值，再根据前面的规则进行比较。
 
    3. 在进行比较时，这两个操作符会遵循如下规则。
-       null 和 undefined 相等。
-       null 和 undefined 不能转换为其他类型的值再进行比较。
-       如果有任一操作数是 NaN，则相等操作符返回 false，不相等操作符返回 true。记住：即使两个操作数都是 NaN，相等操作符也返回 false，因为按照规则， NaN 不等于 NaN。
-       如果两个操作数都是对象，则比较它们是不是同一个对象。如果两个操作数都指向同一个对象，则相等操作符返回 true。否则，两者不相等。    
+      - null 和 undefined 相等。
+      - null 和 undefined 不能转换为其他类型的值再进行比较。
+      - 如果有任一操作数是 NaN，则相等操作符返回 false，不相等操作符返回 true。记住：即使两个操作数都是 NaN，相等操作符也返回 false，因为按照规则， NaN 不等于 NaN。
+      - 如果两个操作数都是对象，则比较它们是不是同一个对象。如果两个操作数都指向同一个对象，则相等操作符返回 true。否则，两者不相等。    
 
    4. 一些特殊情况及比较的结果：
 
@@ -1953,14 +1953,14 @@ variable = boolean_expression ? true_value : false_value;
 
 3. 每个数学操作符以及其他一些操作符都有对应的复合赋值操作符：  
 
-    乘后赋值（ `*=`）
-    除后赋值（ `/=`）
-    取模后赋值（ `%=`）
-    加后赋值（ `+=`）
-    减后赋值（ `-=`）
-    左移后赋值（ `<<=`）
-    右移后赋值（ `>>=`）
-    无符号右移后赋值（ `>>>=`）  
+   - 乘后赋值（ `*=`）
+   - 除后赋值（ `/=`）
+   - 取模后赋值（ `%=`）
+   - 加后赋值（ `+=`）
+   - 减后赋值（ `-=`）
+   - 左移后赋值（ `<<=`）
+   - 右移后赋值（ `>>=`）
+   - 无符号右移后赋值（ `>>>=`）  
 
 
 
@@ -2074,8 +2074,7 @@ start: for (let i = 0; i < count; i++) {
 
 ### 3.6.8 break 和 continue 语句 
 
-break 和 continue 语句为执行循环代码提供了更严格的控制手段。其中， break 语句用于立即退
-出循环，强制执行循环后的下一条语句。而 continue 语句也用于立即退出循环，但会再次从循环顶部开始执行。  
+break 和 continue 语句为执行循环代码提供了更严格的控制手段。其中， break 语句用于立即退出循环，强制执行循环后的下一条语句。而 continue 语句也用于立即退出循环，但会再次从循环顶部开始执行。  
 
 break 和 continue 都可以与标签语句一起使用，返回代码中特定的位置。这通常是在嵌套循环中，如下面的例子所示：
 
@@ -2093,11 +2092,9 @@ outermost:
 console.log(num); // 55  
 ```
 
-在这个例子中， outermost 标签标识的是第一个 for 语句。正常情况下，每个循环执行 10 次，意
-味着 num++语句会执行 100 次，而循环结束时 console.log 的结果应该是 100。但是， break 语句带来了一个变数，即要退出到的标签。添加标签不仅让 break 退出（使用变量 j 的）内部循环，也会退出（使用变量 i 的）外部循环。当执行到 i 和 j 都等于 5 时，循环停止执行，此时 num 的值是 55。  
+在这个例子中， outermost 标签标识的是第一个 for 语句。正常情况下，每个循环执行 10 次，意味着 num++语句会执行 100 次，而循环结束时 console.log 的结果应该是 100。但是， break 语句带来了一个变数，即要退出到的标签。添加标签不仅让 break 退出（使用变量 j 的）内部循环，也会退出（使用变量 i 的）外部循环。当执行到 i 和 j 都等于 5 时，循环停止执行，此时 num 的值是 55。  
 
-组合使用标签语句和 break、 continue 能实现复杂的逻辑，但也容易出错。注意标签要使用描述
-性强的文本，而嵌套也不要太深。  
+组合使用标签语句和 break、 continue 能实现复杂的逻辑，但也容易出错。注意标签要使用描述性强的文本，而嵌套也不要太深。  
 
 
 
@@ -2130,12 +2127,10 @@ with(location) {
 
 ### 3.6.10 switch 语句  
 
-switch 语句是与 if 语句紧密相关的一种流控制语句，从其他语言借鉴而来。 ECMAScript 中 switch
-语句跟 C 语言中 switch 语句的语法非常相似 。
+switch 语句是与 if 语句紧密相关的一种流控制语句，从其他语言借鉴而来。 ECMAScript 中 switch语句跟 C 语言中 switch 语句的语法非常相似 。
 
 1. 首先，switch 语句**可以用于所有数据类型**（在很多语言中，它只能用于数值），因此可以使用字符串甚至对象。其次，**条件的值不需要是常量，也可以是变量或表达式。**  
-2. 注意 switch 语句在比较每个条件的值时会**使用全等操作符**，因此不会强制转换数据类
-   型（比如，字符串"10"不等于数值 10）。  
+2. 注意 switch 语句在比较每个条件的值时会**使用全等操作符**，因此不会强制转换数据类型（比如，字符串"10"不等于数值 10）。  
 
 
 
@@ -2145,9 +2140,9 @@ switch 语句是与 if 语句紧密相关的一种流控制语句，从其他语
 ECMAScript 中的函数使用 function 关键字声明，后跟一组参数，然后是函数体。  
 
 1. 严格模式对函数也有一些限制：
-    函数不能以 eval 或 arguments 作为名称；
-    函数的参数不能叫 eval 或 arguments；
-    两个命名参数不能拥有同一个名称。
+   - 函数不能以 eval 或 arguments 作为名称；
+   - 函数的参数不能叫 eval 或 arguments；
+   - 两个命名参数不能拥有同一个名称。
    如果违反上述规则，则会导致语法错误，代码也不会执行。  
 
 3.8　小结 82
@@ -2624,15 +2619,15 @@ ECMAScript 通过 RegExp 类型支持正则表达式。正则表达式使用类�
 ### 5.2.1 RegExp 实例属性  
 
 - 每个 RegExp 实例都有下列属性，提供有关模式的各方面信息。
-   global：布尔值，表示是否设置了 g 标记。
-   ignoreCase：布尔值，表示是否设置了 i 标记。
-   unicode：布尔值，表示是否设置了 u 标记。
-   sticky：布尔值，表示是否设置了 y 标记。
-   lastIndex：整数，表示在源字符串中下一次搜索的开始位置，始终从 0 开始。
-   multiline：布尔值，表示是否设置了 m 标记。
-   dotAll：布尔值，表示是否设置了 s 标记。
-   source：正则表达式的字面量字符串（不是传给构造函数的模式字符串），没有开头和结尾的斜杠。
-   flags：正则表达式的标记字符串。始终以字面量而非传入构造函数的字符串模式形式返回（没有前后斜杠）。  
+  - global：布尔值，表示是否设置了 g 标记。
+  - ignoreCase：布尔值，表示是否设置了 i 标记。
+  - unicode：布尔值，表示是否设置了 u 标记。
+  - sticky：布尔值，表示是否设置了 y 标记。
+  - lastIndex：整数，表示在源字符串中下一次搜索的开始位置，始终从 0 开始。
+  - multiline：布尔值，表示是否设置了 m 标记。
+  - dotAll：布尔值，表示是否设置了 s 标记。
+  - source：正则表达式的字面量字符串（不是传给构造函数的模式字符串），没有开头和结尾的斜杠。
+  - flags：正则表达式的标记字符串。始终以字面量而非传入构造函数的字符串模式形式返回（没有前后斜杠）。  
 
 ### 5.2.2 RegExp 实例方法  
 
@@ -2742,12 +2737,12 @@ if (pattern.test(text)) {
 
 虽然 ECMAScript 对正则表达式的支持有了长足的进步，但仍然缺少 Perl 语言中的一些高级特性。下列特性目前还没有得到 ECMAScript 的支持（想要了解更多信息，可以参考 Regular-Expressions.info
 网站）：
- \A 和\Z 锚（分别匹配字符串的开始和末尾）
- 联合及交叉类
- 原子组
- x（忽略空格）匹配模式
- 条件式匹配
- 正则表达式注释
+- \A 和\Z 锚（分别匹配字符串的开始和末尾）
+- 联合及交叉类
+- 原子组
+- x（忽略空格）匹配模式
+- 条件式匹配
+- 正则表达式注释
 虽然还有这些局限，但 ECMAScript 的正则表达式已经非常强大，可以用于大多数模式匹配任务。  
 
 
@@ -3320,9 +3315,9 @@ ECMA-262 规定 Global 对象为一种兜底对象，它所针对的是不属于
 
    - 最后一个方法可能是整个 ECMAScript 语言中最强大的了，它就是 eval()。
      - 这个方法就是一个完整的 ECMAScript 解释器，它接收一个参数，即一个要执行的 ECMAScript（ JavaScript）字符串。  
-   - 当解释器发现 eval()调用时，会将参数解释为实际的 ECMAScript 语句，然后将其插入到该位置。通过 eval()执行的代码属于该调用所在上下文，被执行的代码与该上下文拥有相同的作用域链。这意味着定义在包含上下文中的变量可以在 eval()调用内部被引用  。
-   - 通过 eval()定义的任何变量和函数都不会被提升，这是因为在解析代码的时候，它们是被包含在一个字符串中的。它们只是在 eval()执行的时候才会被创建。
-   - 在严格模式下，在 eval()内部创建的变量和函数无法被外部访问。换句话说，最后两个例子会报错。同样，在严格模式下，赋值给 eval 也会导致错误 。
+     - 当解释器发现 eval()调用时，会将参数解释为实际的 ECMAScript 语句，然后将其插入到该位置。通过 eval()执行的代码属于该调用所在上下文，被执行的代码与该上下文拥有相同的作用域链。这意味着定义在包含上下文中的变量可以在 eval()调用内部被引用  。
+     - 通过 eval()定义的任何变量和函数都不会被提升，这是因为在解析代码的时候，它们是被包含在一个字符串中的。它们只是在 eval()执行的时候才会被创建。
+     - 在严格模式下，在 eval()内部创建的变量和函数无法被外部访问。换句话说，最后两个例子会报错。同样，在严格模式下，赋值给 eval 也会导致错误 。
    - **总结：**调用 `eval(code)` 会运行代码字符串，并返回最后一条语句的结果。
      - 在现代 JavaScript 编程中，很少使用它，通常也不需要使用它。
      - 可以访问外部局部变量。这被认为是一个不好的编程习惯。
@@ -3432,27 +3427,718 @@ ECMAScript 提供了 Math 对象作为保存数学公式、信息和计算的地
 
 ## 6.1　Object
 
+虽然 Object 的实例没有多少功能，但很适合存储和在应用程序间交换数据。  
+
+- 显式地创建 Object 的实例有两种方式。
+
+  1. 第一种是使用 new 操作符和 Object 构造函数 ：
+
+  ```javascript
+  let person = new Object();
+  person.name = "Nicholas";
+  person.age = 29;
+  ```
+
+  2. 另一种方式是使用**对象字面量（ object literal）表示法**。  
+
+  ```javascript
+  let person = {
+    name: "Nicholas",
+    age: 29
+  };
+  ```
+
+  - 在这个例子中，左大括号（ `{`）表示对象字面量开始，因为它出现在一个**表达式上下文（ expression context）**中。
+  - 在 ECMAScript 中，表达式上下文指的是期待返回值的上下文。赋值操作符表示后面要期待一个值，因此左大括号表示一个表达式的开始。
+  - 同样是左大括号，如果出现在**语句上下文（ statement context）**中，比如 if 语句的条件后面，则表示一个语句块的开始。  
+
+- 属性名可以是字符串或数值  
+
+  - 数值属性会自动转换为字符串。  
+
+- **注意：在使用对象字面量表示法定义对象时，并不会实际调用 Object 构造函数。**  
+
+- 虽然属性一般是通过**点语法**来存取的，这也是面向对象语言的惯例，但也可以使用**中括号**来存取属性。 
+
+  - 从功能上讲，这两种存取属性的方式没有区别。使用中括号的主要优势就是可以通过变量访问属性。
+  - 如果属性名中包含可能会导致语法错误的字符，或者包含关键字/保留字时，也可以使用中括号语法。  
+
+  ```javascript
+  person["first name"] = "Nicholas";
+  ```
+
+  
+
 ## 6.2　Array
 
+ECMAScript 数组也是一组有序的数据，但跟其他语言不同的是，**数组中每个槽位可以存储任意类型的数据。**这意味着可以创建一个数组，它的第一个元素是字符串，第二个元素是数值，第三个是对象。   
+
 ### 6.2.1 创建数组  
+
+- 一种是使用 Array 构造函数：
+
+  - `let colors = new Array();  `
+  - `let colors = new Array(20);  `
+  - `let colors = new Array("red", "blue", "green");  `
+  - 创建数组时可以给构造函数传一个值。这时候就有点问题了，因为如果这个值是数值，则会创建一个长度为指定数值的数组；而如果这个值是其他类型的，则会创建一个只包含该特定值的数组。  
+
+  ```javascript
+  let colors = new Array(3); // 创建一个包含 3 个元素的数组
+  let names = new Array("Greg"); // 创建一个只包含一个元素，即字符串"Greg"的数组
+  
+  //在使用 Array 构造函数时，也可以省略 new 操作符。结果是一样的，比如：
+  let colors = Array(3); // 创建一个包含 3 个元素的数组
+  let names = Array("Greg"); // 创建一个只包含一个元素，即字符串"Greg"的数组
+  ```
+
+- 另一种创建数组的方式是使用**数组字面量（ array literal）表示法**。数组字面量是在中括号中包含以逗号分隔的元素列表。
+
+  ```javascript
+  let colors = ["red", "blue", "green"]; // 创建一个包含 3 个元素的数组
+  let names = []; // 创建一个空数组
+  let values = [1,2,]; // 创建一个包含 2 个元素的数组
+  ```
+
+  > 注意 与对象一样，在使用数组字面量表示法创建数组不会调用 Array 构造函数。
+
+- Array 构造函数还有两个 **ES6 新增**的用于创建数组的静态方法： 
+
+  - **`from()`** 用于将**类数组结构转换为数组实例**，
+
+    - `Array.from()`的第一个参数是一个类数组对象，即任何可迭代的结构，或者有一个 length 属性和可索引元素的结构。  
+
+    ```javascript
+    // 字符串会被拆分为单字符数组
+    console.log(Array.from("Matt")); // ["M", "a", "t", "t"]
+    
+    // 可以使用 from()将集合和映射转换为一个新数组
+    const m = new Map().set(1, 2)
+      .set(3, 4);
+    const s = new Set().add(1)
+      .add(2)
+      .add(3)
+      .add(4);
+    
+    console.log(Array.from(m)); // [[1, 2], [3, 4]]
+    console.log(Array.from(s)); // [1, 2, 3, 4]
+    
+    // Array.from()对现有数组执行浅复制
+    const a1 = [1, 2, 3, 4];
+    const a2 = Array.from(a1);
+    console.log(a1); // [1, 2, 3, 4]
+    alert(a1 === a2); // false
+    
+    // 可以使用任何可迭代对象
+    const iter = {
+      *[Symbol.iterator]() {
+        yield 1;
+        yield 2;
+        yield 3;
+        yield 4;
+      }
+    };
+    console.log(Array.from(iter)); // [1, 2, 3, 4]
+    
+    // arguments 对象可以被轻松地转换为数组
+    function getArgsArray() {
+      return Array.from(arguments);
+    }
+    console.log(getArgsArray(1, 2, 3, 4)); // [1, 2, 3, 4]
+    
+    // from()也能转换带有必要属性的自定义对象
+    const arrayLikeObject = {
+      0: 1,
+      1: 2,
+      2: 3,
+      3: 4,
+      length: 4
+    };
+    console.log(Array.from(arrayLikeObject)); // [1, 2, 3, 4]
+    ```
+
+    - `Array.from()` 还接收第二个可选的映射函数参数。这个函数可以直接增强新数组的值，而无须像调用 `Array.from().map()`那样先创建一个中间数组。还可以接收第三个可选参数，用于指定映射函数中 this 的值。但这个重写的 this 值在箭头函数中不适用。  
+
+    ```javascript
+    const a1 = [1, 2, 3, 4];
+    const a2 = Array.from(a1, x => x**2);
+    const a3 = Array.from(a1, function(x) {return x**this.exponent}, {exponent: 2});
+    console.log(a2); // [1, 4, 9, 16]
+    console.log(a3); // [1, 4, 9, 16]
+    ```
+
+  - **`of()`** 用于将**一组参数转换为数组实例**。  
+
+    - `Array.of()`可以把一组参数转换为数组。这个方法用于替代在 ES6 之前常用的 `Array.prototype.slice.call(arguments)`，一种异常笨拙的将 arguments 对象转换为数组的写法：  
+
+    ```javascript
+    console.log(Array.of(1, 2, 3, 4)); // [1, 2, 3, 4]
+    console.log(Array.of(undefined)); // [undefined]
+    ```
+
 ### 6.2.2 数组空位  
+
+- 使用数组字面量初始化数组时，可以使用一串逗号来创建**空位（ hole）**。 ECMAScript 会将逗号之间相应索引位置的值当成空位， ES6 规范重新定义了该如何处理这些空位。  
+
+  ```javascript
+  const options = [,,,,,]; // 创建包含 5 个元素的数组
+  console.log(options.length); // 5
+  console.log(options); // [,,,,,]
+  ```
+
+  - ES6 新增的方法和迭代器与早期 ECMAScript 版本中存在的方法行为不同。 
+    - ES6 新增方法普遍将这些空位当成**存在的元素( empty )**，只不过值为 `undefined`  。
+  - ES6 之前的方法则会忽略这个空位，但具体的行为也会因方法而异。
+
+  注意：由于行为不一致和存在性能隐患，因此实践中要**避免使用数组空位。如果确实需要空位，则可以显式地用 undefined 值代替。**  
+
 ### 6.2.3 数组索引  
+
+- 在中括号中提供的索引表示要访问的值。  
+- 设置数组的值方法也是一样的，就是替换指定位置的值。  
+  - 如果把一个值设置给超过数组最大索引的索引，  数组长度会自动扩展到该索引值加 1。
+- 数组中元素的数量保存在 length 属性中，这个属性始终返回 0 或大于 0 的值  。
+  - 通过修改 length 属性，可以从数组末尾删除或添加元素。  
+
+- **注意：**数组最多可以包含 `4 294 967 295` 个元素，这对于大多数编程任务应该足够了。
+  - 如果尝试添加更多项，则会导致抛出错误。以这个最大值作为初始值创建数组，可能导致脚本运行时间过长的错误。  
+
 ### 6.2.4 检测数组  
+
+- 判断一个对象是不是数组。在只有一个网页（因而只有一个全局作用域）的情况下，使用 `instanceof` 操作符就足矣：  
+
+  ```javascript
+  if (value instanceof Array){
+  	// 操作数组
+  }
+  ```
+
+  - 使用 instanceof 的问题是假定只有一个全局执行上下文。如果网页里有多个框架，则可能涉及两个不同的全局执行上下文，因此就会有两个不同版本的 Array 构造函数。如果要把数组从一个框架传给另一个框架，则这个数组的构造函数将有别于在第二个框架内本地创建的数组。  
+
+- **`Array.isArray()`方法**。
+
+  - 为解决上述问题 。
+  - 这个方法的目的就是确定一个值是否为数组，而不用管它是在哪个全局执行上下文中创建的。  
+
+  ```javascript
+  if (Array.isArray(value)){
+  	// 操作数组
+  }
+  ```
+
+  
+
 ### 6.2.5 迭代器方法  
+
+Array 的原型上暴露了 3 个用于检索数组内容的方法： keys()、 values()和
+entries()。 
+
+1. **`keys()`**返回数组索引的迭代器
+2. **`values()`**返回数组元素的迭代器
+3. **`entries()`**返回索引/值对的迭代器  
+
+```javascript
+const a = ["foo", "bar", "baz", "qux"];
+
+// 因为这些方法都返回迭代器，所以可以将它们的内容
+// 通过 Array.from()直接转换为数组实例
+const aKeys = Array.from(a.keys());
+const aValues = Array.from(a.values());
+const aEntries = Array.from(a.entries());
+
+console.log(aKeys); // [0, 1, 2, 3]
+console.log(aValues); // ["foo", "bar", "baz", "qux"]
+console.log(aEntries); // [[0, "foo"], [1, "bar"], [2, "baz"], [3, "qux"]]
+
+// 使用 ES6 的解构可以非常容易地在循环中拆分键/值对：
+// const a = ["foo", "bar", "baz", "qux"];
+for (const [idx, element] of a.entries()) {
+  console.log(idx);
+  console.log(element);
+}
+// 0
+// foo
+// 1
+// bar
+// 2
+// baz
+// 3
+// qux
+
+console.log(...a.keys()); // 0 1 2 3
+console.log(...a.values()); // foo bar baz qux
+console.log(...a.entries()); // [0, "foo"] [1, "bar"] [3, "qux"]
+```
+
+
+
 ### 6.2.6 复制和填充方法  
+
+ES6 新增了两个方法：批量复制方法 `copyWithin()`，以及填充数组方法 `fill()`。这两个方法的函数签名类似，都需要指定既有数组实例上的一个范围，包含开始索引，不包含结束索引。使用这个方法不会改变数组的大小。  
+
+- **`fill()`**方法可以向一个已有的数组中插入全部或部分相同的值。
+
+  - 开始索引用于指定开始填充的位置，它是可选的。
+  - 如果不提供结束索引，则一直填充到数组末尾。负值索引从数组末尾开始计算。也可以将负索引想象成数组长度加上它得到的一个正索引。
+
+  ```javascript
+  const zeroes = [0, 0, 0, 0, 0];
+  
+  // 用 5 填充整个数组
+  zeroes.fill(5);
+  console.log(zeroes); // [5, 5, 5, 5, 5]
+  zeroes.fill(0); // 重置
+  
+  // 用 6 填充索引大于等于 3 的元素
+  zeroes.fill(6, 3);
+  console.log(zeroes); // [0, 0, 0, 6, 6]
+  zeroes.fill(0); // 重置
+  
+  // 用 7 填充索引大于等于 1 且小于 3 的元素
+  zeroes.fill(7, 1, 3);
+  console.log(zeroes); // [0, 7, 7, 0, 0];
+  zeroes.fill(0); // 重置
+  
+  // 用 8 填充索引大于等于 1 且小于 4 的元素
+  // (-4 + zeroes.length = 1)
+  // (-1 + zeroes.length = 4)
+  zeroes.fill(8, -4, -1);
+  console.log(zeroes); // [0, 8, 8, 8, 0];
+  
+  // fill()静默忽略超出数组边界、零长度及方向相反的索引范围：
+  const zeroes = [0, 0, 0, 0, 0];
+  
+  // 索引过低，忽略
+  zeroes.fill(1, -10, -6);
+  console.log(zeroes); // [0, 0, 0, 0, 0]
+  
+  // 索引过高，忽略
+  zeroes.fill(1, 10, 15);
+  console.log(zeroes); // [0, 0, 0, 0, 0]
+  
+  // 索引反向，忽略
+  zeroes.fill(2, 4, 2);
+  console.log(zeroes); // [0, 0, 0, 0, 0]
+  
+  // 索引部分可用，填充可用部分
+  zeroes.fill(4, 3, 10)
+  console.log(zeroes); // [0, 0, 0, 4, 4]
+  ```
+
+- **`copyWithin()`** 会按照指定范围浅复制数组中的部分内容，然后将它们插入到指定索引开始的位置。开始索引和结束索引则与 `fill()`使用同样的计算方法：  
+
+  ```javascript
+  let ints,
+    reset = () => ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  reset();
+  
+  // 从 ints 中复制索引 0 开始的内容，插入到索引 5 开始的位置
+  // 在源索引或目标索引到达数组边界时停止
+  ints.copyWithin(5);
+  console.log(ints); // [0, 1, 2, 3, 4, 0, 1, 2, 3, 4]
+  reset();
+  
+  // 从 ints 中复制索引 5 开始的内容，插入到索引 0 开始的位置
+  ints.copyWithin(0, 5);
+  console.log(ints); // [5, 6, 7, 8, 9, 5, 6, 7, 8, 9]
+  reset();
+  
+  // 从 ints 中复制索引 0 开始到索引 3 结束的内容
+  // 插入到索引 4 开始的位置
+  ints.copyWithin(4, 0, 3);
+  console.log(ints); // [0, 1, 2, 3, 0, 1, 2, 7, 8, 9]
+  reset();
+  
+  // JavaScript 引擎在插值前会完整复制范围内的值
+  // 因此复制期间不存在重写的风险
+  ints.copyWithin(2, 0, 6);
+  console.log(ints); // [0, 1, 0, 1, 2, 3, 4, 5, 8, 9]
+  reset();
+  
+  // 支持负索引值，与 fill()相对于数组末尾计算正向索引的过程是一样的
+  ints.copyWithin(-4, -7, -3);
+  console.log(ints); // [0, 1, 2, 3, 4, 5, 3, 4, 5, 6]
+  
+  
+  // copyWithin() 静默忽略超出数组边界、 零长度及方向相反的索引范围：
+  // let ints,
+  //   reset = () => ints = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // reset();
+  
+  // 索引过低，忽略
+  ints.copyWithin(1, -15, -12);
+  console.log(ints); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  reset()
+  
+  // 索引过高，忽略
+  ints.copyWithin(1, 12, 15);
+  console.log(ints); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  reset();
+  
+  // 索引反向，忽略
+  ints.copyWithin(2, 4, 2);
+  console.log(ints); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  reset();
+  
+  // 索引部分可用，复制、填充可用部分
+  ints.copyWithin(4, 7, 10)
+  console.log(ints); // [0, 1, 2, 3, 7, 8, 9, 7, 8, 9];
+  ```
+
+  
+
 ### 6.2.7 转换方法  
+
+所有对象都有 `toLocaleString()、 toString()和 valueOf()`方法。
+
+-  `valueOf()`返回的还是数组本身。而 `toString()`返回由数组中每个值的等效字符串拼接而成的一个逗号分隔的字符串。 
+- `toLocaleString()`方法也可能返回跟 toString()和 valueOf()相同的结果，但也不一定。在调用数组的 toLocaleString()方法时，会得到一个逗号分隔的数组值的字符串。
+  - 它与另外两个方法唯一的区别是，为了得到最终的字符串，会调用数组每个值的 toLocaleString()方法，而不是toString()方法。   
+- 如果想使用不同的分隔符，则可以使用 **`join()`**方法。
+  - `join()` 方法接收一个参数，即字符串分隔符，返回包含所有项的字符串。  
+  - 如果不给 join()传入任何参数，或者传入 undefined，则仍然使用逗号作为分隔符。  
+- **注意：** 如果数组中某一项是 `null 或 undefined`，则在 `join()、 toLocaleString()、toString()和 valueOf()`返回的结果中会以空字符串表示。  
+
 ### 6.2.8 栈方法  
+
+数组对象可以像栈一样，也就是一种限制插入和删除项的数据结构。
+
+- 栈是一种**后进先出（ LIFO， Last-In-First-Out）的结构**，也就是最近添加的项先被删除。
+- 数据项的**插入（称为推入， push）**和**删除（称为弹出， pop）**只在栈的一个地方发生，即**栈顶**。 
+- ECMAScript 数组提供了 push() 和 pop() 方法，以实现类似栈的行为。
+  - **`push()`**方法接收任意数量的参数，并将它们添加到数组末尾，返回数组的最新长度。 
+  - **`pop()`**方法则用于删除数组的最后一项，同时减少数组的 length 值，返回被删除的项。    
+
 ### 6.2.9 队列方法  
+
+- 队列以**先进先出（ FIFO， First-In-First-Out）**形式限制访问。
+  - 队列在列表末尾添加数据，但从列表开头获取数据。因为有了在数据末尾添加数据的 push() 方法，所以要模拟队列就差一个从数组开头取得数据的方法了。
+- 这个数组方法叫 **`shift()`**，它会删除数组的第一项并返回它，然后数组长度减 1。
+  - 使用 shift() 和 push()，可以把数组当成队列来使用。
+- **`unshift() 方法`**。
+  - `unshift()` 就是执行跟 `shift()` 相反的操作：在数组开头添加任意多个值，然后返回新的数组长度。 
+  - 通过使用 unshift() 和 pop() ，可以在相反方向上模拟队列，即在数组开头添加新数据，在数组末尾取得数据。
+
 ### 6.2.10 排序方法  
+
+数组有两个方法可以用来对元素重新排序： reverse() 和 sort()。
+
+- 顾名思义， **`reverse() 方法`**就是将数组元素反向排列。比如：
+
+  ```javascript
+  let values = [1, 2, 3, 4, 5];
+  values.reverse();
+  alert(values); // 5,4,3,2,1  
+  ```
+
+- 默认情况下， **`sort()`** 会按照升序重新排列数组元素，即最小的值在前面，最大的值在后面。
+
+  - 为此，**sort() 会在每一项上调用 String() 转型函数，然后比较字符串来决定顺序**。
+  - 即使数组的元素都是数值，也会先把数组转换为字符串再比较、排序。比如：
+
+  ```javascript
+  let values = [0, 1, 5, 10, 15];
+  values.sort();
+  alert(values); // 0,1,10,15,5  
+  ```
+
+  - sort() 方法可以接收一个比较函数，用于判断哪个值应该排在前面。
+
+    - 比较函数接收两个参数：
+    - 如果第一个参数应该排在第二个参数前面，就返回负值；如果两个参数相等，就返回 0；
+    - 如果第一个参数应该排在第二个参数后面，就返回正值。   
+
+    ```javascript
+    function compare(value1, value2) {
+      if (value1 < value2) {
+        return -1;
+      } else if (value1 > value2) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+    
+    let values = [0, 1, 5, 10, 15];
+    // values.sort(compare);
+    // alert(values); // 0,1,5,10,15
+    
+    values.sort((a, b) => a < b ? 1 : a > b ? -1 : 0);
+    alert(values); // 15,10,5,1,0
+    ```
+
+- **注意：**reverse()和 sort()都返回调用它们的数组的引用。  
+
+- 如果数组的元素是数值，比较函数就是要返回小于 0、 0 和大于 0 的数值，因此减法操作完全可以满足要求。  
+
+  ```javascript
+  function compare(value1, value2){
+  	return value2 - value1;
+  }
+  ```
+
+  
+
 ### 6.2.11 操作方法  
+
+- **`concat()方法`**可以在现有数组全部元素基础上创建一个新数组。
+
+  - 它首先会创建一个当前数组的副本，然后再把它的参数添加到副本末尾，最后返回这个新构建的数组。
+
+  - 如果传入一个或多个数组，则 concat()会把这些数组的每一项都添加到结果数组。
+
+  - 如果参数不是数组，则直接把它们添加到结果数组末尾。  
+
+  - 打平数组参数的行为可以重写，方法是在参数数组上指定一个特殊的符号： `Symbol.isConcatSpreadable`。
+
+    - 这个符号能够阻止 `concat()`打平参数数组。
+    - 相反，把这个值设置为 true 可以强制打平类数组对象。
+
+    ```javascript
+    let colors = ["red", "green", "blue"];
+    let newColors = ["black", "brown"];
+    let moreNewColors = {
+      [Symbol.isConcatSpreadable]: true,
+      length: 2,
+      0: "pink",
+      1: "cyan"
+    };
+    
+    newColors[Symbol.isConcatSpreadable] = false;
+    
+    // 强制不打平数组
+    let colors2 = colors.concat("yellow", newColors);
+    
+    // 强制打平类数组对象
+    let colors3 = colors.concat(moreNewColors);
+    
+    console.log(colors); // ["red", "green", "blue"]
+    console.log(colors2); // ["red", "green", "blue", "yellow", ["black", "brown"]]
+    console.log(colors3); // ["red", "green", "blue", "pink", "cyan"]
+    ```
+
+- **`方法 slice()`** 用于创建一个包含原有数组中一个或多个元素的新数组。
+
+  - `slice()`方法可以接收一个或两个参数：返回元素的开始索引和结束索引。
+  - 如果只有一个参数，则 `slice()`会返回该索引到数组末尾的所有元素。
+  - 如果有两个参数，则 `slice()`返回从开始索引到结束索引对应的所有元素，其中不包含结束索引对应的元素。
+    - 记住，这个操作不影响原始数组。  
+
+  ```javascript
+  let colors = ["red", "green", "blue", "yellow", "purple"];
+  let colors2 = colors.slice(1);
+  let colors3 = colors.slice(1, 4);
+  
+  alert(colors2); // green,blue,yellow,purple
+  alert(colors3); // green,blue,yellow
+  ```
+
+  - **注意：** 如果 slice() 的参数有负值，那么就以数值长度加上这个负值的结果确定位置。比如，在包含 5 个元素的数组上调用 slice(-2,-1)，就相当于调用 slice(3,4)。如果结束位置小于开始位置，则返回空数组。  
+
+- **`splice()`** 的主要目的是在数组中间插入元素，但有 3 种不同的方式使用这个方法。  
+
+  1. **删除。**
+     - 需要给 splice() 传 2 个参数：要删除的第一个元素的位置和要删除的元素数量。
+     - 可以从数组中删除任意多个元素，比如 splice(0, 2)会删除前两个元素。
+  2. **插入。**
+     - 需要给 splice() 传 3 个参数：开始位置、 0（要删除的元素数量）和要插入的元素，可以在数组中指定的位置插入元素。
+     - 第三个参数之后还可以传第四个、第五个参数，乃至任意多个要插入的元素。
+     - 比如， splice(2, 0, "red", "green")会从数组位置 2 开始插入字符串"red"和"green"。
+  3. **替换。** 
+     - splice() 在删除元素的同时可以在指定位置插入新元素，同样要传入 3 个参数：开始位置、要删除元素的数量和要插入的任意多个元素。要插入的元素数量不一定跟删除的元素数量一致。
+     - 比如， `splice(2, 1, "red", "green")`会在位置 2 删除一个元素，然后从该位置开始向数组中插入"red"和"green"。  
+
+  `splice()` 方法始终返回一个数组，它包含从数组中被删除的元素（如果没有删除元素，则返回空数组）。  
+
+  ```javascript
+  let colors = ["red", "green", "blue"];
+  let removed = colors.splice(0, 1); // 删除第一项
+  
+  alert(colors); // green,blue
+  alert(removed); // red，只有一个元素的数组
+  
+  removed = colors.splice(1, 0, "yellow", "orange"); // 在位置 1 插入两个元素
+  alert(colors); // green,yellow,orange,blue
+  alert(removed); // 空数组
+  
+  removed = colors.splice(1, 1, "red", "purple"); // 插入两个值，删除一个元素
+  alert(colors); // green,red,purple,orange,blue
+  alert(removed); // yellow，只有一个元素的数组
+  ```
+
+  
+
 ### 6.2.12 搜索和位置方法  
+
+ECMAScript 提供两类搜索数组的方法：按严格相等搜索和按断言函数搜索。  
+
+1. **严格相等  **
+
+   - ECMAScript 提供了 3 个严格相等的搜索方法： `indexOf()、lastIndexOf()和 includes()`。
+     - 其中，前两个方法在所有版本中都可用，而第三个方法是 ECMAScript 7 新增的。
+     - 这些方法都接收两个参数：
+       - 要查找的元素和
+       - 一个可选的起始搜索位置。 
+     - `indexOf()和 includes()`方法从数组前头（第一项）开始向后搜索，而 `lastIndexOf()`从数组末尾（最后一项）开始向前搜索。  
+   - `indexOf()和 lastIndexOf()`都返回要查找的元素在数组中的位置，如果没找到则返回 -1。
+   - `includes()`返回布尔值，表示是否至少找到一个与指定元素匹配的项。
+   - 在比较第一个参数跟数组每一项时，会使用全等（ `===`）比较，也就是说两项**必须严格相等**。  
+
+   ```javascript
+   let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+   
+   console.log(numbers.indexOf(4)); // 3
+   console.log(numbers.lastIndexOf(4)); // 5
+   console.log(numbers.includes(4)); // true
+   
+   console.log(numbers.indexOf(4, 4)); // 5
+   console.log(numbers.lastIndexOf(4, 4)); // 3
+   console.log(numbers.includes(4, 7)); // false
+   
+   let person = {
+     name: "Nicholas"
+   };
+   let people = [{
+     name: "Nicholas"
+   }];
+   let morePeople = [person];
+   
+   console.log(people.indexOf(person)); // -1
+   console.log(morePeople.indexOf(person)); // 0
+   console.log(people.includes(person)); // false
+   console.log(morePeople.includes(person)); // true
+   console.log(morePeople, people, person);
+   ```
+
+   
+
+2. **断言函数  **
+
+   - ECMAScript 也允许按照定义的断言函数搜索数组，每个索引都会调用这个函数。断言函数的返回值决定了相应索引的元素是否被认为匹配。  
+   - 断言函数接收 3 个参数：元素、索引和数组本身。
+     - 其中元素是数组中当前搜索的元素，索引是当前元素的索引，而数组就是正在搜索的数组。
+     - 断言函数返回真值，表示是否匹配。
+   - **`find() 和 findIndex()`** 方法使用了断言函数。这两个方法都从数组的最小索引开始。
+     - find() 返回第一个匹配的元素， 
+     - findIndex() 返回第一个匹配元素的索引。
+     - 这两个方法也都接收第二个可选的参数，用于指定断言函数内部 this 的值。 
+   - 找到匹配项后，这两个方法都不再继续搜索。   
+
+   ```javascript
+   const people = [{
+       name: "Matt",
+       age: 27
+     },
+     {
+       name: "Nicholas",
+       age: 29
+     }
+   ];
+   
+   console.log(people.find((element, index, array) => element.age < 28));
+   // {name: "Matt", age: 27}
+   
+   console.log(people.findIndex((element, index, array) => element.age < 28));
+   // 0
+   ```
+
+   
+
 ### 6.2.13 迭代方法  
+
+ECMAScript 为数组定义了 5 个迭代方法。
+
+- 每个方法接收两个参数：
+
+  - 以每一项为参数运行的函数，
+  - 以及可选的作为函数运行上下文的作用域对象（影响函数中 this 的值）。
+
+- 传给每个方法的函数接收 3 个参数：数组元素、元素索引和数组本身。
+
+  - 因具体方法而异，这个函数的执行结果可能会也可能不会影响方法的返回值。
+
+- 数组的 5 个迭代方法如下。  
+
+  1. **`every()`**： 对数组每一项都运行传入的函数，如果对每一项函数都返回 true， 则这个方法返回 true。
+  2. **`filter()`**：对数组每一项都运行传入的函数，函数返回 true 的项会组成数组之后返回。
+  3. **`forEach()`**：对数组每一项都运行传入的函数，没有返回值。
+  4. **`map()`**：对数组每一项都运行传入的函数，返回由每次函数调用的结果构成的数组。
+  5. **`some()`**：对数组每一项都运行传入的函数，如果有一项函数返回 true，则这个方法返回 true。
+
+  这些方法都不改变调用它们的数组。  
+
+  ```javascript
+  let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+  
+  let everyResult = numbers.every((item, index, array) => item > 2);
+  console.log(everyResult); // false
+  
+  let someResult = numbers.some((item, index, array) => item > 2);
+  console.log(someResult); // true
+  
+  let filterResult = numbers.filter((item, index, array) => item > 2);
+  console.log(filterResult); // 3,4,5,4,3
+  
+  let mapResult = numbers.map((item, index, array) => item * 2);
+  console.log(mapResult); // 2,4,6,8,10,8,6,4,2
+  
+  numbers.forEach((item, index, array) => {
+    // 执行某些操作
+  });
+  ```
+
+  
+
 ### 6.2.14 归并方法  
+
+ECMAScript 为数组提供了两个归并方法： reduce() 和 reduceRight()。
+
+- 这两个方法都会迭代数组的所有项，并在此基础上构建一个最终返回值。 
+
+- reduce() 方法从数组第一项开始遍历到最后一项。
+
+- 而 reduceRight() 从最后一项开始遍历至第一项。
+
+  - 这两个方法都接收两个参数：对每一项都会运行的归并函数，以及可选的以之为归并起点的初始值。
+  - 传给 reduce() 和 reduceRight() 的函数接收 4 个参数：上一个归并值、当前项、当前项的索引和数组本身。
+  - 这个函数返回的任何值都会作为下一次调用同一个函数的第一个参数。如果没有给这两个方法传入可选的第二个参数（作为归并起点值），则第一次迭代将从数组的第二项开始，因此传给归并函数的第一个参数是数组的第一项，第二个参数是数组的第二项。
+
+  ```javascript
+  let values = [1, 2, 3, 4, 5];
+  let sum = values.reduce((prev, cur, index, array) => prev + cur);
+  alert(sum); // 15
+  
+  sum = values.reduceRight(function (prev, cur, index, array) {
+    return prev + cur;
+  });
+  alert(sum); // 15
+  ```
+
+  
+
+
+
 ## 6.3　定型数组
+
+**定型数组（ typed array）**是 ECMAScript 新增的结构，目的是提升向原生库传输数据的效率。
+
+实际上，JavaScript 并没有“TypedArray”类型，它所指的其实是一种特殊的包含数值类型的数组。为理解如何使用定型数组，有必要先了解一下它的用途。  
+
 ### 6.3.1 历史  
+
+
+
 ### 6.3.2 ArrayBuffer  
+
+
+
 ### 6.3.3 DataView  
+
+
+
 ### 6.3.4 定型数组  
+
+
+
 ## 6.4　Map
 ### 6.4.1 基本 API  
 ### 6.4.2 顺序与迭代  
@@ -3614,7 +4300,7 @@ ECMAScript 提供了 Math 对象作为保存数学公式、信息和计算的地
 ## 12.6　小结
 # 第 13章　客户端检测
 ## 13.1　能力检测
-## 13.1 能力检测  
+### 13.1.1 能力检测  
 ### 13.1.2 基于能力检测进行浏览器分析  
 ## 13.2　用户代理检测
 ### 13.2.1 用户代理的历史  
