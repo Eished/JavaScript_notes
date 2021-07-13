@@ -4565,6 +4565,15 @@ alert(secondHalfDataView.buffer === buf); // true
 
 Map 是一种新的集合类型，为这门语言带来了真正的键/值存储机制。 Map 的大多数特性都可以通过 Object 类型实现，但二者之间还是存在一些细微的差异。  
 
+我们已经了解了以下复杂的数据结构：
+
+- 存储带键的数据（keyed）集合的对象。
+- 存储有序集合的数组。
+
+但这还不足以应对现实情况。这就是为什么存在 `Map` 和 `Set`。
+
+[Map](https://developer.mozilla.org/zh/docs/Web/JavaScript/Reference/Global_Objects/Map) 是一个带键的数据项的集合，就像一个 `Object` 一样。 但是它们最大的差别是 `Map` 允许任何类型的键（key）。
+
 ### 6.4.1 基本 API  
 
 - `const m = new Map();  `
@@ -4883,7 +4892,9 @@ const wm = new WeakMap();
 wm.set({}, "val");
 ```
 
-- `set()` 方法初始化了一个新对象并将它用作一个字符串的键。因为没有指向这个对象的其他引用，所以当这行代码执行完成后，这个对象键就会被当作垃圾回收。然后，这个键/值对就从弱映射中消失了，使其成为一个空映射。在这个例子中，因为值也没有被引用，所以这对键/值被破坏以后，值本身也会成为垃圾回收的目标。  
+- `set()` 方法初始化了一个新对象并将它用作一个字符串的键。因为没有指向这个对象的其他引用，所以当这行代码执行完成后，这个对象键就会被当作垃圾回收。
+- 然后，这个键/值对就从弱映射中消失了，使其成为一个空映射。
+- 在这个例子中，因为值也没有被引用，所以这对键/值被破坏以后，值本身也会成为垃圾回收的目标。  
 
 ```javascript
 const wm = new WeakMap();
@@ -5025,16 +5036,407 @@ function removeReference() {
 
 ECMAScript 6 新增的 Set 是一种新集合类型，为这门语言带来集合数据结构。 Set 在很多方面都像是加强的 Map，这是因为它们的大多数 API 和行为都是共有的。  
 
+`Set` 是一个特殊的类型集合 —— “**值的集合**”（没有键），它的**每一个值只能出现一次**。
+
 ### 6.6.1 基本 API  
+
+- `const m = new Set();  `
+
+- 在创建的同时初始化实例，则可以给 Set 构造函数传入一个可迭代对象，其中需要包含插入到新集合实例中的元素。
+
+  - 使用 `add()` 增加值， 
+  - 使用 `has()` 查询， 
+  - 通过 `size` 取得元素数量，
+  - 使用 `delete()` 和 `clear()` 删除元素：  
+
+  ```javascript
+  // 使用数组初始化集合
+  const s1 = new Set(["val1", "val2", "val3"]);
+  alert(s1.size); // 3
+  
+  // 使用自定义迭代器初始化集合
+  const s2 = new Set({
+    [Symbol.iterator]: function* () {
+      yield "val1";
+      yield "val2";
+      yield "val3";
+    }
+  });
+  alert(s2.size); // 3
+  
+  
+  const s = new Set();
+  
+  alert(s.has("Matt")); // false
+  alert(s.size); // 0
+  
+  // add()返回集合的实例，所以可以将多个添加操作连缀起来，包括初始化
+  s.add("Matt")
+    .add("Frisbie");
+  alert(s.has("Matt")); // true
+  alert(s.size); // 2
+  
+  s.delete("Matt");
+  alert(s.has("Matt")); // false
+  alert(s.has("Frisbie")); // true
+  alert(s.size); // 1
+  
+  s.clear(); // 销毁集合实例中的所有值
+  
+  alert(s.has("Matt")); // false
+  alert(s.has("Frisbie")); // false
+  alert(s.size); // 0
+  ```
+
+- 与 Map 类似， Set 可以包含任何 JavaScript 数据类型作为值。集合也使用 SameValueZero 操作（ ECMAScript 内部定义，无法在语言中使用），基本上相当于使用严格对象相等的标准来检查值的匹配性。  
+
+- 与严格相等一样，用作值的对象和其他“集合”类型在自己的内容或属性被修改时也不会改变。
+
+  ```javascript
+  const s = new Set();
+  
+  const objVal = {},
+    arrVal = [];
+  
+  s.add(objVal);
+  s.add(arrVal);
+  
+  objVal.bar = "bar";
+  arrVal.push("bar");
+  
+  alert(s.has(objVal)); // true
+  alert(s.has(arrVal)); // true
+  
+  s.clear(); // 销毁集合实例中的所有值
+  
+  // add() 和 delete() 操作是幂等的。 delete() 返回一个布尔值， 表示集合中是否存在要删除的值：
+  
+  s.add('foo');
+  alert(s.size); // 1
+  s.add('foo');
+  alert(s.size); // 1
+  
+  // 集合里有这个值
+  alert(s.delete('foo')); // true
+  
+  // 集合里没有这个值
+  alert(s.delete('foo')); // false
+  ```
+
+- 它的主要特点是，重复使用同一个值调用 `set.add(value)` 并不会发生什么改变。这就是 `Set` 里面的每一个值只出现一次的原因。
+
 ### 6.6.2 顺序与迭代  
+
+Set 会维护值插入时的顺序，因此支持按顺序迭代。
+
+- 集合实例可以提供一个迭代器（ Iterator），能以插入顺序生成集合内容。
+
+  - 可以通过 `values()` 方法及其别名方法 `keys()`（或者 `Symbol.iterator` 属性，它引用 `values()`）取得这个迭代器。
+  - 同 Map。
+
+- 因为 `values()` 是默认迭代器，所以可以直接对集合实例使用扩展操作，把集合转换为数组：
+
+  ```javascript
+  const s = new Set(["val1", "val2", "val3"]);
+  console.log([...s]); // ["val1", "val2", "val3"]
+  ```
+
+- 如果不使用迭代器，而是使用回调方式，则可以调用集合的 `forEach()`方法并传入回调，依次迭代每个键/值对。传入的回调接收可选的第二个参数，这个参数用于重写回调内部 this 的值。
+
+  - 修改集合中值的属性不会影响其作为集合值的身份。
+  - 同 Map。
+
 ### 6.6.3 定义正式集合操作  
+
+从各方面来看， Set 跟 Map 都很相似，只是 API 稍有调整。
+
+- 唯一需要强调的就是集合的 API 对自身的简单操作。
+
+- 很多开发者都喜欢使用 Set 操作，
+
+  - 但需要手动实现：或者是子类化 Set，或者是定义一个实用函数库。
+  - 要把两种方式合二为一，可以在子类上实现静态方法，然后在实例方法中使用这些静态方法。
+
+- 在实现这些操作时，需要考虑几个地方。
+
+  - 某些 Set 操作是有关联性的，因此最好让实现的方法能支持处理任意多个集合实例。
+  - Set 保留插入顺序，所有方法返回的集合必须保证顺序。
+  - 尽可能高效地使用内存。扩展操作符的语法很简洁，但尽可能避免集合和数组间的相互转换能够节省对象初始化成本。
+  - 不要修改已有的集合实例。 `union(a, b)`或 `a.union(b)`应该返回包含结果的新集合实例。  
+
+  ```javascript
+  class XSet extends Set {
+    union(...sets) {
+      return XSet.union(this, ...sets)
+    }
+    intersection(...sets) {
+      return XSet.intersection(this, ...sets);
+    }
+    difference(set) {
+      return XSet.difference(this, set);
+    }
+    symmetricDifference(set) {
+      return XSet.symmetricDifference(this, set);
+    }
+    cartesianProduct(set) {
+      return XSet.cartesianProduct(this, set);
+    }
+    powerSet() {
+      return XSet.powerSet(this);
+    }
+  
+    // 返回两个或更多集合的并集
+    static union(a, ...bSets) {
+      const unionSet = new XSet(a);
+      for (const b of bSets) {
+        for (const bValue of b) {
+          unionSet.add(bValue);
+        }
+      }
+      return unionSet;
+    }
+  
+    // 返回两个或更多集合的交集
+    static intersection(a, ...bSets) {
+      const intersectionSet = new XSet(a);
+      for (const aValue of intersectionSet) {
+        for (const b of bSets) {
+          if (!b.has(aValue)) {
+            intersectionSet.delete(aValue);
+          }
+        }
+      }
+      return intersectionSet;
+    }
+  
+    // 返回两个集合的差集
+    static difference(a, b) {
+      const differenceSet = new XSet(a);
+      for (const bValue of b) {
+        if (a.has(bValue)) {
+          differenceSet.delete(bValue);
+        }
+      }
+      return differenceSet;
+    }
+  
+    // 返回两个集合的对称差集
+    static symmetricDifference(a, b) {
+      // 按照定义，对称差集可以表达为
+      return a.union(b).difference(a.intersection(b));
+    }
+  
+    // 返回两个集合（数组对形式）的笛卡儿积
+    // 必须返回数组集合，因为笛卡儿积可能包含相同值的对
+    static cartesianProduct(a, b) {
+      const cartesianProductSet = new XSet();
+      for (const aValue of a) {
+        for (const bValue of b) {
+          cartesianProductSet.add([aValue, bValue]);
+        }
+      }
+      return cartesianProductSet;
+    }
+  
+    // 返回一个集合的幂集
+    static powerSet(a) {
+      const powerSet = new XSet().add(new XSet());
+      for (const aValue of a) {
+        for (const set of new XSet(powerSet)) {
+          powerSet.add(new XSet(set).add(aValue));
+        }
+      }
+      return powerSet;
+    }
+  }
+  ```
+
+  
+
 ## 6.7　WeakSet
+
+ECMAScript 6 新增的“弱集合”（ WeakSet）是一种新的集合类型，为这门语言带来了集合数据结构。 WeakSet 是 Set 的“兄弟”类型，其 API 也是 Set 的子集。 
+
+WeakSet 中的“weak”（弱），描述的是 JavaScript 垃圾回收程序对待“弱集合”中值的方式。  
+
 ### 6.7.1 基本 API  
+
+- `const ws = new WeakSet();  `
+
+- 弱集合中的值只能是 Object 或者继承自 Object 的类型，尝试使用非对象设置值会抛出 TypeError。
+
+  - 如果想在初始化时填充弱集合，则构造函数可以接收一个可迭代对象，其中需要包含有效的值。
+  - 可迭代对象中的每个值都会按照迭代顺序插入到新实例中。
+
+  ```javascript
+  const val1 = {
+      id: 1
+    },
+    val2 = {
+      id: 2
+    },
+    val3 = {
+      id: 3
+    };
+  
+  // 使用数组初始化弱集合
+  const ws1 = new WeakSet([val1, val2, val3]);
+  alert(ws1.has(val1)); // true
+  alert(ws1.has(val2)); // true
+  alert(ws1.has(val3)); // true
+  
+  // 初始化是全有或全无的操作
+  // 只要有一个值无效就会抛出错误，导致整个初始化失败
+  const ws2 = new WeakSet([val1, "BADVAL", val3]);
+  // TypeError: Invalid value used in WeakSet
+  typeof ws2;
+  
+  // ReferenceError: ws2 is not defined
+  // 原始值可以先包装成对象再用作值
+  const stringVal = new String("val1");
+  const ws3 = new WeakSet([stringVal]);
+  alert(ws3.has(stringVal)); // true
+  ```
+
+- 同 WeakMap。
+
 ### 6.7.2 弱值  
+
+```javascript
+const ws = new WeakSet();
+ws.add({});
+```
+
+- add()方法初始化了一个新对象，并将它用作一个值。因为没有指向这个对象的其他引用，所以当这行代码执行完成后，这个对象值就会被当作垃圾回收。然后，这个值就从弱集合中消失了，使其成为一个空集合。  
+
+```javascript
+const ws = new WeakSet();
+const container = {
+  val: {}
+};
+ws.add(container.val);
+
+function removeReference() {
+  container.val = null;
+}
+```
+
+- 这一次， container 对象维护着一个对弱集合值的引用，因此这个对象值不会成为垃圾回收的目标。不过，如果调用了 removeReference()，就会摧毁值对象的最后一个引用，垃圾回收程序就可以把这个值清理掉。  
+
 ### 6.7.3 不可迭代值  
+
+- 因为 WeakSet 中的值任何时候都可能被销毁，所以没必要提供迭代其值的能力。
+  - 当然，也用不着像 clear()这样一次性销毁所有值的方法。
+  -  WeakSet 确实没有这个方法。因为不可能迭代，所以也不可能在不知道对象引用的情况下从弱集合中取得值。
+  - 即便代码可以访问 WeakSet 实例，也没办法看到其中的内容。
+
+- WeakSet 之所以限制只能用对象作为值，是为了保证只有通过值对象的引用才能取得值。
+  - 如果允许原始值，那就没办法区分初始化时使用的字符串字面量和初始化之后使用的一个相等的字符串了。  
+
 ### 6.7.4 使用弱集合  
+
+- 相比于 WeakMap 实例， WeakSet 实例的用处没有那么大。不过，弱集合在给对象打标签时还是有价值的。  
+
+```javascript
+const disabledElements = new Set();
+const loginButton = document.querySelector('#login');
+
+// 通过加入对应集合，给这个节点打上“禁用”标签
+disabledElements.add(loginButton);
+```
+
+- 这样，通过查询元素在不在 disabledElements 中，就可以知道它是不是被禁用了。不过，假如元素从 DOM 树中被删除了，它的引用却仍然保存在 Set 中，因此垃圾回收程序也不能回收它。
+- 为了让垃圾回收程序回收元素的内存，可以在这里使用 WeakSet：  
+
+```javascript
+const disabledElements = new WeakSet();
+const loginButton = document.querySelector('#login');
+
+// 通过加入对应集合，给这个节点打上“禁用”标签
+disabledElements.add(loginButton);
+```
+
+- 这样，只要 WeakSet 中任何元素从 DOM 树中被删除，垃圾回收程序就可以忽略其存在，而立即释放其内存（假设没有其他地方引用这个对象）。  
+
 ## 6.8　迭代与扩展操作
-## 6.9　小结
+
+ECMAScript 6 新增的迭代器和扩展操作符对集合引用类型特别有用。这些新特性让集合类型之间相互操作、复制和修改变得异常方便。  
+
+> 注意 第 7 章会更详细地介绍迭代器和生成器。  
+
+- 如本章前面所示，有 4 种原生集合类型定义了默认迭代器：
+
+  1. Array
+  2. 所有定型数组
+  3. Map
+  4. Set  
+
+- 很简单，这意味着上述所有类型都支持顺序迭代，都可以传入 for-of 循环。
+
+- 这也意味着所有这些类型都兼容扩展操作符。
+
+  - 扩展操作符在对可迭代对象执行浅复制时特别有用，只需简单的语法就可以复制整个对象：  
+
+  ```javascript
+  let arr1 = [1, 2, 3];
+  let arr2 = [...arr1];
+  
+  console.log(arr1); // [1, 2, 3]
+  console.log(arr2); // [1, 2, 3]
+  console.log(arr1 === arr2); // false
+  ```
+
+- 对于期待可迭代对象的构造函数，只要传入一个可迭代对象就可以实现复制：  
+
+  ```javascript
+  let map1 = new Map([
+    [1, 2],
+    [3, 4]
+  ]);
+  let map2 = new Map(map1);
+  console.log(map1); // Map {1 => 2, 3 => 4}
+  console.log(map2); // Map {1 => 2, 3 => 4}
+  
+  // 当然， 也可以构建数组的部分元素：
+  let arr1 = [1, 2, 3];
+  let arr2 = [0, ...arr1, 4, 5];
+  console.log(arr2); // [0, 1, 2, 3, 4, 5]
+  
+  // 浅复制意味着只会复制对象引用：
+  arr1 = [{}];
+  arr2 = [...arr1];
+  arr1[0].foo = 'bar';
+  console.log(arr2[0]); // { foo: 'bar' }
+  ```
+
+- 上面的这些类型都支持多种构建方法，比如 `Array.of()` 和 `Array.from()` 静态方法。在与扩展操作符一起使用时，可以非常方便地实现互操作：  
+
+  ```javascript
+  let arr1 = [1, 2, 3];
+  
+  // 把数组复制到定型数组
+  let typedArr1 = Int16Array.of(...arr1);
+  let typedArr2 = Int16Array.from(arr1);
+  console.log(typedArr1); // Int16Array [1, 2, 3]
+  console.log(typedArr2); // Int16Array [1, 2, 3]
+  
+  // 把数组复制到映射
+  let map = new Map(arr1.map((x) => [x, 'val' + x]));
+  console.log(map); // Map {1 => 'val 1', 2 => 'val 2', 3 => 'val 3'}
+  
+  // 把数组复制到集合
+  let set = new Set(typedArr2);
+  console.log(set); // Set {1, 2, 3}
+  
+  // 把集合复制回数组
+  let arr2 = [...set];
+  console.log(arr2); // [1, 2, 3]
+  ```
+
+  
+
+6.9　小结
+
 # 第7章　迭代器与生成器 
 ## 7.1　理解迭代
 ## 7.2　迭代器模式
