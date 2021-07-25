@@ -10276,35 +10276,433 @@ proxy.push('Jacob');
 
 
 # 第 10章　函数
+
+每个函数都是 Function 类型的实例，而 Function 也有属性和方法，跟其他引用类型一样。
+
+因为函数是对象，所以函数名就是指向函数对象的指针，而且不一定与函数本身紧密绑定。  
+
+函数的四种形式：
+
+1. 函数声明
+2. 函数表达式
+3. 箭头函数
+4. Function 构造函数（不推荐）
+
+这几种实例化函数对象的方式之间存在微妙但重要的差别，本章后面会讨论。  
+
 ## 10.1　箭头函数
+
+ECMAScript 6 新增了使用胖箭头（ =>）语法定义函数表达式的能力。很大程度上，箭头函数实例化的函数对象与正式的函数表达式创建的函数对象行为是相同的。任何可以使用函数表达式的地方，都可以使用箭头函数。
+
+1. 如果只有一个参数，那也可以不用括号。只有没有参数，或者多个参数的情况下，才需要使用括号。
+2. 箭头函数也可以不用大括号，但这样会改变函数的行为。
+   1. 使用大括号就说明包含“函数体”，可以在一个函数中包含多条语句，跟常规的函数一样。
+   2. 如果不使用大括号，那么箭头后面就只能有一行代码，比如一个赋值操作，或者一个表达式。
+   3. 而且，省略大括号会**隐式返回这行代码的值**。
+3. 箭头函数虽然语法简洁，但也有很多场合不适用。
+   1. 箭头函数不能使用 `arguments`、 `super` 和 `new.target`，也不能用作构造函数。
+   2. 此外，箭头函数也没有 `prototype` 属性。  
+
 ## 10.2　函数名
+
+函数名就是指向函数的指针，所以它们跟其他包含对象指针的变量具有相同的行为。这意味着一个函数可以有多个名称。
+
+- 注意，使用**不带括号的函数名会访问函数指针**，而不会执行函数。  
+
+- 把 `sum` 设置为 `null` 之后，就切断了它与函数之间的关联。而 `anotherSum()` 还是可以照常调用，没有问题。  
+
+- ECMAScript 6 的所有函数对象都会暴露一个只读的 **`name`** 属性，其中包含关于函数的信息。
+
+  - 多数情况下，这个属性中保存的就是一个函数标识符，或者说是一个字符串化的变量名。
+  - 即使函数没有名称，也会如实显示成空字符串。
+  - 如果它是使用 `Function` 构造函数创建的，则会标识成"`anonymous`"  。
+
+- 如果函数是一个**获取函数**、**设置函数**，或者使用 **`bind()`**实例化，那么标识符前面会加上一个前缀：
+
+  ```javascript
+  function foo() {}
+  
+  console.log(foo.bind(null).name); // bound foo
+  
+  let dog = {
+    years: 1,
+    get age() {
+      return this.years;
+    },
+    set age(newAge) {
+      this.years = newAge;
+    }
+  }
+  let propertyDescriptor = Object.getOwnPropertyDescriptor(dog, 'age');
+  console.log(propertyDescriptor.get.name); // get age
+  console.log(propertyDescriptor.set.name); // set age
+  ```
+
+  
+
 ## 10.3　理解参数
+
+ECMAScript 函数既不关心传入的参数个数，也不关心这些参数的数据类型。  
+
+ECMAScript 函数的参数在内部表现为一个数组。  
+
+在使用 `function` 关键字定义（非箭头）函数时，可以在函数内部访问 `arguments` 对象，从中取得传进来的每个参数值。  
+
+- `arguments` 对象是一个类数组对象（但不是 Array 的实例），因此可以使用中括号语法访问其中的元素（第一个参数是 `arguments[0]`，第二个参数是 `arguments[1]`）。
+- 而要确定传进来多少个参数，可以访问 `arguments.length` 属性。  
+
+ECMAScript 函数的参数只是为了方便才写出来的，并不是必须写出来的。  
+
+- 在ECMAScript 中的命名参数不会创建让之后的调用必须匹配的函数签名。这是因为根本**不存在验证命名参数的机制。**  
+
+**`arguments` 对象可以跟命名参数一起使用**：
+
+```javascript
+function doAdd(num1, num2) {
+  if (arguments.length === 1) {
+    console.log(num1 + 10);
+  } else if (arguments.length === 2) {
+    console.log(arguments[0] + num2);
+  }
+}
+```
+
+**arguments 对象的值始终会与对应的命名参数同步。**  
+
+**严格模式下， arguments 会有一些变化。**
+
+- 首先，像前面那样给 `arguments[1]`赋值不会再影响 `num2`的值。就算把 `arguments[1]`设置为 10， `num2` 的值仍然还是传入的值。
+- 其次，在函数中尝试重写`arguments` 对象会导致语法错误。（代码也不会执行。）  
+
+
+
+**箭头函数中的参数**
+
+- 如果函数是使用箭头语法定义的，那么传给函数的参数将不能使用 `arguments` 关键字访问，而只能通过定义的命名参数访问。  
+
+
+
 ## 10.4　没有重载
+
+在其他语言比如 Java 中，一个函数可以有两个定义，只要签名（接收参数的类型和数量）不同就行。如前所述， ECMAScript 函数没有签名，因为参数是由包含零个或多个值的数组表示的。没有函数签名，自然也就没有重载。  
+
+1. 如果在 ECMAScript 中定义了两个同名函数，则后定义的会覆盖先定义的。  
+   - 可以通过检查参数的类型和数量，然后分别执行不同的逻辑来模拟函数重载。  
+
+
+
 ## 10.5　默认参数值
+
+1. 实现默认参数的一种常用方式就是检测某个参数是否等于 undefined，如果是则意味着没有传这个参数，那就给它赋一个值。
+
+2. ECMAScript 6 之后就不用这么麻烦了，因为它支持显式定义默认参数了。下面就是与前面代码等价的 ES6 写法，只要在函数定义中的参数后面用=就可以为参数赋一个默认值。
+
+   - `function makeKing(name = 'Henry'){}`
+   - 给参数传 `undefined` 相当于没有传值，不过这样可以利用多个独立的默认值：
+
+   ```javascript
+   function makeKing(name = 'Henry', numerals = 'VIII') {
+     return `King ${name} ${numerals}`;
+   }
+   console.log(makeKing()); // 'King Henry VIII'
+   console.log(makeKing('Louis')); // 'King Louis VIII'
+   console.log(makeKing(undefined, 'VI')); // 'King Henry VI'
+   ```
+
+3. 在使用默认参数时， arguments 对象的值不反映参数的默认值，只反映传给函数的参数。
+
+   - 当然，跟 ES5 严格模式一样，修改命名参数也不会影响 arguments 对象，它始终以调用函数时传入的值为准。
+
+4. 默认参数值并不限于原始值或对象类型，也可以使用调用函数返回的值。
+
+5. 函数的**默认参数只有在函数被调用时才会求值**，不会在函数定义时求值。而且，计算默认值的函数只有在调用函数但未传相应参数时才会被调用。
+
+6. 箭头函数同样也可以这样使用默认参数，只不过在只有一个参数时，就必须使用括号而不能省略了。
+
+
+
+**默认参数作用域与暂时性死区**
+
+1. 因为在求值默认参数时可以定义对象，也可以动态调用函数，所以函数参数肯定是在某个作用域中
+   求值的。
+
+   - 给多个参数定义默认值实际上跟使用 let 关键字顺序声明变量一样。  
+   - 默认参数会按照定义它们的顺序依次被初始化。  
+   - 参数初始化顺序遵循“暂时性死区”规则，**即前面定义的参数不能引用后面定义的**。  
+
+   ```javascript
+   // 调用时不传第一个参数会报错
+   function makeKing(name = numerals, numerals = 'VIII') {
+     return `King ${name} ${numerals}`;
+   }
+   
+   // 参数也存在于自己的作用域中， 它们不能引用函数体的作用域：
+   // 调用时不传第二个参数会报错
+   function makeKing(name = 'Henry', numerals = defaultNumeral) {
+     let defaultNumeral = 'VIII';
+     return `King ${name} ${numerals}`;
+   }
+   ```
+
+   
+
 ## 10.6　参数扩展与收集
+
+ECMAScript 6 新增了扩展操作符，使用它可以非常简洁地操作和组合集合数据。
+
+扩展操作符最有用的场景就是函数定义中的参数列表，在这里它可以充分利用这门语言的弱类型及参数长度可变的特点。
+
+扩展操作符既可以用于调用函数时传参，也可以用于定义函数参数。  
+
 ### 10.6.1 扩展参数  
+
+1. 如果不使用扩展操作符传参，那么就得求助于 `apply()`方法：  
+   - 语法：`func.apply(thisArg, [argsArray])`
+   - `console.log(getSum.apply(null, values)); // 10  `
+2. 使用扩展操作符传参：
+   - `console.log(getSum(...values)); // 10  `
+3. 也可以将扩展操作符用于命名参数，当然同时也可以使用默认参数。
+
 ### 10.6.2 收集参数  
+
+1. 在构思函数定义时，可以使用扩展操作符把不同长度的独立参数组合为一个数组。这有点类似 `arguments` 对象的构造机制，只不过收集参数的结果会得到一个 `Array` 实例。  
+
+2. 收集参数的前面如果还有命名参数，则只会收集其余的参数；如果没有则会得到空数组。因为收集参数的结果可变，所以只能把它作为最后一个参数：  
+
+   ```javascript
+   // 不可以 Module parse failed: Comma is not permitted after the rest element
+   function getProduct(...values, lastValue) {}
+   // 可以
+   function ignoreFirst(firstValue, ...values) {
+     console.log(values);
+   }
+   ignoreFirst(); // []
+   ignoreFirst(1); // []
+   ignoreFirst(1, 2); // [2]
+   ignoreFirst(1, 2, 3); // [2, 3]
+   ```
+
+3. 箭头函数虽然不支持 `arguments` 对象，但支持收集参数的定义方式。
+
+4. 使用收集参数并不影响 `arguments` 对象，它仍然反映调用时传给函数的参数。
+
+   ```javascript
+   function getSum(...values) {
+     console.log(arguments.length); // 3
+     console.log(arguments); // [1, 2, 3]
+     console.log(values); // [1, 2, 3]
+   }
+   console.log(getSum(1, 2, 3));
+   ```
+
+   
+
 ## 10.7　函数声明与函数表达式
+
+一直没有把函数声明和函数表达式区分得很清楚。  
+
+事实上， JavaScript 引擎在加载数据时对它们是区别对待的。 
+
+- 函数声明：
+  - **函数声明提升（ function declaration hoisting）**。 
+    - 把发现的函数声明提升到源代码树的顶部。  
+  - JavaScript 引擎在任何代码执行之前，会先读取函数声明，并在执行上下文中生成函数定义。 
+- 函数表达式：
+  - **必须等到代码执行到它那一行**，才会在执行上下文中生成函数定义。  
+
+
+
 ## 10.8　函数作为值
+
+因为函数名在 ECMAScript 中就是变量，所以函数可以用在任何可以使用变量的地方。
+
+- 这意味着不仅可以把**函数作为参数**传给另一个函数，而且还可以在一个**函数中返回另一个函数**。  
+
+
+
 ## 10.9　函数内部
+
+在 ECMAScript 5 中，函数内部存在两个特殊的对象： `arguments` 和 `this`。 ECMAScript 6 又新增了 `new.target` 属性。  
+
 ### 10.9.1 arguments  
+
+1. 虽然主要用于包含函数参数，但 arguments 对象其实还有一个 **`callee`** 属性，是一个指向 arguments 对象所在函数的指针。  
+
+   - **严格模式下不能使用！**
+     - `Uncaught TypeError: 'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them`
+
+   ```javascript
+   function factorial(num) {
+     if (num <= 1) {
+       return 1;
+     } else {
+       return num * factorial(num - 1);
+     }
+   }
+   
+   // 阶乘函数一般定义成递归调用的， 就像上面这个例子一样。 
+   // 只要给函数一个名称， 而且这个名称不会变， 这样定义就没有问题。 
+   // 但是， 这个函数要正确执行就必须保证函数名是 factorial， 从而导致了紧密耦合。 
+   // 使用 arguments.callee 就可以让函数逻辑与函数名解耦：
+   
+   function factorial(num) {
+     if (num <= 1) {
+       return 1;
+     } else {
+       return num * arguments.callee(num - 1);
+     }
+   }
+   
+   // 这个重写之后的 factorial()函数已经用 arguments.callee 代替了之前硬编码的 factorial。
+   // 这意味着无论函数叫什么名称，都可以引用正确的函数。
+   
+   let trueFactorial = factorial;
+   factorial = function() {
+     return 0;
+   };
+   console.log(trueFactorial(5)); // 120
+   console.log(factorial(5)); // 0
+   
+   // 这里， trueFactorial 变量被赋值为 factorial，实际上把同一个函数的指针又保存到了另一个位置。
+   // 然后， factorial 函数又被重写为一个返回 0 的函数。
+   // 如果像 factorial()最初的版本那样不使用 arguments.callee，那么像上面这样调用 trueFactorial()就会返回 0。
+   // 不过，通过将函数与名称解耦， trueFactorial()就可以正确计算阶乘，而 factorial()则只能返回 0。
+   ```
+
+   
+
 ### 10.9.2 this  
+
+1. 另一个特殊的对象是 this，它在标准函数和箭头函数中有不同的行为。
+
+   - 在标准函数中， this 引用的是把函数当成方法调用的上下文对象，这时候通常称其为 this 值（在网页的全局上下文中调用函数时， this 指向 windows）。  
+   - 在箭头函数中， this 引用的是定义箭头函数的上下文。  
+
+   ```javascript
+   window.color = 'red';
+   let o = {
+     color: 'blue'
+   };
+   let sayColor = () => console.log(this.color);
+   
+   sayColor(); // 'red'
+   o.sayColor = sayColor;
+   o.sayColor(); // 'red'
+   ```
+
+   - 在事件回调或定时回调中调用某个函数时， this 值指向的并非想要的对象。此时将回调函数写成箭头函数就可以解决问题。这是因为箭头函数中的 this 会保留定义该函数时的上下文：
+
+   ```javascript
+   function King() {
+     this.royaltyName = 'Henry';
+     // this 引用 King 的实例
+     setTimeout(() => console.log(this.royaltyName), 1000);
+   }
+   
+   function Queen() {
+     this.royaltyName = 'Elizabeth';
+     // this 引用 window 对象
+     setTimeout(function () {
+       console.log(this.royaltyName);
+     }, 1000);
+   }
+   new King(); // Henry
+   new Queen(); // undefined
+   ```
+
+   
+
 ### 10.9.3 caller  
+
+ECMAScript 5 也会给函数对象上添加一个属性： **`caller`**。
+
+1. 这个属性**引用的是调用当前函数的函数**，或者如果是在**全局作用域中调用的则为 null**。  
+
+```javascript
+function outer() {
+  inner();
+}
+
+function inner() {
+  console.log(inner.caller);
+}
+outer();
+
+// 以上代码会显示 outer() 函数的源代码。 这是因为 ourter() 调用了 inner()， inner.caller指向 outer()。 
+// 如果要降低耦合度， 则可以通过 arguments.callee.caller 来引用同样的值：
+function outer() {
+  inner();
+}
+
+function inner() {
+  console.log(arguments.callee.caller);
+}
+outer();
+```
+
+- **在严格模式下访问 `arguments.callee` 会报错**。 
+  - ECMAScript 5 也定义了 `arguments.caller`， 但在严格模式下访问它会报错， 在非严格模式下则始终是 `undefined`。 
+  - 这是**为了分清 `arguments.caller` 和函数的 `caller`** 而故意为之的。 
+  - 而作为对这门语言的安全防护， 这些改动也让第三方代码无法检测同一上下文中运行的其他代码。
+- 严格模式下还有一个限制， 就是不能给函数的 `caller` 属性赋值， 否则会导致错误。
+
+
+
 ### 10.9.4 new.target  
+
+1. ECMAScript 6 新增了检测函数是否使用 `new` 关键字调用的 `new.target` 属性。
+
+   - 如果函数是正常调用的，则 `new.target` 的值是 `undefined`；
+   - 如果是使用 `new` 关键字调用的，则 `new.target` 将引用被调用的构造函数。  
+
+   ```javascript
+   function King() {
+     if (!new.target) {
+       throw 'King must be instantiated using "new"'
+     }
+   	console.log('King instantiated using "new"');
+   }
+   new King(); // King instantiated using "new"
+   King(); // Error: King must be instantiated using "new"
+   ```
+
+   
+
 ## 10.10　函数属性与方法
+
+
+
 ## 10.11　函数表达式
+
+
+
 ## 10.12　递归
+
+
+
 ## 10.13　尾调用优化
 ### 10.13.1 尾调用优化的条件  
 ### 10.13.2 尾调用优化的代码  
+
+
+
 ## 10.14　闭包
 ### 10.14.1 this 对象  
 ### 10.14.2 内存泄漏  
+
+
+
 ## 10.15　立即调用的函数表达式
+
+
+
 ## 10.16　私有变量
 ### 10.16.1 静态私有变量  
 ### 10.16.2 模块模式  
 ### 10.16.3 模块增强模式  
+
+
+
 # 第 11章　期约与异步函数
 ## 11.1　异步编程
 ### 11.1.1 同步与异步  
