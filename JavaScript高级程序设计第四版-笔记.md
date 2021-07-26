@@ -8393,6 +8393,7 @@ const Animal = class {};
 
 - 与函数表达式类似，类表达式在它们被求值前也不能引用。
 - 与函数定义不同的是，虽然函数声明可以提升，但**类定义不能提升**。
+  - **严格模式下不会提升！**
 
 ```javascript
 console.log(FunctionExpression); // undefined
@@ -8412,6 +8413,7 @@ console.log(ClassDeclaration); // class ClassDeclaration {}
 ```
 
 - 另一个跟函数声明不同的地方是，函数受函数作用域限制，而**类受块作用域限制**  。
+  - **严格模式下相同！**
 
 ```javascript
 {
@@ -10670,36 +10672,607 @@ outer();
 
 ## 10.10　函数属性与方法
 
+1. 每个函数都有两个属性： **`length`** 和 **`prototype`**。
+
+   - 其中， length 属性保存函数定义的命名参数的个数。
+   - prototype 属性也许是 ECMAScript 核心中最有趣的部分。 
+     - prototype 是保存引用类型所有实例方法的地方， toString()、 valueOf()等方法实际上都保存在 prototype 上，进而由所有实例共享。
+     - prototype 属性是不可枚举的，因此使用 for-in 循环不会返回这个属性。  
+
+2. 函数还有两个方法： `apply()` 和 `call()`。
+
+   - 这两个方法都会以指定的 this 值来调用函数，即会设置调用函数时函数体内 this 对象的值。 
+   - `apply()` 方法接收两个参数：函数内 this 的值和一个参数数组。第二个参数可以是 Array 的实例，但也可以是 arguments 对象。  
+     - **注意：** 在严格模式下，调用函数时如果没有指定上下文对象，则 this 值不会指向 window。除非使用 `apply()`或 `call()`把函数指定给一个对象，否则 this 的值会变成 undefined。 
+
+   - `call()` 方法与 `apply()` 的作用一样，只是传参的形式不同。
+     - 第一个参数跟 `apply()`一样， 也是 this 值，而剩下的要传给被调用函数的参数则是逐个传递的。  
+   - `apply()和 call()`真正强大的地方并不是给函数传参，而是控制函数调用上下文即函数体内 this 值的能力。  
+     - 可以将任意对象设置为任意函数的作用域，这样对象可以不用关心方法。  
+
+   ```javascript
+   window.color = 'red';
+   let o = {
+     color: 'blue'
+   };
+   
+   function sayColor() {
+     console.log(this.color);
+   }
+   sayColor(); // red
+   sayColor.call(this); // red
+   sayColor.call(window); // red
+   sayColor.call(o); // blue
+   ```
+
+3. **`bind()`** 方法会创建一个新的函数实例，其 `this` 值会被绑定到传给 `bind()`的对象。  
+
+   ```javascript
+   window.color = 'red';
+   var o = {
+     color: 'blue'
+   };
+   
+   function sayColor() {
+     console.log(this.color);
+   }
+   let objectSayColor = sayColor.bind(o);
+   objectSayColor(); // blue
+   ```
+
+4. 对函数而言，继承的方法 `toLocaleString()`和 `toString()`始终返回函数的代码。返回代码的具体格式因浏览器而异。有的返回源代码，包含注释，而有的只返回代码的内部形式，会删除注释，甚至代码可能被解释器修改过。由于这些差异，因此不能在重要功能中依赖这些方法返回的值，而只应在调试中使用它们。继承的方法 `valueOf()`返回函数本身。  
+
 
 
 ## 10.11　函数表达式
+
+函数声明的关键特点是函数声明提升，即函数声明会在代码执行之前获得定义。  
+
+函数表达式看起来就像一个普通的变量定义和赋值，即创建一个函数再把它赋值给一个变量functionName。这样创建的函数叫作**匿名函数（ anonymous funtion）**，因为 function 关键字后面没有标识符。（匿名函数有也时候也被称为**兰姆达函数**）。未赋值给其他变量的匿名函数的 name 属性是空字符串。  
 
 
 
 ## 10.12　递归
 
+递归函数通常的形式是一个函数通过名称调用自己。
 
+1. 在严格模式下运行的代码是不能访问 `arguments.callee` 的，因为访问会出错。此时，可以使用**命名函数表达式（ named function expression）**达到目的。  
+
+   ```javascript
+   const factorial = (function f(num) {
+     if (num <= 1) {
+       return 1;
+     } else {
+       return num * f(num - 1);
+     }
+   });
+   ```
+
+   
 
 ## 10.13　尾调用优化
+
+ECMAScript 6 规范新增了一项内存管理优化机制，让 JavaScript 引擎在满足条件时可以重用栈帧。
+具体来说，这项优化非常适合“尾调用”，即外部函数的返回值是一个内部函数的返回值。比如：
+
+```
+function outerFunction() {
+	return innerFunction(); // 尾调用
+}
+```
+
+- 在 ES6 优化之前，执行这个例子会在内存中发生如下操作。
+  (1) 执行到 outerFunction 函数体，第一个栈帧被推到栈上。
+  (2) 执行 outerFunction 函数体，到 return 语句。计算返回值必须先计算 innerFunction。
+  (3) 执行到 innerFunction 函数体，第二个栈帧被推到栈上。
+  (4) 执行 innerFunction 函数体，计算其返回值。
+  (5) 将返回值传回 outerFunction，然后 outerFunction 再返回值。
+  (6) 将栈帧弹出栈外。
+- 在 ES6 优化之后，执行这个例子会在内存中发生如下操作。
+  (1) 执行到 outerFunction 函数体，第一个栈帧被推到栈上。
+  (2) 执行 outerFunction 函数体，到达 return 语句。为求值返回语句，必须先求值 innerFunction。
+  (3) 引擎发现把第一个栈帧弹出栈外也没问题，因为 innerFunction 的返回值也是 outerFunction的返回值。
+  (4) 弹出 outerFunction 的栈帧。
+  (5) 执行到 innerFunction 函数体，栈帧被推到栈上。
+  (6) 执行 innerFunction 函数体，计算其返回值。
+  (7) 将 innerFunction 的栈帧弹出栈外。
+
+- 很明显，第一种情况下每多调用一次嵌套函数，就会多增加一个栈帧。而第二种情况下无论调用多少次嵌套函数，都只有一个栈帧。这就是 ES6 尾调用优化的关键：如果函数的逻辑允许基于尾调用将其销毁，则引擎就会那么做。  
+
+**注意：** 现在还没有办法测试尾调用优化是否起作用。不过，因为这是 ES6 规范所规定的，兼容的浏览器实现都能保证在代码满足条件的情况下应用这个优化。  
+
 ### 10.13.1 尾调用优化的条件  
+
+1. 尾调用优化的条件就是确定外部栈帧真的没有必要存在了。涉及的条件如下：
+    代码在严格模式下执行；
+    外部函数的返回值是对尾调用函数的调用；  
+
+    尾调用函数返回后不需要执行额外的逻辑；
+    尾调用函数不是引用外部函数作用域中自由变量的闭包。  
+
+2. 差异化尾调用和递归尾调用是容易让人混淆的地方。无论是递归尾调用还是非递归尾调用，都可以应用优化。引擎并不区分尾调用中调用的是函数自身还是其他函数。不过，这个优化在递归场景下的效果是最明显的，因为递归代码最容易在栈内存中迅速产生大量栈帧。  
+
+3. 注意 之所以要求严格模式，主要因为在非严格模式下函数调用中允许使用 f.arguments 和 f.caller，而它们都会引用外部函数的栈帧。  
+
 ### 10.13.2 尾调用优化的代码  
 
+- 可以通过把简单的递归函数转换为待优化的代码来加深对尾调用优化的理解。下面是一个通过递归计算斐波纳契数列的函数：  
 
+  ```javascript
+  function fib(n) {
+    if (n < 2) {
+      return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+  }
+  console.log(fib(0)); // 0
+  console.log(fib(1)); // 1
+  console.log(fib(2)); // 1
+  console.log(fib(3)); // 2
+  console.log(fib(4)); // 3
+  console.log(fib(5)); // 5
+  console.log(fib(6)); // 8
+  ```
+
+  - 结果， `fib(n)`的栈帧数的内存复杂度是$O(2^n)$​​。  
+
+- 解决这个问题也有不同的策略，比如把递归改写成迭代循环形式。不过，也可以保持递归实现，但将其重构为满足优化条件的形式。为此可以使用两个嵌套的函数，外部函数作为基础框架，内部函数执行递归：  
+
+  ```javascript
+  "use strict";
+  // 基础框架
+  function fib(n) {
+    return fibImpl(0, 1, n);
+  }
+  // 执行递归
+  function fibImpl(a, b, n) {
+    if (n === 0) {
+      return a;
+    }
+    return fibImpl(b, a + b, n - 1);
+  }
+  ```
+
+  
 
 ## 10.14　闭包
+
+匿名函数经常被人误认为是**闭包（ closure）**。 闭包指的是那些**引用了另一个函数作用域中变量的函数**，通常是在嵌套函数中实现的。  
+
+1. 理解**作用域链**创建和使用的细节对理解闭包非常重要。
+
+   - 在调用一个函数时，会为这个函数调用创建一个**执行上下文**，并创建一个**作用域链**。
+   - 然后用 `arguments` 和其他命名参数来初始化这个函数的**活动对象**。
+   - 外部函数的活动对象是内部函数作用域链上的第二个对象。
+   - 这个作用域链一直向外串起了所有包含函数的活动对象，直到全局执行上下文才终止。 
+
+   ```javascript
+   function compare(value1, value2) {
+     if (value1 < value2) {
+       return -1;
+     } else if (value1 > value2) {
+       return 1;
+     } else {
+       return 0;
+     }
+   }
+   let result = compare(5, 10);
+   ```
+
+   
+
+2. 函数执行时，每个执行上下文中都会有一个包含其中变量的对象。
+
+   - 全局上下文中的叫变量对象，它会在代码执行期间始终存在。
+
+   - 而函数局部上下文中的叫活动对象，只在函数执行期间存在。
+   - 在定义`compare()`函数时，就会为它创建作用域链，预装载全局变量对象，并保存在内部的`[[Scope]]`中。
+   - 在调用这个函数时，会创建相应的执行上下文，然后通过复制函数的`[[Scope]]`来创建其作用域链。
+   - 接着会创建函数的活动对象（用作变量对象）并将其推入作用域链的前端。
+   - 在这个例子中，这意味着 `compare()` 函数执行上下文的作用域链中有两个变量对象：局部变量对象和全局变量对象。
+   - 作用域链其实是一个包含指针的列表，每个指针分别指向一个变量对象，但物理上并不会包含相应的对象。  
+
+   ![](JavaScript高级程序设计第四版-笔记.assets/图片_55.Png)
+
+   - 函数内部的代码在访问变量时，就会使用给定的名称从作用域链中查找变量。
+     - 函数执行完毕后，局部活动对象会被销毁，内存中就只剩下全局作用域。
+     - 不过，闭包就不一样了。  
+   - 在一个函数内部定义的函数会把其包含函数的活动对象添加到自己的作用域链中。
+     - 因此，在`createComparisonFunction()`函数中，匿名函数的作用域链中实际上包含`createComparisonFunction()`的活动对象。
+
+   ![image-20210726162710016](JavaScript高级程序设计第四版-笔记.assets/image-20210726162710016.png)
+
+   
+
+### [变量作用域，闭包](https://zh.javascript.info/closure)
+
+**闭包**
+
+右侧的矩形演示了执行过程中全局词法环境的变化：![image-20210726175624236](JavaScript高级程序设计第四版-笔记.assets/image-20210726175624236.png)
+
+1. 当脚本开始运行，词法环境预先填充了所有声明的变量。
+   - 最初，它们处于“**未初始化（`Uninitialized`）**”状态。这是一种特殊的内部状态，这意味着引擎知道变量，但是在用 `let` 声明前，不能引用它。几乎就像变量不存在一样。
+2. 然后 `let phrase` 定义出现了。它尚未被赋值，因此它的值为 `undefined`。从这一刻起，我们就可以使用变量了。
+3. `phrase` 被赋予了一个值。
+4. `phrase` 的值被修改。
+
+**总结：**
+
+- 开发者通常应该都知道“闭包”这个通用的编程术语。
+- [闭包](https://en.wikipedia.org/wiki/Closure_(computer_programming)) 是指内部函数总是可以访问其所在的外部函数中声明的变量和参数，即使在其外部函数被返回（寿命终结）了之后。在某些编程语言中，这是不可能的，或者应该以特殊的方式编写函数来实现。但是如上所述，在 JavaScript 中，所有函数都是天生闭包的（只有一个例外，将在 ["new Function" 语法](http://127.0.0.1:8081/new-function.htm) 中讲到）。
+  - **所有函数都有名为 `[[Environment]]` 的隐藏属性，该属性保存了对创建该函数的词法环境的引用。**
+- 也就是说：JavaScript 中的函数会自动通过隐藏的 `[[Environment]]` 属性记住创建它们的位置，所以它们都可以访问外部变量。
+- 在面试时，前端开发者通常会被问到“什么是闭包？”，正确的回答应该是闭包的定义，并解释清楚为什么 JavaScript 中的所有函数都是闭包的，以及可能的关于 `[[Environment]]` 属性和词法环境原理的技术细节。
+
+```javascript
+function foo() {
+  let a = 0;
+  return () => {
+    return a++;
+  };
+}
+let b = foo();
+console.log(b()); // 0
+console.log(b()); // 1
+console.log(b()); // 2
+console.log(b()); // 3
+```
+
+- 理论上当函数可达时，它外部的所有变量也都将存在。
+
+- 但在实际中，JavaScript 引擎会试图优化它。它们会分析变量的使用情况，如果从代码中可以明显看出有未使用的外部变量，那么就会将其删除。
+
+  - **在 V8（Chrome，Edge，Opera）中的一个重要的副作用是，此类变量在调试中将不可用。**
+
+- 编写一个像 `sum(a)(b) = a+b` 这样工作的 `sum` 函数。
+
+  - `sum(1)(2) = 3`
+
+  ```javascript
+  function sum(a) {
+    return (b) => {
+      return a + b;
+    }
+  }
+  console.log(sum(1)(2));
+  ```
+
+  
+
 ### 10.14.1 this 对象  
+
+1. 在闭包中使用 this 会让代码变复杂。
+
+   1. 如果内部函数没有使用箭头函数定义，则 this 对象会在运行时绑定到执行函数的上下文。
+   2. 如果在全局函数中调用，则 this 在非严格模式下等于 window，在严格模式下等于 undefined。
+   3. 如果作为某个对象的方法调用，则 this 等于这个对象。
+   4. 匿名函数在这种情况下不会绑定到某个对象，这就意味着 this 会指向 window，除非在严格模式下 this 是 undefined。
+   5. 不过，由于闭包的写法所致，这个事实有时候没有那么容易看出来。
+
+   ```javascript
+   window.identity = 'The Window';
+   let object = {
+     identity: 'My Object',
+     getIdentityFunc() {
+       return function () {
+         return this.identity;
+       };
+     }
+   };
+   console.log(object.getIdentityFunc()()); // 'The Window'
+   
+   
+   // 如果把 this 保存到闭包可以访问的另一个变量中，则是行得通的。 比如：
+   window.identity = 'The Window';
+   let object = {
+     identity: 'My Object',
+     getIdentityFunc() {
+       let that = this;
+       return function () {
+         return that.identity;
+       };
+     }
+   };
+   console.log(object.getIdentityFunc()()); // 'My Object'
+   ```
+
+   - **注意：** this 和 arguments 都是不能直接在内部函数中访问的。如果想访问包含作用域中的 arguments 对象，则同样需要将其引用先保存到闭包能访问的另一个变量中。  
+
+2. 在一些特殊情况下， this 值可能并不是我们所期待的值。比如下面这个修改后的例子：
+
+   ```javascript
+   window.identity = 'The Window';
+   let object = {
+     identity: 'My Object',
+     getIdentity() {
+       return this.identity;
+     }
+   };
+   
+   object.getIdentity(); // 'My Object'
+   (object.getIdentity)(); // 'My Object'
+   (object.getIdentity = object.getIdentity)(); // 'The Window'
+   // 第三行执行了一次赋值，然后再调用赋值后的结果。
+   ```
+
+   
+
 ### 10.14.2 内存泄漏  
 
-
+- 消除循环引用  
 
 ## 10.15　立即调用的函数表达式
 
+- 立即调用的匿名函数又被称作**立即调用的函数表达式（ IIFE， Immediately Invoked Function Expression）**。
 
+  - 它类似于函数声明，但由于被包含在括号中，所以会被解释为函数表达式。
+  - 紧跟在第一组括号后面的第二组括号会立即调用前面的函数表达式。
+
+  ```javascript
+  (function () {
+    // 块级作用域
+  })();
+  ```
+
+- 使用 IIFE 可以模拟块级作用域，即在一个函数表达式内部声明变量，然后立即调用这个函数。
+
+  - 这样位于函数体作用域的变量就像是在块级作用域中一样。 ECMAScript 5 尚未支持块级作用域， 使用 IIFE 模拟块级作用域是相当普遍的。 
+
+  ```javascript
+  // IIFE
+  (function () {
+    for (var i = 0; i < count; i++) {
+      console.log(i);
+    }
+  })();
+  console.log(i); // 抛出错误
+  ```
+
+- 说明 IIFE 用途的一个实际的例子，就是可以用它锁定参数值。  
+
+  - `var` 变量作用域外溢
+
+  ```javascript
+  let divs = document.querySelectorAll('div');
+  // 达不到目的！
+  for (var i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', function () {
+      console.log(i);
+    });
+  }
+  
+  // 需要借助 IIFE 来执行一个函数表达式，传入每次循环的当前索引，从而“锁定”点击时应该显示的索引值
+  let divs = document.querySelectorAll('div');
+  for (var i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', (function (frozenCounter) {
+      return function () {
+        console.log(frozenCounter);
+      };
+    })(i));
+  }
+  ```
+
+- 而使用 ECMAScript 块级作用域变量，就不用这么大动干戈了：  
+
+  ```javascript
+  let divs = document.querySelectorAll('div');
+  
+  for (let i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', function () {
+      console.log(i++); 
+    });
+  }
+  ```
+
+  
 
 ## 10.16　私有变量
+
+- JavaScript 没有私有成员的概念，所有对象属性都公有的。不过，倒是有私有变量的概念。
+
+  - 任何定义在函数或块中的变量，都可以认为是私有的，因为在这个函数或块的外部无法访问其中的变量。
+  - 私有变量包括函数参数、局部变量，以及函数内部定义的其他函数。  
+
+- 如果函数中创建了一个闭包，则这个闭包能通过其作用域链访问其外部的变量。基于这一点，就可以创建出能够访问私有变量的公有方法。  
+
+  ```javascript
+  function MyObject() {
+    // 私有变量和私有函数
+    let privateVariable = 10;
+  
+    function privateFunction() {
+      return false;
+    }
+    // 特权方法
+    this.publicMethod = function () {
+      privateVariable++;
+      return privateFunction();
+    };
+  }
+  ```
+
+  - 这个模式是把所有私有变量和私有函数都定义在构造函数中。然后，再创建一个能够访问这些私有成员的特权方法。
+  - 这样做之所以可行，是因为定义在构造函数中的特权方法其实是一个闭包，它具有访问构造函数中定义的所有变量和函数的能力。  
+
+  ```javascript
+  function Person(name) {
+    this.getName = function () {
+      return name;
+    };
+    this.setName = function (value) {
+      name = value;
+    };
+  }
+  let person = new Person('Nicholas');
+  console.log(person.getName()); // 'Nicholas'
+  person.setName('Greg');
+  console.log(person.getName()); // 'Greg'
+  ```
+
+- 构造函数模式的缺点是每个实例都会重新创建一遍新方法。使用静态私有变量实现特权方法可以避免这个问题。  
+
 ### 10.16.1 静态私有变量  
+
+```javascript
+(function () {
+  // 私有变量和私有函数
+  let privateVariable = 10;
+
+  function privateFunction() {
+    return false;
+  }
+  // 构造函数
+  MyObject = function () {};
+  // 公有和特权方法
+  MyObject.prototype.publicMethod = function () {
+    privateVariable++;
+    return privateFunction();
+  };
+})();
+```
+
+- 公有方法定义在构造函数的原型上，与典型的原型模式一样。
+  - 注意，这个模式定义的构造函数没有使用函数声明，使用的是函数表达式。  
+  - 函数声明会创建内部函数，在这里并不是必需的。基于同样的原因（但操作相反），这里声明 MyObject 并没有使用任何关键字。因为不使用关键字声明的变量会创建在全局作用域中，所以 MyObject 变成了全局变量，可以在这个私有作用域外部被访问。注意在严格模式下给未声明的变量赋值会导致错误。  
+  - 私有变量和私有函数是由实例共享的。  
+
+```javascript
+(function () {
+  let name = '';
+  Person = function (value) {
+    name = value;
+  };
+  Person.prototype.getName = function () {
+    return name;
+  };
+  Person.prototype.setName = function (value) {
+    name = value;
+  };
+})();
+let person1 = new Person('Nicholas');
+console.log(person1.getName()); // 'Nicholas'
+person1.setName('Matt');
+console.log(person1.getName()); // 'Matt'
+let person2 = new Person('Michael');
+console.log(person1.getName()); // 'Michael'
+console.log(person2.getName()); // 'Michael'
+```
+
+- 像这样创建静态私有变量可以利用原型更好地重用代码，只是每个实例没有了自己的私有变量。最终，到底是把私有变量放在实例中，还是作为静态私有变量，都需要根据自己的需求来确定。  
+- **注意：** 使用闭包和私有变量会导致作用域链变长，作用域链越长，则查找变量所需的时间也越多。  
+
+
+
 ### 10.16.2 模块模式  
+
+- 在一个单例对象上实现了相同的隔离和封装。单例对象（ singleton）就是只有一个实例的对象。  
+
+  - 模块模式是在单例对象基础上加以扩展，使其通过作用域链来关联私有变量和特权方法。  
+
+  ```javascript
+  let singleton = {
+    name: value,
+    method() {
+      // 方法的代码
+    }
+  };
+  
+  // 实例
+  let singleton = function () {
+    // 私有变量和私有函数
+    let privateVariable = 10;
+  
+    function privateFunction() {
+      return false;
+    }
+    // 特权/公有方法和属性
+    return {
+      publicProperty: true,
+      publicMethod() {
+        privateVariable++;
+        return privateFunction();
+      }
+    };
+  }();
+  ```
+
+- 模块模式使用了匿名函数返回一个对象。
+
+  - 在匿名函数内部，首先定义私有变量和私有函数。
+  - 之后，创建一个要通过匿名函数返回的对象字面量。这个对象字面量中只包含可以公开访问的属性和方法。因为这个对象定义在匿名函数内部，所以它的所有公有方法都可以访问同一个作用域的私有变量和私有函数。
+  - 本质上，对象字面量定义了单例对象的公共接口。  
+
+  ```javascript
+  let application = function () {
+    // 私有变量和私有函数
+    let components = new Array();
+    // 初始化
+    components.push(new BaseComponent());
+    // 公共接口
+    return {
+      getComponentCount() {
+        return components.length;
+      },
+      registerComponent(component) {
+        if (typeof component == 'object') {
+          components.push(component);
+        }
+      }
+    };
+  }();
+  ```
+
+  
+
 ### 10.16.3 模块增强模式  
+
+- 另一个利用模块模式的做法是在返回对象之前先对其进行增强。
+
+  - 这适合单例对象需要是某个特定类型的实例，但又必须给它添加额外属性或方法的场景。  
+
+  ```javascript
+  let singleton = function () {
+    // 私有变量和私有函数
+    let privateVariable = 10;
+  
+    function privateFunction() {
+      return false;
+    }
+    // 创建对象
+    let object = new CustomType();
+    // 添加特权/公有属性和方法
+    object.publicProperty = true;
+    object.publicMethod = function () {
+      privateVariable++;
+      return privateFunction();
+    };
+    // 返回对象
+    return object;
+  }();
+  
+  // 如果前一节的 application 对象必须是 BaseComponent 的实例，那么就可以使用下面的代码来创建它：
+  let application = function () {
+    // 私有变量和私有函数
+    let components = new Array();
+    // 初始化
+    components.push(new BaseComponent());
+    // 创建局部变量保存实例
+    let app = new BaseComponent();
+    // 公共接口
+    app.getComponentCount = function () {
+      return components.length;
+    };
+    app.registerComponent = function (component) {
+      if (typeof component == "object") {
+        components.push(component);
+      }
+    };
+    // 返回实例
+    return app;
+  }();
+  ```
+
+  - 在这个重写的 application 单例对象的例子中，首先定义了私有变量和私有函数，跟之前例子中一样。主要区别在于这里创建了一个名为 app 的变量，其中保存了 BaseComponent 组件的实例。这是最终要变成 application 的那个对象的局部版本。在给这个局部变量 app 添加了能够访问私有变量的公共方法之后，匿名函数返回了这个对象。然后，这个对象被赋值给 application。  
 
 
 
