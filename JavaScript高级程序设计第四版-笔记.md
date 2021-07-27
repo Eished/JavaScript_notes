@@ -58,6 +58,8 @@
 
 # 阅读指南
 
+**本书知识点分布混乱，难度不均、找不到重点，需先看在线网站《现代JavaScript教程》。**
+
 > 豆瓣用户 2012 版
 >
 > 第一章随便看看，了解历史
@@ -11277,19 +11279,183 @@ console.log(person2.getName()); // 'Michael'
 
 
 # 第 11章　期约与异步函数
+
+ECMAScript 6 新增了正式的 Promise（期约）引用类型，支持优雅地定义和组织异步逻辑。接下来几个版本增加了使用 async 和 await 关键字定义异步函数的机制。  
+
 ## 11.1　异步编程
 ### 11.1.1 同步与异步  
+
+1. **同步行为**对应内存中顺序执行的处理器指令。
+   - 每条指令都会严格按照它们出现的顺序来执行，而每条指令执行后也能立即获得存储在系统本地（如寄存器或系统内存）的信息。这样的执行流程容易分析程序在执行到代码任意位置时的状态（比如变量的值）。  
+2. **异步行为**类似于系统中断，即当前进程外部的实体可以触发代码执行。
+   - 异步操作经常是必要的，因为强制进程等待一个长时间的操作通常是不可行的（同步操作则必须要等）。  
+
 ### 11.1.2 以往的异步编程模式  
+
+- 在早期的 JavaScript 中，只支持定义回调函数来表明异步操作完成。
+  - 串联多个异步操作是一个常见的问题，通常需要深度嵌套的回调函数（俗称“**回调地狱**”）来解决。  
+
+1. **异步返回值  **
+
+   - 有什么好办法把这个值传给需要它的地方？广泛接受的一个策略是给异步操作提供一个回调，这个回调中包含要使用异步返回值的代码（作为回调的参数）。  
+
+     - 位于函数闭包中的回调及其参数在异步执行时仍然是可用的。  
+
+     ```javascript
+     function double(value, callback) {
+       setTimeout(() => callback(value * 2), 1000);
+     }
+     double(3, (x) => console.log(`I was given: ${x}`));
+     // I was given: 6（大约 1000 毫秒之后）
+     ```
+
+     
+
+2. **失败处理  **
+
+   - 异步操作的失败处理在回调模型中也要考虑，因此自然就出现了成功回调和失败回调：  
+
+     ```javascript
+     function double(value, success, failure) {
+       setTimeout(() => {
+         try {
+           if (typeof value !== 'number') {
+             throw 'Must provide number as first argument';
+           }
+           success(2 * value);
+         } catch (e) {
+           failure(e);
+         }
+       }, 1000);
+     }
+     const successCallback = (x) => console.log(`Success: ${x}`);
+     const failureCallback = (e) => console.log(`Failure: ${e}`);
+     double(3, successCallback, failureCallback);
+     double('b', successCallback, failureCallback);
+     // Success: 6（大约 1000 毫秒之后）
+     // Failure: Must provide number as first argument（大约 1000 毫秒之后）
+     ```
+
+   - 这种模式已经不可取了，因为必须在**初始化异步操作时定义回调**。
+
+   - 异步函数的返回值只在短时间内存在，只有预备好将这个短时间内存在的值作为参数的回调才能接收到它。  
+
+3. **嵌套异步回调  **
+
+   ```javascript
+   function double(value, success, failure) {
+     setTimeout(() => {
+       try {
+         if (typeof value !== 'number') {
+           throw 'Must provide number as first argument';
+         }
+         success(2 * value);
+       } catch (e) {
+         failure(e);
+       }
+     }, 1000);
+   }
+   const successCallback = (x) => {
+     double(x, (y) => console.log(`Success: ${y}`));
+   };
+   const failureCallback = (e) => console.log(`Failure: ${e}`);
+   double(3, successCallback, failureCallback);
+   // Success: 12（大约 1000 毫秒之后）
+   ```
+
+   - 随着代码越来越复杂，回调策略是不具有扩展性的。“回调地狱”这个称呼可谓名至实归。
+   - 嵌套回调的代码维护起来就是噩梦。  
+
+
+
 ## 11.2　期约
-### 11.2.1 Promises/A+规范  
+11.2.1 Promises/A+规范  
+
 ### 11.2.2 期约基础  
+
+ECMAScript 6 新增的引用类型 `Promise`，可以通过 new 操作符来实例化。
+
+创建新期约时需要传入执行器（ `executor`）函数作为参数（后面马上会介绍），下面的例子使用了一个空函数对象来应付一下解释器： 
+
+```javascript
+let p = new Promise(() => {});
+setTimeout(console.log, 0, p); // Promise <pending>
+```
+
+1.  **期约状态机  **
+   - 在把一个期约实例传给 `console.log()`时，控制台输出（可能因浏览器不同而略有差异）表明该实例处于**待定（ pending）**状态。
+   - 如前所述，期约是一个有状态的对象，可能处于如下 3 种状态之一：  
+     1. **待定（ pending）**
+     2. **兑现**（ fulfilled，有时候也称为“解决”， **resolved**）
+     3. **拒绝（ rejected）**  
+   - 待定（ pending）是期约的最初始状态。在待定状态下，期约可以落定（ settled）为代表成功的兑现（ fulfilled）状态，或者代表失败的拒绝（ rejected）状态。  
+   - **期约的状态是私有的**，不能直接通过 JavaScript 检测到。  
+     - `[[PromiseState]]: "pending"`
+     - 期约故意将异步行为封装起来，从而隔离外部的同步代码。  
+2. **解决值、拒绝理由及期约用例  **
+   1. 期约的状态代表期约是否完成。
+      - “待定”表示尚未开始或者正在执行中，
+      - “兑现”表示已经成功完成，
+      - 而“拒绝”则表示没有成功完成。  
+   2. 每个期约只要状态切换为兑现，就会有一个私有的内部**值（ value）**。类似地，每个期约只要状态切换为拒绝，就会有一个私有的内部**理由（ reason）**。  
+      - 二者都是可选的，而且默认值为 undefined。  
+3. **通过执行函数控制期约状态  **
+4. **`Promise.resolve()  `**
+5. **`Promise.reject()  `**
+6. **同步/异步执行的二元性  **
+
+
+
 ### 11.2.3 期约的实例方法  
+
+1. **实现 Thenable 接口  **
+2. **`Promise.prototype.then()  `**
+3. **`Promise.prototype.catch()  `**
+4. **`Promise.prototype.finally()  `**
+5. **非重入期约方法  **
+6. **邻近处理程序的执行顺序  **
+7. **传递解决值和拒绝理由  **
+8. **拒绝期约与拒绝错误处理  **
+
+
+
 ### 11.2.4 期约连锁与期约合成  
+
+1. **期约连锁  **
+2. **期约图  **
+3. **`Promise.all()和 Promise.race()  `**
+4. **串行期约合成  **
+
+
+
 ### 11.2.5 期约扩展  
+
+1. **期约取消  **
+2. **期约进度通知  **
+
+
+
 ## 11.3　异步函数
 ### 11.3.1 异步函数  
+
+1. **async  **
+2. **await  **
+3. **await 的限制  **
+
+
+
 ### 11.3.2 停止和恢复执行  
+
+
+
 ### 11.3.3 异步函数策略  
+1. **实现 `sleep()  `**
+2. **利用平行执行  **
+3. **串行执行期约  **
+4. **栈追踪与内存管理  **
+
+
+
 # 第 12章　BOM
 ## 12.1　window对象
 ### 12.1.1 Global 作用域  
