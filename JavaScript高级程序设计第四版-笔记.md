@@ -4132,32 +4132,38 @@ ECMAScript 为数组定义了 5 个迭代方法。
 
 ### 6.2.14 归并方法  
 
-ECMAScript 为数组提供了两个归并方法： reduce() 和 reduceRight()。
+ECMAScript 为数组提供了两个归并方法： **`reduce()`** 和 **`reduceRight()`**。
 
 - 这两个方法都会迭代数组的所有项，并在此基础上构建一个最终返回值。 
 
-- reduce() 方法从数组第一项开始遍历到最后一项。
+- `reduce()` 方法从数组第一项开始遍历到最后一项。
 
-- 而 reduceRight() 从最后一项开始遍历至第一项。
+- 而 `reduceRight()` 从最后一项开始遍历至第一项。
 
-  - 这两个方法都接收两个参数：对每一项都会运行的归并函数，以及可选的以之为归并起点的初始值。
-  - 传给 reduce() 和 reduceRight() 的函数接收 4 个参数：上一个归并值、当前项、当前项的索引和数组本身。
-  - 这个函数返回的任何值都会作为下一次调用同一个函数的第一个参数。如果没有给这两个方法传入可选的第二个参数（作为归并起点值），则第一次迭代将从数组的第二项开始，因此传给归并函数的第一个参数是数组的第一项，第二个参数是数组的第二项。
-
+  - 这两个方法都接收两个参数：对每一项都会运行的**归并函数**，以及可选的以之为归并的**初始值**。
+  - 传给 `reduce()` 和 `reduceRight()` 的函数接收 4 个参数：
+    - **上一个归并值**、**当前项**、**当前项的索引**和**数组本身**。
+    - `accumulator 累计器`
+    - `currentValue 当前值`
+    - `currentIndex 当前索引`
+    - `array 数组`
+  - 这个函数**返回的任何值**都会作为下一次调用同一个函数的第一个参数。
+    - 如果没有给这两个方法传入可选的第二个参数（作为归并起点值），则第一次迭代将从数组的第二项开始，因此传给归并函数的第一个参数是数组的第一项，第二个参数是数组的第二项。
+  
   ```javascript
   let values = [1, 2, 3, 4, 5];
-  let sum = values.reduce((prev, cur, index, array) => prev + cur);
-  alert(sum); // 15
+  let sum = values.reduce((prev, cur, index, array) => {
+    console.log(prev, cur);
+    return cur;
+  });
   
   sum = values.reduceRight(function (prev, cur, index, array) {
     return prev + cur;
   });
   alert(sum); // 15
   ```
-
   
-
-
+  
 
 ## 6.3　定型数组
 
@@ -6422,7 +6428,7 @@ for (const x of f) {
 
 2. **`throw()  `**
 
-   - throw()方法会在暂停的时候将一个提供的错误注入到生成器对象中。如果错误未被处理，生成器就会关闭：  
+   - `throw()`方法会在暂停的时候将一个提供的错误注入到生成器对象中。如果错误未被处理，生成器就会关闭：  
 
    ```javascript
    function* generatorFn() {
@@ -11280,6 +11286,8 @@ console.log(person2.getName()); // 'Michael'
 
 # 第 11章　期约与异步函数
 
+> 建议先阅读《现代JavaScript教程》的本章内容
+
 ECMAScript 6 新增了正式的 Promise（期约）引用类型，支持优雅地定义和组织异步逻辑。接下来几个版本增加了使用 async 和 await 关键字定义异步函数的机制。  
 
 ## 11.1　异步编程
@@ -11388,7 +11396,7 @@ setTimeout(console.log, 0, p); // Promise <pending>
      1. **待定（ pending）**
      2. **兑现**（ fulfilled，有时候也称为“解决”， **resolved**）
      3. **拒绝（ rejected）**  
-   - 待定（ pending）是期约的最初始状态。在待定状态下，期约可以落定（ settled）为代表成功的兑现（ fulfilled）状态，或者代表失败的拒绝（ rejected）状态。  
+   - **待定（ pending）**是期约的最初始状态。在待定状态下，期约可以**落定（ settled）**为代表成功的**兑现（ fulfilled）**状态，或者代表失败的**拒绝（ rejected）**状态。  
    - **期约的状态是私有的**，不能直接通过 JavaScript 检测到。  
      - `[[PromiseState]]: "pending"`
      - 期约故意将异步行为封装起来，从而隔离外部的同步代码。  
@@ -11399,60 +11407,1032 @@ setTimeout(console.log, 0, p); // Promise <pending>
       - 而“拒绝”则表示没有成功完成。  
    2. 每个期约只要状态切换为兑现，就会有一个私有的内部**值（ value）**。类似地，每个期约只要状态切换为拒绝，就会有一个私有的内部**理由（ reason）**。  
       - 二者都是可选的，而且默认值为 undefined。  
-3. **通过执行函数控制期约状态  **
-4. **`Promise.resolve()  `**
-5. **`Promise.reject()  `**
-6. **同步/异步执行的二元性  **
+3.  **通过执行函数控制期约状态  **
+    1.  由于期约的状态是私有的，所以只能在内部进行操作。内部操作在期约的执行器函数中完成。
+        - 执行器函数主要有两项职责：初始化期约的异步行为和控制状态的最终转换。
+        - 其中，控制期约状态的转换是通过调用它的两个函数参数实现的。
+        - 这两个函数参数通常都命名为 `resolve()`和 `reject()`。
+        - 调用 `resolve()`会把状态切换为兑现，调用 `reject()`会把状态切换为拒绝。
+        - 另外，调用 `reject()`也会抛出错误（后面会讨论这个错误）。  
+        - 无论 `resolve()`和 `reject()`中的哪个被调用，状态转换都不可撤销了。  
+4.  **`Promise.resolve()  `**
+    - 通过调用 `Promise.resolve()`静态方法，可以实例化一个解决的期约。  
+    - 对这个静态方法而言，如果传入的参数本身是一个期约，那它的行为就类似于一个空包装。  
+5.  **`Promise.reject()  `**
+    - `Promise.reject()`会实例化一个拒绝的期约并抛出一个异步错误（**这个错误不能通过 try/catch 捕获，而只能通过拒绝处理程序捕获**）。  
+6.  **同步/异步执行的二元性  **
+    - 拒绝期约的错误并没有抛到执行同步代码的线程里，而是通过浏览器异步消息队列来处理的。因此， `try/catch` 块并不能捕获该错误。  
+    - 不能捕获异步错误。
 
 
 
 ### 11.2.3 期约的实例方法  
 
 1. **实现 Thenable 接口  **
+
+   - 在 ECMAScript 暴露的异步结构中，任何对象都有一个 `then()`方法。这个方法被认为实现了 **Thenable** 接口。  
+
+   ```javascript
+   class MyThenable {
+   	then() {}
+   }
+   ```
+
+   - Promise 类型实现了 `Thenable` 接口。这个简化的接口跟 TypeScript 或其他包中的接口或类型定义不同，它们都设定了 `Thenable` 接口更具体的形式。  
+     - 异步函数时还会再谈到 Thenable 接口的用途和目的。  
+
 2. **`Promise.prototype.then()  `**
+
+   - 这个 `then()`方法接收最多两个参数： `onResolved` 处理程序和 `onRejected` 处理程序。这两个参数都是可选的，如果提供的话，则会在期约分别进入“兑现”和“拒绝”状态时执行。  
+   - 传给 then()的任何非函数类型的参数都会被静默忽略。 
+
+   ```javascript
+   function onResolved(id) {
+     setTimeout(console.log, 0, id, 'resolved');
+   }
+   
+   function onRejected(id) {
+     setTimeout(console.log, 0, id, 'rejected');
+   }
+   let p1 = new Promise((resolve, reject) => setTimeout(resolve, 3000));
+   let p2 = new Promise((resolve, reject) => setTimeout(reject, 3000));
+   // 非函数处理程序会被静默忽略，不推荐
+   p1.then('gobbeltygook');
+   // 不传 onResolved 处理程序的规范写法
+   p2.then(null, () => onRejected('p2'));
+   // p2 rejected（ 3 秒后）
+   ```
+
+   - 如果没有显式的返回语句，则 `Promise.resolve()`会包装默认的返回值 `undefined`。  
+   - 如果有显式的返回值，则 `Promise.resolve()`会包装这个值  
+   - 抛出异常会返回拒绝的期约  
+   - 调用 `then()`时不传处理程序则原样向后传  
+   - 注意，返回错误值不会触发上面的拒绝行为，而会把错误对象包装在一个解决的期约中  
+
 3. **`Promise.prototype.catch()  `**
+
+   - 用于给期约添加拒绝处理程序。这个方法只接收一个参数：onRejected 处理程序。
+     - 事实上，这个方法就是一个语法糖，调用它就相当于调用 `Promise.prototype.then(null, onRejected)`。  
+
 4. **`Promise.prototype.finally()  `**
+
+   - 用于给期约添加 `onFinally` 处理程序，这个处理程序在期约转换为解决或拒绝状态时都会执行。这个方法可以避免 `onResolved` 和 `onRejected` 处理程序中出现冗余代码。
+     - 但 `onFinally` 处理程序没有办法知道期约的状态是解决还是拒绝，所以这个方法主要用于添加清理代码。  
+
 5. **非重入期约方法  **
+
+   - 当期约进入落定状态时，与该状态相关的处理程序仅仅会被排期，而非立即执行。
+     - 跟在添加这个处理程序的代码之后的同步代码一定会在处理程序之前先执行。
+     - 即使期约一开始就是与附加处理程序关联的状态，执行顺序也是这样的。
+     - 这个特性由 JavaScript 运行时保证，被称为**“非重入”（ non-reentrancy）特性**。  
+
+   ```javascript
+   let synchronousResolve;
+   // 创建一个期约并将解决函数保存在一个局部变量中
+   let p = new Promise((resolve) => {
+     synchronousResolve = function () {
+       console.log('1: invoking resolve()');
+       resolve();
+       console.log('2: resolve() returns');
+     };
+   });
+   p.then(() => console.log('4: then() handler executes'));
+   synchronousResolve();
+   console.log('3: synchronousResolve() returns');
+   
+   // 实际的输出：
+   // 1: invoking resolve()
+   // 2: resolve() returns
+   // 3: synchronousResolve() returns
+   // 4: then() handler executes
+   ```
+
+   - 即使期约状态变化发生在添加处理程序之后，处理程序也会等到运行的消息队列让它出列时才会执行。
+   - 非重入适用于 `onResolved/onRejected` 处理程序、 `catch()`处理程序和 `finally()`处理程序。  
+
+   ```javascript
+   let p1 = Promise.resolve();
+   p1.then(() => console.log('p1.then() onResolved'));
+   console.log('p1.then() returns');
+   
+   let p2 = Promise.reject();
+   p2.then(null, () => console.log('p2.then() onRejected'));
+   console.log('p2.then() returns');
+   
+   let p3 = Promise.reject();
+   p3.catch(() => console.log('p3.catch() onRejected'));
+   console.log('p3.catch() returns');
+   
+   let p4 = Promise.resolve();
+   p4.finally(() => console.log('p4.finally() onFinally'));
+   console.log('p4.finally() returns');
+   
+   // p1.then() returns
+   // p2.then() returns
+   // p3.catch() returns
+   // p4.finally() returns
+   // p1.then() onResolved
+   // p2.then() onRejected
+   // p3.catch() onRejected
+   // p4.finally() onFinally
+   ```
+
+   
+
 6. **邻近处理程序的执行顺序  **
+
+   - 期约添加了多个处理程序，当期约状态变化时，相关处理程序会按照添加它们的顺序依次执行。无论是 `then()`、 `catch()`还是 `finally()`添加的处理程序都是如此。  
+
+   ```javascript
+   let p1 = Promise.resolve();
+   let p2 = Promise.reject();
+   p1.then(() => setTimeout(console.log, 0, 1));
+   p1.then(() => setTimeout(console.log, 0, 2));
+   // 1
+   // 2
+   p2.then(null, () => setTimeout(console.log, 0, 3));
+   p2.then(null, () => setTimeout(console.log, 0, 4));
+   // 3
+   // 4
+   p2.catch(() => setTimeout(console.log, 0, 5));
+   p2.catch(() => setTimeout(console.log, 0, 6));
+   // 5
+   // 6
+   p1.finally(() => setTimeout(console.log, 0, 7));
+   p1.finally(() => setTimeout(console.log, 0, 8));
+   // 7
+   // 8
+   ```
+
+   
+
 7. **传递解决值和拒绝理由  **
+
+   - Promise.resolve()和 Promise.reject()在被调用时就会接收解决值和拒绝理由。同样地，它们返回的期约也会像执行器一样把这些值传给 onResolved 或 onRejected 处理程序。
+
 8. **拒绝期约与拒绝错误处理  **
+
+   - 拒绝期约类似于 `throw()`表达式，因为它们都代表一种程序状态，即需要中断或者特殊处理。在期约的执行函数或处理程序中抛出错误会导致拒绝，对应的错误对象会成为拒绝的理由。  
+   - 期约中抛出错误时，因为错误实际上是从消息队列中异步抛出的，所以并不会阻止运行时继续执行同步指令。
 
 
 
 ### 11.2.4 期约连锁与期约合成  
 
+期约连锁：一个期约接一个期约地拼接。
+
+期约合成：将多个期约组合为一个期约。
+
 1. **期约连锁  **
+
+   - 因为每个期约实例的方法（ `then()、 catch()和 finally()`）都会返回一个新的期约对象，而这个新期约又有自己的实例方法。这样连缀方法调用就可以构成所谓的“期约连锁”。  
+
+   ```javascript
+   let p = new Promise((resolve, reject) => {
+     console.log('initial promise rejects');
+     reject();
+   });
+   p.catch(() => console.log('reject handler'))
+     .then(() => console.log('resolve handler'))
+     .finally(() => console.log('finally handler'));
+   
+   // initial promise rejects
+   // reject handler
+   // resolve handler
+   // finally handler
+   ```
+
+   
+
 2. **期约图  **
+
+   - 因为一个期约可以有任意多个处理程序，所以期约连锁可以构建**有向非循环图**的结构。
+     - 这样，每个期约都是图中的一个节点，而使用实例方法添加的处理程序则是有向顶点。
+     - 因为图中的每个节点都会等待前一个节点落定，所以图的方向就是期约的解决或拒绝顺序。  
+
+   ```javascript
+   //    A
+   //   / \
+   //   B C
+   //  /\ /\
+   // D E F G
+   
+   let A = new Promise((resolve, reject) => {
+     console.log('A');
+     resolve();
+   });
+   
+   let B = A.then(() => console.log('B'));
+   let C = A.then(() => console.log('C'));
+   
+   B.then(() => console.log('D'));
+   B.then(() => console.log('E'));
+   C.then(() => console.log('F'));
+   C.then(() => console.log('G'));
+   
+   // A
+   // B
+   // C
+   // D
+   // E
+   // F
+   // G
+   ```
+
+   - 注意，日志的输出语句是对二叉树的层序遍历。树只是期约图的一种形式。  
+     - 如前所述，期约的处理程序是按照它们添加的顺序执行的。
+     - 由于期约的处理程序是先添加到消息队列， 然后才逐个执行，因此构成了层序遍历。  
+
 3. **`Promise.all()和 Promise.race()  `**
+
+   - 将多个期约实例组合成一个期约的静态方法  
+
+   - **`Promise.all()`**静态方法创建的期约会在一组期约全部解决之后再解决。
+
+     - 这个静态方法接收一个可迭代对象，返回一个新期约。
+     - 如果至少有一个包含的期约待定，则合成的期约也会待定。如果有一个包含的期约拒绝，则合成的期约也会拒绝。
+     - 如果所有期约都成功解决，则合成期约的解决值就是所有包含期约解决值的数组，按照迭代器顺序排序。
+
+   - **`Promise.race()`**静态方法返回一个包装期约，是一组集合中最先解决或拒绝的期约的镜像。
+
+     - 这个方法接收一个可迭代对象，返回一个新期约  
+     - 不会对解决或拒绝的期约区别对待。无论是解决还是拒绝，只要是第一个落定的期约， `Promise.race()`就会包装其解决值或拒绝理由并返回新期约  
+     - 如果有一个期约拒绝，只要它是第一个落定的，就会成为拒绝合成期约的理由。
+     - 之后再拒绝的期约不会影响最终期约的拒绝理由。不过，这并不影响所有包含期约正常的拒绝操作。
+     - ~~与 `Promise.all()`类似~~，合成的期约会静默处理所有包含期约的拒绝操作，如下所示：  
+       - `Promise.all()` 有一个包含的期约拒绝，则合成的期约也会拒绝。不会静默处理！
+
+     ```javascript
+     // 虽然只有第一个期约的拒绝理由会进入
+     // 拒绝处理程序，第二个期约的拒绝也
+     // 会被静默处理，不会有错误跑掉
+     
+     let p = Promise.race([
+       Promise.reject(3),
+       new Promise((resolve, reject) => setTimeout(reject, 1000))
+     ]);
+     
+     p.catch((reason) => setTimeout(console.log, 0, reason)); // 3
+     // 没有未处理的错误
+     ```
+
+     
+
 4. **串行期约合成  **
+
+   - 异步产生值并将其传给处理程序。
+   - 基于后续期约使用之前期约的返回值来串联期约是期约的基本功能。
+   - 这很像函数合成，即将多个函数合成为一个函数，比如：  
+
+   ```javascript
+   function addTwo(x) {
+     return x + 2;
+   }
+   
+   function addThree(x) {
+     return x + 3;
+   }
+   
+   function addFive(x) {
+     return x + 5;
+   }
+   
+   function addTen(x) {
+     return addFive(addTwo(addThree(x)));
+   }
+   console.log(addTen(7)); // 17
+   ```
+
+   - 类似地，期约也可以像这样合成起来，渐进地消费一个值，并返回一个结果：  
+
+   ```javascript
+   function addTwo(x) {
+     return x + 2;
+   }
+   
+   function addThree(x) {
+     return x + 3;
+   }
+   
+   function addFive(x) {
+     return x + 5;
+   }
+   
+   function addTen(x) {
+     return Promise.resolve(x)
+       .then(addTwo)
+       .then(addThree)
+       .then(addFive);
+   }
+   addTen(8).then(console.log); // 18
+   ```
+
+   - 使用 `Array.prototype.reduce()`可以写成更简洁的形式：  
+
+   ```javascript
+   function addTwo(x) {
+     return x + 2;
+   }
+   
+   function addThree(x) {
+     return x + 3;
+   }
+   
+   function addFive(x) {
+     return x + 5;
+   }
+   
+   function addTen(x) {
+     return [addTwo, addThree, addFive]
+       .reduce((promise, fn) => promise.then(fn), Promise.resolve(x));
+   }
+   addTen(8).then(console.log); // 18
+   ```
+
+   - 这种模式可以提炼出一个通用函数，可以把任意多个函数作为处理程序合成一个连续传值的期约连锁。这个通用的合成函数可以这样实现：  
+
+   ```javascript
+   function addTwo(x) {
+     return x + 2;
+   }
+   
+   function addThree(x) {
+     return x + 3;
+   }
+   
+   function addFive(x) {
+     return x + 5;
+   }
+   
+   function compose(...fns) {
+     return (x) => fns.reduce((promise, fn) => promise.then(fn), Promise.resolve(x))
+   }
+   let addTen = compose(addTwo, addThree, addFive);
+   addTen(8).then(console.log); // 18
+   ```
+
+   
 
 
 
 ### 11.2.5 期约扩展  
 
+很多第三方期约库实现中具备而 ECMAScript 规范却未涉及的两个特性：期约取消和进度追踪。  
+
 1. **期约取消  **
+
+   - 某些第三方库，比如 Bluebird，就提供了这个特性。  
+
+   - **“取消令牌”（ cancel token）**
+
+     - 生成的令牌实例提供了一个接口，利用这个接口可以取消期约；同时也提供了一个期约的实例，可以用来触发取消后的操作并求值取消状态。  
+
+     ```javascript
+     class CancelToken {
+       constructor(cancelFn) {
+         this.promise = new Promise((resolve, reject) => {
+           cancelFn(resolve);
+         });
+       }
+     }
+     ```
+
+   - 这个类包装了一个期约，把解决方法暴露给了 `cancelFn` 参数。
+
+     - 这样，外部代码就可以向构造函数中传入一个函数，从而控制什么情况下可以取消期约。
+     - 这里期约是令牌类的公共成员，因此可以给它添加处理程序以取消期约。  
+
+     ```javascript
+     document.querySelector("body").innerHTML = `<button id="start">Start</button>
+     <button id="cancel">Cancel</button>`;
+     
+     class CancelToken {
+       constructor(cancelFn) {
+         this.promise = new Promise((resolve, reject) => {
+           cancelFn(resolve);
+         });
+       }
+     }
+     
+     const startButton = document.querySelector('#start');
+     const cancelButton = document.querySelector('#cancel');
+     
+     function cancellableDelayedResolve(delay) {
+       console.log("开始 delay")
+       return new Promise((resolve, reject) => {
+         const id = setTimeout(resolve, delay, "delay Ok");
+         // 异步并发，用来取消上一个异步操作
+         const cancelToken = new CancelToken((cancelFn) => {
+           cancelButton.addEventListener("click", cancelFn);
+         })
+         cancelToken.promise.then(() => {
+           clearTimeout(id);
+           reject("cancel")
+         })
+       });
+     }
+     
+     startButton.addEventListener("click", () => cancellableDelayedResolve(1000).then(e => {
+       console.log("resolve 结果：", e);
+     }).catch(e => {
+       console.log("reject 结果：", e);
+     }));
+     ```
+
+   - **简化版**
+
+     ```javascript
+     document.querySelector("body").innerHTML = `<button id="start">Start</button>
+     <button id="cancel">Cancel</button>`;
+     
+     // 简化 取消令牌
+     function cancelCB() {
+       return new Promise((resolve, reject) => {
+         cancelButton.addEventListener("click", () => {
+           console.log("取消 cancelled")
+           resolve();
+         })
+       })
+     }
+     
+     const startButton = document.querySelector('#start');
+     const cancelButton = document.querySelector('#cancel');
+     
+     function cancellableDelayedResolve(delay) {
+       console.log("开始 delay")
+       return new Promise((resolve, reject) => {
+         const id = setTimeout((() => {
+           console.log("正常 resolve");
+           resolve("ok");
+         }), delay);
+     
+         // 用来取消上一个异步操作
+         cancelCB().then(() => {
+           clearTimeout(id);
+           reject("cancel");
+         });
+       });
+     }
+     startButton.addEventListener("click", () => cancellableDelayedResolve(3000).then(e => {
+       console.log("resolve 结果：", e);
+     }).catch(e => {
+       console.log("reject 结果：", e);
+     }));
+     ```
+
+     
+
 2. **期约进度通知  **
+
+   - ECMAScript 6 期约并不支持进度追踪，但是可以通过扩展来实现。  
+   - 一种实现方式是扩展 Promise 类，为它添加 `notify()`方法，如下所示：  
+
+   ```javascript
+   class TrackablePromise extends Promise {
+     constructor(executor) {
+       const notifyHandlers = [];
+   
+       super((resolve, reject) => {
+         return executor(resolve, reject, (status) => {
+           notifyHandlers.map((handler) => handler(status));
+         });
+       });
+   
+       this.notifyHandlers = notifyHandlers;
+     }
+   
+     notify(notifyHandler) {
+       this.notifyHandlers.push(notifyHandler);
+       return this;
+     }
+   }
+   ```
+
+   - 这样， `TrackablePromise` 就可以在执行函数中使用 `notify()`函数了。  
+
+   - `notify()`函数会返回期约，所以可以连缀调用，连续添加处理程序。多个处理程序会针对收到的每条消息分别执行一遍，如下所示：  
+
+   ```javascript
+   class TrackablePromise extends Promise {
+     constructor(executor) {
+       const notifyHandlers = [];
+   
+       super((resolve, reject) => {
+         return executor(resolve, reject, (status) => {
+           notifyHandlers.map((handler) => handler(status));
+         });
+       });
+   
+       this.notifyHandlers = notifyHandlers;
+     }
+   
+     notify(notifyHandler) {
+       this.notifyHandlers.push(notifyHandler);
+       return this;
+     }
+   }
+   
+   let p = new TrackablePromise((resolve, reject, notify) => {
+     function countdown(x) {
+       if (x > 0) {
+         notify(`${20 * x}% remaining`);
+         setTimeout(() => countdown(x - 1), 1000);
+       } else {
+         resolve();
+       }
+     }
+     countdown(5);
+   });
+   
+   p.notify((x) => setTimeout(console.log, 0, 'progress:', x));
+   p.then(() => setTimeout(console.log, 0, 'completed'));
+   
+   // （约 1 秒后） 80% remaining
+   // （约 2 秒后） 60% remaining
+   // （约 3 秒后） 40% remaining
+   // （约 4 秒后） 20% remaining
+   // （约 5 秒后） completed
+   
+   p.notify((x) => setTimeout(console.log, 0, 'a:', x))
+     .notify((x) => setTimeout(console.log, 0, 'b:', x));
+   p.then(() => setTimeout(console.log, 0, 'completed'));
+   
+   // （约 1 秒后） a: 80% remaining
+   // （约 1 秒后） b: 80% remaining
+   // （约 2 秒后） a: 60% remaining
+   // （约 2 秒后） b: 60% remaining
+   // （约 3 秒后） a: 40% remaining
+   // （约 3 秒后） b: 40% remaining
+   // （约 4 秒后） a: 20% remaining
+   // （约 4 秒后） b: 20% remaining
+   // （约 5 秒后） completed
+   ```
+
+   
 
 
 
 ## 11.3　异步函数
+
+异步函数，也称为“`async/await`”（语法关键字），是 ES6 期约模式在 ECMAScript 函数中的应用。`async/await` 是 ES8 规范新增的，同步方式写的代码  
+
 ### 11.3.1 异步函数  
 
 1. **async  **
+
+   - async 关键字用于声明异步函数。这个关键字可以用在函数声明、函数表达式、箭头函数和方法上：  
+
+   ```javascript
+   async function foo() {}
+   
+   let bar = async function () {};
+   
+   let baz = async () => {};
+   
+   class Qux {
+     async qux() {}
+   }
+   ```
+
+   - 使用 async 关键字可以让函数具有异步特征，但总体上其代码仍然是同步求值的。而在参数或闭包方面，异步函数仍然具有普通 JavaScript 函数的正常行为。  
+   - 不过，异步函数如果使用 `return` 关键字返回了值（如果没有 `return` 则会返回 `undefined`），这个值会被 `Promise.resolve()`包装成一个期约对象。**异步函数始终返回期约对象。**  
+
+   ```javascript
+   async function foo() {
+     console.log(1);
+     return 3;
+   }
+   
+   foo().then(console.log);
+   console.log(2);
+   // 1
+   // 2
+   // 3
+   ```
+
+   - 异步函数的返回值期待（但实际上并不要求）一个实现 `thenable` 接口的对象，但常规的值也可以。
+     - 如果返回的是实现 `thenable` 接口的对象，则这个对象可以由提供给 `then()`的处理程序“解包”。
+     - 如果不是，则返回值就被**当作已经解决的期约**。  
+
+   ```javascript
+   // 返回一个原始值
+   async function foo() {
+     return 'foo';
+   }
+   foo().then(console.log);
+   // foo
+   
+   // 返回一个没有实现 thenable 接口的对象
+   async function bar() {
+     return ['bar'];
+   }
+   bar().then(console.log);
+   // ['bar']
+   
+   // 返回一个实现了 thenable 接口的非期约对象
+   async function baz() {
+     const thenable = {
+       then(callback) {
+         callback('baz');
+       }
+     };
+     return thenable;
+   }
+   baz().then(console.log);
+   // baz
+   
+   // 返回一个期约
+   async function qux() {
+     return Promise.resolve('qux');
+   }
+   qux().then(console.log);
+   // qux
+   ```
+
+   - 与在期约处理程序中一样，在异步函数中抛出错误会返回拒绝的期约  
+     - 拒绝期约的错误不会被异步函数捕获  
+
 2. **await  **
+
+   - 使用 `await` 关键字可以暂停异步函数代码的执行，等待期约解决。  
+
+   ```javascript
+   async function foo() {
+     let p = new Promise((resolve, reject) => setTimeout(resolve, 1000, 3));
+     console.log(await p);
+   }
+   
+   foo();
+   // 3
+   ```
+
+   - **注意**， `await` 关键字会暂停执行异步函数后面的代码，让出 JavaScript 运行时的执行线程。
+     - 这个行为与生成器函数中的 `yield` 关键字是一样的。 
+     - `await` 关键字同样是尝试“解包”对象的值，然后将这个值传给表达式，再异步恢复异步函数的执行。
+   - `await` 关键字期待（但实际上并不要求）一个实现 `thenable` 接口的对象，但常规的值也可以。
+     - 如果是实现 `thenable` 接口的对象，则这个对象可以由 `await` 来“解包”。
+     - 如果不是，则这个值就被当作已经解决的期约。  
+
+   ```javascript
+   // 等待一个原始值
+   async function foo() {
+     console.log(await 'foo');
+   }
+   foo();
+   // foo
+   
+   // 等待一个没有实现 thenable 接口的对象
+   async function bar() {
+     console.log(await ['bar']);
+   }
+   bar();
+   // ['bar']
+   
+   // 等待一个实现了 thenable 接口的非期约对象
+   async function baz() {
+     const thenable = {
+       then(callback) {
+         callback('baz');
+       }
+     };
+     console.log(await thenable);
+   }
+   baz();
+   // baz
+   
+   // 等待一个期约
+   async function qux() {
+     console.log(await Promise.resolve('qux'));
+   }
+   qux();
+   // qux
+   ```
+
+   - 等待会抛出错误的同步操作，会返回拒绝的期约  
+     - 单独的 `Promise.reject()`不会被异步函数捕获，而会抛出未捕获错误。
+     - 不过，对拒绝的期约使用 `await` 则会释放（ `unwrap`）错误值（将拒绝期约返回）： 
+
+   ```javascript
+   async function foo() {
+     console.log(1);
+     await Promise.reject(3);
+     console.log(4); // 这行代码不会执行
+   }
+   
+   // 给返回的期约添加一个拒绝处理程序
+   foo().catch(console.log);
+   console.log(2);
+   
+   // 1
+   // 2
+   // 3
+   ```
+
+   
+
 3. **await 的限制  **
+
+   - `await` 关键字必须在异步函数中使用，不能在顶级上下文如`<script>`标签或模块中使用。不过，定义并立即调用异步函数是没问题的。  
+
+   ```javascript
+   async function foo() {
+     console.log(await Promise.resolve(3));
+   }
+   foo();
+   // 3
+   
+   // 立即调用的异步函数表达式
+   (async function () {
+     console.log(await Promise.resolve(3));
+   })();
+   // 3
+   ```
+
+   - 异步函数的特质不会扩展到嵌套函数。
+     - 因此， `await` 关键字也只能直接出现在异步函数的定义中。
+     - 在同步函数内部使用 `await` 会抛出 `SyntaxError`。  
 
 
 
 ### 11.3.2 停止和恢复执行  
 
+```javascript
+async function foo() {
+  console.log(await Promise.resolve('foo'));
+}
+async function bar() {
+  console.log(await 'bar');
+}
+async function baz() {
+  console.log('baz');
+}
 
+foo();
+bar();
+baz();
+
+// baz
+// bar
+// foo
+```
+
+- `async/await` 中真正起作用的是 `await`。
+
+  -  `async` 关键字，无论从哪方面来看，都不过是一个标识符。
+  - 毕竟，异步函数如果不包含 `await` 关键字，其执行基本上跟普通函数没有什么区别。
+
+- JavaScript 运行时在碰到 `await` 关键字时，会记录在哪里暂停执行。
+
+  - 等到 `await` 右边的值可用了， JavaScript 运行时**会向消息队列中推送一个任务**，这个任务会恢复异步函数的执行。
+  - 因此，**即使 `await` 后面跟着一个立即可用的值，函数的其余部分也会被异步求值。**  
+
+  ```javascript
+  async function foo() {
+    console.log(2);
+    await null;
+    console.log(4);
+  }
+  console.log(1);
+  foo();
+  console.log(3);
+  
+  // 1
+  // 2
+  // 3
+  // 4
+  ```
+
+  - 控制台中输出结果的顺序很好地解释了运行时的工作过程：
+    (1) 打印 1；
+    (2) 调用异步函数 foo()；
+    (3)（在 foo()中）打印 2；
+    (4)（在 foo()中） await 关键字暂停执行，为立即可用的值 null 向消息队列中添加一个任务；
+    (5) foo()退出；
+    (6) 打印 3；
+    (7) 同步线程的代码执行完毕；
+    (8) JavaScript 运行时从消息队列中取出任务，恢复异步函数执行；
+    (9)（在 foo()中）恢复执行， await 取得 null 值（这里并没有使用）；
+    (10)（在 foo()中）打印 4；
+    (11) foo()返回。  
+
+- 如果 `await` 后面是一个期约，则问题会稍微复杂一些。此时，为了执行异步函数，实际上会有两个任务被添加到消息队列并被异步求值。  
+
+  - TC39 对 `await` 后面是期约的情况如何处理做过一次修改。修改后，本例中的 `Promise.resolve(8)`只会生成一个异步任务。
+  - 因此在新版浏览器中，这个示例的输出结果为 123458967。实际开发中，对于并行的异步操作我们通常更关注结果，而不依赖执行顺序。 ——译者注  
+
+  ```javascript
+  async function foo() {
+    console.log(2);
+    console.log(await Promise.resolve(8));
+    console.log(9);
+  }
+  async function bar() {
+    console.log(4);
+    console.log(await 6);
+    console.log(7);
+  }
+  console.log(1);
+  foo();
+  console.log(3);
+  bar();
+  console.log(5);
+  // 1
+  // 2
+  // 3
+  // 4
+  // 5
+  // 8
+  // 9
+  // 6
+  // 7
+  ```
+
+  
 
 ### 11.3.3 异步函数策略  
 1. **实现 `sleep()  `**
+
+   ```javascript
+   async function sleep(delay) {
+     return new Promise((resolve) => setTimeout(resolve, delay));
+   }
+   async function foo() {
+     const t0 = Date.now();
+     await sleep(1500); // 暂停约 1500 毫秒
+     console.log(Date.now() - t0);
+   }
+   
+   foo();
+   // 1502
+   ```
+
+   
+
 2. **利用平行执行  **
+
+   - 如果使用 await 时不留心，则很可能错过**平行加速**的机会。（异步初始化promise，再等待结果更快）
+
+   ```javascript
+   async function randomDelay(id) {
+     // 延迟 0~1000 毫秒
+     const delay = Math.random() * 1000;
+     return new Promise((resolve) => setTimeout(() => {
+       console.log(`${id} finished`);
+       resolve();
+     }, delay));
+   }
+   async function foo() {
+     const t0 = Date.now();
+     for (let i = 0; i < 5; ++i) {
+       await randomDelay(i);
+     }
+     console.log(`${Date.now() - t0}ms elapsed`);
+   }
+   foo();
+   // 0 finished
+   // 1 finished
+   // 2 finished
+   // 3 finished
+   // 4 finished
+   // 877ms elapsed
+   
+   // 就算这些期约之间没有依赖，异步函数也会依次暂停，等待每个超时完成。这样可以保证执行顺序，但总执行时间会变长。
+   // 如果顺序不是必需保证的，那么可以先一次性初始化所有期约，然后再分别等待它们的结果。比如：
+   async function randomDelay(id) {
+     // 延迟 0~1000 毫秒
+     const delay = Math.random() * 1000;
+     return new Promise((resolve) => setTimeout(() => {
+       setTimeout(console.log, 0, `${id} finished`);
+       resolve();
+     }, delay));
+   }
+   async function foo() {
+     const t0 = Date.now();
+     const p0 = randomDelay(0);
+     const p1 = randomDelay(1);
+     const p2 = randomDelay(2);
+     const p3 = randomDelay(3);
+     const p4 = randomDelay(4);
+     await p0;
+     await p1;
+     await p2;
+     await p3;
+     await p4;
+     setTimeout(console.log, 0, `${Date.now() - t0}ms elapsed`);
+   }
+   foo();
+   // 1 finished
+   // 4 finished
+   // 3 finished
+   // 0 finished
+   // 2 finished
+   // 877ms elapsed
+   
+   // 注意，虽然期约没有按照顺序执行，但 await 按顺序收到了每个期约的值：
+   async function randomDelay(id) {
+     // 延迟 0~1000 毫秒
+     const delay = Math.random() * 1000;
+     return new Promise((resolve) => setTimeout(() => {
+       console.log(`${id} finished`);
+       resolve(id);
+     }, delay));
+   }
+   async function foo() {
+     const t0 = Date.now();
+     const promises = Array(5).fill(null).map((_, i) => randomDelay(i));
+     for (const p of promises) {
+       console.log(`awaited ${await p}`);
+     }
+     console.log(`${Date.now() - t0}ms elapsed`);
+   }
+   foo();
+   // 1 finished
+   // 2 finished
+   // 4 finished
+   // 3 finished
+   // 0 finished
+   // awaited 0
+   // awaited 1
+   // awaited 2
+   // awaited 3
+   // awaited 4
+   // 645ms elapsed
+   ```
+
+   
+
 3. **串行执行期约  **
+
+   ```javascript
+   async function addTwo(x) {
+     return x + 2;
+   }
+   async function addThree(x) {
+     return x + 3;
+   }
+   async function addFive(x) {
+     return x + 5;
+   }
+   async function addTen(x) {
+     for (const fn of [addTwo, addThree, addFive]) {
+       x = await fn(x);
+     }
+     return x;
+   }
+   addTen(9).then(console.log); // 19
+   ```
+
+   
+
 4. **栈追踪与内存管理  **
+
+   - 期约与异步函数的功能有相当程度的重叠，但它们在内存中的表示则差别很大。
+   - 看看下面的例子，它展示了拒绝期约的栈追踪信息  
+
+   ```javascript
+   function fooPromiseExecutor(resolve, reject) {
+     setTimeout(reject, 1000, 'bar');
+   }
+   
+   function foo() {
+     new Promise(fooPromiseExecutor);
+   }
+   
+   foo();
+   // Uncaught (in promise) bar
+   // setTimeout
+   // setTimeout (async)
+   // fooPromiseExecutor
+   // foo
+   ```
+
+   - 根据对期约的不同理解程度，以上栈追踪信息可能会让某些读者不解。
+     - 栈追踪信息应该相当直接地表现 JavaScript 引擎当前栈内存中函数调用之间的嵌套关系。
+     - 在超时处理程序执行时和拒绝期约时，我们看到的错误信息包含嵌套函数的标识符，那是被调用以创建最初期约实例的函数。
+     - 可是，我们知道这些函数已经返回了，因此栈追踪信息中不应该看到它们。
+   - 答案很简单，这是因为 JavaScript 引擎会在**创建期约时尽可能保留完整的调用栈**。
+     - 在抛出错误时，调用栈可以由运行时的错误处理逻辑获取，因而就会出现在栈追踪信息中。
+     - 当然，这意味着栈追踪信息会占用内存，从而带来一些计算和存储成本。  
+
+   ```javascript
+   function fooPromiseExecutor(resolve, reject) {
+     setTimeout(reject, 1000, 'bar');
+   }
+   async function foo() {
+     await new Promise(fooPromiseExecutor);
+   }
+   foo();
+   
+   // Uncaught (in promise) bar
+   // foo
+   // async function (async)
+   // foo
+   ```
+
+   - 这样一改，栈追踪信息就准确地反映了当前的调用栈。
+     - `fooPromiseExecutor()`已经返回，所以它不在错误信息中。
+     - 但 `foo()`此时被挂起了，并没有退出。 
+     - JavaScript 运行时可以简单地在嵌套函数中存储指向包含函数的指针，就跟对待同步函数调用栈一样。这个指针实际上存储在内存中，可用于在出错时生成栈追踪信息。这样就不会像之前的例子那样带来额外的消耗，因此在重视性能的应用中是可以优先考虑的。  
 
 
 
