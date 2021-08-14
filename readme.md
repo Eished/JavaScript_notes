@@ -1,6 +1,6 @@
 # JavaScript 笔记集
 
-## 1. [JavaScript 从入门到精通.md](JavaScript从入门到精通.md)
+## 1. [JavaScript 从入门到精通.md](JavaScript从入门到精通+w3school.md)
 
 ## 2. [再学 JavaScript ES6-10.md](JavaScriptES6-10.md)
 
