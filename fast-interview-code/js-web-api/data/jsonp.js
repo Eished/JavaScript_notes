@@ -1,0 +1,3 @@
+abc(
+    { name: 'xxx' }
+)

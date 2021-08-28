@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        .container {
+            background-color: #f1f1f1;
+        }
+        .left {
+            float: left;
+        }
+        .bfc {
+            overflow: hidden; /* 触发元素 BFC */
+        }
+    </style>
+</head>
+<body>
+    <div class="container bfc">
+        <img src="https://www.imooc.com/static/img/index/logo.png" class="left" style="magin-right: 10px;"/>
+        <p class="bfc">某一段文字……</p>
+    </div>
+</body>
+</html>
