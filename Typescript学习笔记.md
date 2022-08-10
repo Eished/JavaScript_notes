@@ -394,6 +394,29 @@ const todo: TodoPreview = {
 }
 ```
 
+Pick enum
+
+```typescript
+enum KeysToBePickedFrom {
+  KEY_ONE = 'Key One',
+  KEY_TWO = 'Key Number Two',
+  KEY_THREE = 'Another key n. 3',
+  LAST_KEY = 'Here is the last Key',
+}
+
+type PickKey<T, K extends keyof T> = Extract<keyof T, K>
+
+type Picked_KeysOfEnum = PickKey<typeof KeysToBePickedFrom, 'KEY_ONE' | 'LAST_KEY'>
+
+interface KeysPickedForType {
+  keyone: Picked_KeysOfEnum
+}
+
+const picks: KeysPickedForType = {
+  keyone: 'KEY_ONE', //  KEY_ONE | LAST_KEY
+}
+```
+
 ### [`Omit`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#omittype-keys)
 
 从类型`Type`中获取所有属性，然后从中剔除`Keys`属性后构造一个类型。
