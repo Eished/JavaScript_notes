@@ -177,6 +177,7 @@ npm install @tsconfig/node16 --save-dev # 非必要
 
 ```bash
 npm install eslint --save-dev
+npm i prettier eslint-plugin-prettier eslint-config-prettier -D
 npm install @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
 ```
 
