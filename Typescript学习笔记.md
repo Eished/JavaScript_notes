@@ -97,7 +97,6 @@ Using these options, let’s create the command to satisfy the following scenari
   "include": ["./src"],
   "exclude": ["./node_modules"]
 }
-
 ```
 
 `package.json`
@@ -119,7 +118,6 @@ Using these options, let’s create the command to satisfy the following scenari
     "typescript": "^4.7.4"
   }
 }
-
 ```
 
 `index.ts`
@@ -132,7 +130,6 @@ export function hello(who: string = world): string {
 }
 
 console.log(hello(world))
-
 ```
 
 `nodemon.json`
@@ -147,18 +144,15 @@ console.log(hello(world))
     "ts": "ts-node"
   }
 }
-
 ```
-
-
 
 ### 步骤二：启动项目
 
 ```typescript
-const world = 'world';
+const world = 'world'
 
 export function hello(who: string = world): string {
-  return `Hello ${who}! `;
+  return `Hello ${who}! `
 }
 ```
 
@@ -169,8 +163,6 @@ npx tsc -w  # watch mode
 
 npm start # 自动编译和重启
 ```
-
-
 
 ### 步骤三：安装类型提示和代码格式化工具
 
@@ -215,7 +207,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
   },
 }
-
 ```
 
 `.prettierrc.js`
@@ -231,25 +222,438 @@ module.exports = {
   bracketSpacing: true, //对象大括号直接是否有空格，默认为true，效果：{ foo: bar }
   arrowParens: 'always', // 箭头函数单个参数加分号
   bracketSameLine: true,
-};
-
+}
 ```
 
+## @types
 
+毫无疑问，[DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped) 是 TypeScript 最大的优势之一，社区已经记录了 90% 的顶级 JavaScript 库。
+
+```
+npm install @types/jquery --save-dev
+```
+
+可以看出，对于某些团队而言，拥有允许全局使用的定义是一个问题。因此，你可以通过配置 `tsconfig.json` 的 `compilerOptions.types` 选项，引入有意义的类型：
+
+```json
+{
+  "compilerOptions": {
+    "types": ["jquery"]
+  }
+}
+```
+
+如上例所示，通过配置 `compilerOptions.types: [ "jquery" ]` 后，只允许使用 `jquery` 的 `@types` 包，即使这个人安装了另一个声明文件，比如 `npm install @types/node`，它的全局变量（例如 `process`）也不会泄漏到你的代码中，直到你将它们添加到 tsconfig.json 类型选项。
+
+## 数据类型
+
+### 数字类型枚举与数字类型
+
+数字类型枚举，允许我们将数字类型或者其他任何与数字类型兼容的类型赋值给枚举类型的实例。
+
+```ts
+enum Color {
+  Red,
+  Green,
+  Blue,
+}
+
+let col = Color.Red
+col = 0 // 有效的，这也是 Color.Red
+```
+
+## `--lib` 选项
+
+有时，你想要解耦编译目标（即生成的 JavaScript 版本）和环境库支持之间的关系。例如对于 Promise，你的编译目标是 `--target es5`，但是你仍然想使用它，这时，你可以使用 `lib` 对它进行控制。
+
+### config.json
+
+```json
+"compilerOptions": {
+    "lib": ["dom", "es6"]
+}
+```
+
+## 捕获键的名称
+
+`keyof` 操作符能让你捕获一个类型的键。例如，你可以使用它来捕获变量的键名称，在通过使用 `typeof` 来获取类型之后：
+
+```ts
+const colors = {
+  red: 'red',
+  blue: 'blue',
+}
+
+type Colors = keyof typeof colors
+
+let color: Colors // color 的类型是 'red' | 'blue'
+color = 'red' // ok
+color = 'blue' // ok
+color = 'anythingElse' // Error
+```
+
+这允许你很容易地拥有像字符串枚举+常量这样的类型，如上例所示。
+
+## Utility Types
+
+[实用工具类型](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#实用工具类型)
+
+TypeScript 提供一些工具类型来帮助常见的类型转换。这些类型是全局可见的。
+
+### [`Partial`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#partialtype)
+
+构造类型`Type`，并将它所有的属性设置为可选的。它的返回类型表示输入类型的所有子类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子)
+
+```typescript
+interface Todo {
+  title: string
+  description: string
+}
+
+function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
+  return { ...todo, ...fieldsToUpdate }
+}
+
+const todo1 = {
+  title: 'organize desk',
+  description: 'clear clutter',
+}
+
+const todo2 = updateTodo(todo1, {
+  description: 'throw out trash',
+})
+```
+
+### [`Readonly`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#readonlytype)
+
+构造类型`Type`，并将它所有的属性设置为`readonly`，也就是说构造出的类型的属性不能被再次赋值。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-1)
+
+```typescript
+interface Todo {
+  title: string
+}
+
+const todo: Readonly<Todo> = {
+  title: 'Delete inactive users',
+}
+
+todo.title = 'Hello' // Error: cannot reassign a readonly property
+```
+
+这个工具可用来表示在运行时会失败的赋值表达式（比如，当尝试给[冻结对象](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)的属性再次赋值时）。
+
+#### [`Object.freeze`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#objectfreeze)
+
+```typescript
+function freeze<T>(obj: T): Readonly<T>
+```
+
+### [`Record`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#recordkeys-type)
+
+构造一个类型，其属性名的类型为`K`，属性值的类型为`T`。这个工具可用来将某个类型的属性映射到另一个类型上。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-2)
+
+```typescript
+interface PageInfo {
+  title: string
+}
+
+type Page = 'home' | 'about' | 'contact'
+
+const x: Record<Page, PageInfo> = {
+  about: { title: 'about' },
+  contact: { title: 'contact' },
+  home: { title: 'home' },
+}
+```
+
+### [`Pick`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#picktype-keys)
+
+从类型`Type`中挑选部分属性`Keys`来构造类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-3)
+
+```typescript
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+
+type TodoPreview = Pick<Todo, 'title' | 'completed'>
+
+const todo: TodoPreview = {
+  title: 'Clean room',
+  completed: false,
+}
+```
+
+### [`Omit`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#omittype-keys)
+
+从类型`Type`中获取所有属性，然后从中剔除`Keys`属性后构造一个类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-4)
+
+```typescript
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+
+type TodoPreview = Omit<Todo, 'description'>
+
+const todo: TodoPreview = {
+  title: 'Clean room',
+  completed: false,
+}
+```
+
+### [`Exclude`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#excludetype-excludedunion)
+
+从类型`Type`中剔除所有可以赋值给`ExcludedUnion`的属性，然后构造一个类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-5)
+
+```typescript
+type T0 = Exclude<'a' | 'b' | 'c', 'a'> // "b" | "c"
+type T1 = Exclude<'a' | 'b' | 'c', 'a' | 'b'> // "c"
+type T2 = Exclude<string | number | (() => void), Function> // string | number
+```
+
+### [`Extract`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#extracttype-union)
+
+从类型`Type`中提取所有可以赋值给`Union`的类型，然后构造一个类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-6)
+
+```typescript
+type T0 = Extract<'a' | 'b' | 'c', 'a' | 'f'> // "a"
+type T1 = Extract<string | number | (() => void), Function> // () => void
+```
+
+### [`NonNullable`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#nonnullabletype)
+
+从类型`Type`中剔除`null`和`undefined`，然后构造一个类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-7)
+
+```typescript
+type T0 = NonNullable<string | number | undefined> // string | number
+type T1 = NonNullable<string[] | null | undefined> // string[]
+```
+
+### [`Parameters`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#parameterstype)
+
+由函数类型`Type`的参数类型来构建出一个元组类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-8)
+
+```ts
+declare function f1(arg: { a: number; b: string }): void
+
+type T0 = Parameters<() => string>
+//    []
+type T1 = Parameters<(s: string) => void>
+//    [s: string]
+type T2 = Parameters<<T>(arg: T) => T>
+//    [arg: unknown]
+type T3 = Parameters<typeof f1>
+//    [arg: { a: number; b: string; }]
+type T4 = Parameters<any>
+//    unknown[]
+type T5 = Parameters<never>
+//    never
+type T6 = Parameters<string>
+//   never
+//   Type 'string' does not satisfy the constraint '(...args: any) => any'.
+type T7 = Parameters<Function>
+//   never
+//   Type 'Function' does not satisfy the constraint '(...args: any) => any'.
+```
+
+### [`ConstructorParameters`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#constructorparameterstype)
+
+由构造函数类型来构建出一个元组类型或数组类型。 由构造函数类型`Type`的参数类型来构建出一个元组类型。（若`Type`不是构造函数类型，则返回`never`）。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-9)
+
+```ts
+type T0 = ConstructorParameters<ErrorConstructor>
+//    [message?: string | undefined]
+type T1 = ConstructorParameters<FunctionConstructor>
+//    string[]
+type T2 = ConstructorParameters<RegExpConstructor>
+//    [pattern: string | RegExp, flags?: string | undefined]
+type T3 = ConstructorParameters<any>
+//   unknown[]
+
+type T4 = ConstructorParameters<Function>
+//    never
+// Type 'Function' does not satisfy the constraint 'new (...args: any) => any'.
+```
+
+### [`ReturnType`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#returntypetype)
+
+由函数类型`Type`的返回值类型构建一个新类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-10)
+
+```
+type T0 = ReturnType<() => string>;  // string
+type T1 = ReturnType<(s: string) => void>;  // void
+type T2 = ReturnType<(<T>() => T)>;  // {}
+type T3 = ReturnType<(<T extends U, U extends number[]>() => T)>;  // number[]
+type T4 = ReturnType<typeof f1>;  // { a: number, b: string }
+type T5 = ReturnType<any>;  // any
+type T6 = ReturnType<never>;  // any
+type T7 = ReturnType<string>;  // Error
+type T8 = ReturnType<Function>;  // Error
+```
+
+### [`InstanceType`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#instancetypetype)
+
+由构造函数类型`Type`的实例类型来构建一个新类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-11)
+
+```typescript
+class C {
+  x = 0
+  y = 0
+}
+
+type T0 = InstanceType<typeof C> // C
+type T1 = InstanceType<any> // any
+type T2 = InstanceType<never> // any
+type T3 = InstanceType<string> // Error
+type T4 = InstanceType<Function> // Error
+```
+
+### [`Required`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#requiredtype)
+
+构建一个类型，使类型`Type`的所有属性为`required`。 与此相反的是[`Partial`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#partialtype)。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-12)
+
+```typescript
+interface Props {
+  a?: number
+  b?: string
+}
+
+const obj: Props = { a: 5 } // OK
+
+const obj2: Required<Props> = { a: 5 } // Error: property 'b' missing
+```
+
+### [`ThisParameterType`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#thisparametertypetype)
+
+从函数类型中提取 [this](http://www.patrickzhong.com/TypeScript/zh/handbook/functions.html#this参数) 参数的类型。 若函数类型不包含 `this` 参数，则返回 [unknown](http://www.patrickzhong.com/TypeScript/zh/handbook/basic-types.html#unknown) 类型。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-13)
+
+```ts
+function toHex(this: Number) {
+  return this.toString(16)
+}
+
+function numberToString(n: ThisParameterType<typeof toHex>) {
+  return toHex.apply(n)
+}
+```
+
+### [`OmitThisParameter`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#omitthisparametertype)
+
+从`Type`类型中剔除 [`this`](http://www.patrickzhong.com/TypeScript/zh/handbook/functions.html#this参数) 参数。 若未声明 `this` 参数，则结果类型为 `Type` 。 否则，由`Type`类型来构建一个不带`this`参数的类型。 泛型会被忽略，并且只有最后的重载签名会被采用。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-14)
+
+```ts
+function toHex(this: Number) {
+  return this.toString(16)
+}
+
+const fiveToHex: OmitThisParameter<typeof toHex> = toHex.bind(5)
+
+console.log(fiveToHex())
+```
+
+### [`ThisType`](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#thistypetype)
+
+这个工具不会返回一个转换后的类型。 它做为上下文的[`this`](http://www.patrickzhong.com/TypeScript/zh/handbook/functions.html#this)类型的一个标记。 注意，若想使用此类型，必须启用`--noImplicitThis`。
+
+#### [例子](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#例子-15)
+
+```typescript
+// Compile with --noImplicitThis
+
+type ObjectDescriptor<D, M> = {
+  data?: D
+  methods?: M & ThisType<D & M> // Type of 'this' in methods is D & M
+}
+
+function makeObject<D, M>(desc: ObjectDescriptor<D, M>): D & M {
+  let data: object = desc.data || {}
+  let methods: object = desc.methods || {}
+  return { ...data, ...methods } as D & M
+}
+
+let obj = makeObject({
+  data: { x: 0, y: 0 },
+  methods: {
+    moveBy(dx: number, dy: number) {
+      this.x += dx // Strongly typed this
+      this.y += dy // Strongly typed this
+    },
+  },
+})
+
+obj.x = 10
+obj.y = 20
+obj.moveBy(5, 5)
+```
+
+上面例子中，`makeObject`参数里的`methods`对象具有一个上下文类型`ThisType<D & M>`，因此`methods`对象的方法里`this`的类型为`{ x: number, y: number } & { moveBy(dx: number, dy: number): number }`。
+
+在`lib.d.ts`里，`ThisType<T>`标识接口是个简单的空接口声明。除了在被识别为对象字面量的上下文类型之外，这个接口与一般的空接口没有什么不同。
+
+### [操作字符串的类型](http://www.patrickzhong.com/TypeScript/zh/reference/utility-types.html#操作字符串的类型)
+
+为了便于操作模版字符串字面量，TypeScript 引入了一些能够操作字符串的类型。 更多详情，请阅读[模版字面量类型](http://www.patrickzhong.com/TypeScript/zh/handbook-v2/type-manipulation/template-literal-types.html#固有字符串操作类型)。
+
+## [三斜线指令](http://www.patrickzhong.com/TypeScript/zh/reference/triple-slash-directives.html#三斜线指令)
+
+三斜线指令是包含单个 XML 标签的单行注释。 注释的内容会做为编译器指令使用。
+
+三斜线指令*仅*可放在包含它的文件的最顶端。 一个三斜线指令的前面只能出现单行或多行注释，这包括其它的三斜线指令。 如果它们出现在一个语句或声明之后，那么它们会被当做普通的单行注释，并且不具有特殊的涵义。
+
+`/// <reference path="..." />`指令是三斜线指令中最常见的一种。 它用于声明文件间的*依赖*。
+
+三斜线引用告诉编译器在编译过程中要引入的额外的文件。
+
+当使用`--out`或`--outFile`时，它也可以做为调整输出内容顺序的一种方法。 文件在输出文件内容中的位置与经过预处理后的输入顺序一致。
 
 ## 参考资料
+
+Typescript 手册
+
+https://www.typescriptlang.org/docs/handbook/
+
+中文版：http://www.patrickzhong.com/TypeScript
 
 一个基于 Go 与 Typescript 开发的看板开源软件：taskcafe (https://github.com/JordanKnott/taskcafe)。
 
 支持对任务进行筛选过滤、打标签、添加截止日期、分配成员、制定流程等操作
 
-
-
 #前端 #电子书 ：《深入理解 TypeScript (https://github.com/jkchao/typescript-book-chinese)》（TypeScript Deep Dive (https://github.com/basarat/typescript-book)）。
 
 该书将从基础到深入，全面阐述 TypeScript 的各种魔法，并结合实际场景用例，让你更深入的理解 TypeScript
-
-
 
 全栈 React.js、GraphQL、Postgres、TypeScript 入门模板 (https://github.com/braydenwerner/Wern-Fullstack-Template)
 
