@@ -1,9 +1,10 @@
 {
   "watch": ["src"],
-  "ext": "ts",
+  "ext": "ts,js",
   "ignore": ["*.test.ts"],
   "delay": "0",
   "execMap": {
-    "ts": "ts-node"
+    "ts": "ts-node",
+    "js": "node --harmony"
   }
 }

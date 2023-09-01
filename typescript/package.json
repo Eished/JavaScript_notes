@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon src/index.ts",
+    "dev:ts": "nodemon src/index.ts",
+    "dev:js": "nodemon src/index.js",
     "lint": "eslint ./src --fix"
   },
   "author": "",
