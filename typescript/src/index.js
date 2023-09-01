@@ -161,50 +161,97 @@ function test15(str) {
   console.log(parseInt(str, 10).toString(2).match(/1/g).length)
 }
 // test15('5')
-const mainItems16 = []
-const subItems16 = []
-const items16 = []
-let n
-let m
-function test16(str) {
-  const strs = str.split(' ')
-  const q = strs[2]
-  if (q === undefined) {
-    n = strs[0]
-    m = strs[1]
-  } else {
-    const v = strs[0]
-    const p = strs[1]
-    if (q === 0) {
-      mainItems16.push([v, p, q])
+
+function shoppingCart() {
+  let items16 = []
+  let n
+  let m
+  let id = 1
+  function test16(str) {
+    const strs = str.split(' ')
+    const q = strs[2]
+    if (q === undefined) {
+      n = strs[0]
+      m = strs[1]
     } else {
-      subItems16.push([v, p, q])
+      const v = strs[0]
+      const p = strs[1]
+      items16.push([v, p, q, id])
+      id++
     }
-    items16.push([v, p, q])
   }
-}
-test16('50 5')
-test16('20 3 5')
-test16('20 3 5')
-test16('10 3 0')
-test16('10 2 0')
-test16('10 1 0')
-const result = []
-let satisfaction = 0
-for (let index = 0; index < items16.length; index++) {
-  const [v, p, q] = items16[index]
-  console.log(v, p, q)
-  let price = Number(v)
-  satisfaction += v * p
-  result.push([v, satisfaction])
-  items16.slice(index + 1, items16.length).forEach(([v2, p2, q2]) => {
-    price += Number(v2)
-    console.log(price, n)
-    if (price <= n && result.length < 6) {
-      satisfaction += v2 * p2
-      result.push([v2, satisfaction])
+  test16('1000 5')
+  // test16('20 3 5')
+  // test16('20 3 5')
+  // test16('10 3 0')
+  // test16('10 2 0')
+  // test16('10 1 0')
+  test16('800 2 0')
+  test16('400 5 1')
+  test16('300 5 1')
+  test16('400 3 0')
+  test16('500 2 0')
+  // 分类
+  // subItems16.forEach((si) => {
+  //   // console.log(si)
+  //   const index = mainItems16.findIndex((mi) => mi[3] == si[2])
+  //   mainItems16[index].childs.push(si)
+  // })
+  // 穷举购物车
+  function getAllSubsets(arr) {
+    const subsets = [[]]
+    for (const item of arr) {
+      const newSubsets = subsets.map((subset) => {
+        // console.log(subset, 'subset')
+        return [...subset, item]
+      })
+      subsets.push(...newSubsets)
+    }
+    return subsets
+  }
+  items16 = getAllSubsets(items16)
+  // console.log(subsets)
+
+  // 穷举结果
+  let results = []
+  items16 = items16.filter((sbs) => {
+    if (sbs.length == 0) {
+      return true
+    } else if (sbs.length == 1) {
+      if (sbs[0][0] < n) {
+        return true
+      }
+    }
+    let isParentIn = true
+    const childs = sbs.filter((sb) => sb[2] != 0)
+    if (childs.length) {
+      isParentIn = childs.every((s) => sbs.some((b) => b[3] == s[2]))
+    }
+    if (isParentIn) {
+      return true
     }
   })
+
+  items16 = items16.forEach((sbs) => {
+    let totalPrice = 0
+    let satisfaction = 0
+    sbs.forEach((item) => {
+      totalPrice += Number(item[0])
+      satisfaction += Number(item[0]) * Number(item[1])
+      // console.log(item)
+    })
+    // console.log(sbs)
+
+    if (totalPrice <= n) {
+      // console.log(totalPrice)
+      results.push(satisfaction)
+    }
+  })
+  items16 = undefined
+  // console.log(results)
+  results = results.sort((a, b) => b - a)
+
+  console.log(results[0])
 }
-console.log(result, 'result')
+
 console.timeEnd('time')
