@@ -50,6 +50,6 @@
     "experimentalDecorators": true, // 启用装饰器
     "emitDecoratorMetadata": true // 为装饰器提供元数据的支持
   },
-  "include": ["./src"],
-  "exclude": ["./node_modules"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules", "**/*.js"]
 }

@@ -8,6 +8,7 @@
     "lint": "eslint ./src --fix"
   },
   "author": "",
+  "type": "module",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.6.5",
