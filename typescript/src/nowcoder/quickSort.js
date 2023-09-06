@@ -51,4 +51,4 @@ const myQuickSort = (arr) => {
   })
   return myQuickSort(left).concat([pivot], myQuickSort(right))
 }
-console.log(myQuickSort(array))
+// console.log(myQuickSort(array))
