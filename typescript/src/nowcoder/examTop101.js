@@ -28,4 +28,4 @@ function BM1() {
   console.log(new ListNode(1))
   console.log(ReverseList(new ListNode(1)))
 }
-BM1()
+// BM1()
