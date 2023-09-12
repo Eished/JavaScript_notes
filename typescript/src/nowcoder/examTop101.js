@@ -58,8 +58,47 @@ function BM17() {
 
   console.log(search(arr, target))
 }
-BM17()
+// BM17()
 
 function BM23() {
-  console.log(1)
+  // 二叉树的前序遍历
+  class TreeNode {
+    constructor(val) {
+      this.val = val
+      this.left = null
+      this.right = null
+    }
+  }
+
+  function preorderTraversal(root) {
+    const result = []
+
+    function traverse(node) {
+      if (node === null) {
+        return
+      }
+      // 访问当前节点的值
+      result.push(node.val)
+      // 递归遍历左子树
+      traverse(node.left)
+      // 递归遍历右子树
+      traverse(node.right)
+    }
+
+    traverse(root) // 从根节点开始遍历
+
+    return result
+  }
+
+  // 创建一个二叉树
+  const root = new TreeNode(1)
+  root.left = new TreeNode(2)
+  root.right = new TreeNode(3)
+  root.left.left = new TreeNode(4)
+  root.left.right = new TreeNode(5)
+
+  // 执行前序遍历
+  const result = preorderTraversal(root)
+  console.log(result) // 输出 [1, 2, 4, 5, 3]
 }
+BM23()
