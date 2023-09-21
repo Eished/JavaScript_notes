@@ -101,4 +101,29 @@ function BM23() {
   const result = preorderTraversal(root)
   console.log(result) // 输出 [1, 2, 4, 5, 3]
 }
-BM23()
+// BM23()
+
+function match() {
+  const str = 'aeiou wolppzxc alwmdf String prototype'
+  const result = str.match(/a|e|i|o|u/g)
+  console.log(result, result.length)
+}
+// match()
+
+function getMaxDepth() {
+  const arr = [1, 1, [2, 2], [2, [3, 3, [4, 4], [4, [5, 5]]]]]
+  const depth = []
+  const getDepth = (arr, deep) => {
+    arr.forEach((a) => {
+      if (Array.isArray(a)) {
+        getDepth(a, deep + 1)
+      } else {
+        depth.push(deep)
+      }
+    })
+  }
+
+  getDepth(arr, 1)
+  console.log(Math.max(...depth))
+}
+getMaxDepth()
